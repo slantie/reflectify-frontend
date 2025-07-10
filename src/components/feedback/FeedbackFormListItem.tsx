@@ -10,23 +10,12 @@ import {
     Edit,
     Trash2,
     Users,
-    BookOpen,
-    School,
     ChevronDown,
     ChevronUp,
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { FeedbackForm, FeedbackFormStatus } from "@/interfaces/feedbackForm";
 import { OverrideStudentsList } from "./OverrideStudentsList";
-
-interface FeedbackFormListItemProps {
-    form: FeedbackForm;
-    index: number;
-    onView: (formId: string) => void;
-    onEdit: (formId: string) => void;
-    onDelete: (formId: string) => void;
-}
 
 // Status badge configuration
 const getStatusConfig = (status: FeedbackFormStatus) => {
@@ -36,35 +25,30 @@ const getStatusConfig = (status: FeedbackFormStatus) => {
                 variant: "secondary" as const,
                 icon: <FileText className="w-3 h-3" />,
                 label: "Draft",
-                color: "text-gray-600 dark:text-gray-400",
             };
         case FeedbackFormStatus.ACTIVE:
             return {
-                variant: "default" as const,
+                variant: "success" as const,
                 icon: <FileText className="w-3 h-3" />,
                 label: "Active",
-                color: "text-green-600 dark:text-green-400",
             };
-        case FeedbackFormStatus.COMPLETED:
+        case FeedbackFormStatus.CLOSED:
             return {
-                variant: "outline" as const,
+                variant: "info" as const,
                 icon: <FileText className="w-3 h-3" />,
-                label: "Completed",
-                color: "text-blue-600 dark:text-blue-400",
+                label: "Closed",
             };
         case FeedbackFormStatus.ARCHIVED:
             return {
                 variant: "destructive" as const,
                 icon: <FileText className="w-3 h-3" />,
                 label: "Archived",
-                color: "text-red-600 dark:text-red-400",
             };
         default:
             return {
                 variant: "secondary" as const,
                 icon: <FileText className="w-3 h-3" />,
                 label: "Unknown",
-                color: "text-gray-600 dark:text-gray-400",
             };
     }
 };
@@ -78,6 +62,14 @@ const formatDate = (dateString?: string) => {
         day: "numeric",
     });
 };
+
+interface FeedbackFormListItemProps {
+    form: FeedbackForm;
+    index: number;
+    onView: (formId: string) => void;
+    onEdit: (formId: string) => void;
+    onDelete: (formId: string) => void;
+}
 
 export const FeedbackFormListItem = ({
     form,
@@ -104,9 +96,9 @@ export const FeedbackFormListItem = ({
                         </h3>
                         <Badge
                             variant={statusConfig.variant}
-                            className="flex items-center gap-1"
+                            className="flex flex-row items-center gap-1"
                         >
-                            {statusConfig.icon}
+                            {/* {statusConfig.icon} */}
                             {statusConfig.label}
                         </Badge>
                     </div>
@@ -120,26 +112,26 @@ export const FeedbackFormListItem = ({
                             <Calendar className="w-4 h-4" />
                             <span>End: {formatDate(form.endDate)}</span>
                         </div>
+                        {form.subjectAllocation!.departmentId && (
+                            <div className="flex items-center gap-1">
+                                <Users className="w-4 h-4" />
+                                <span>
+                                    Department:{" "}
+                                    {form.subjectAllocation!.departmentId! ||
+                                        `Department ${
+                                            form.subjectAllocation!.departmentId
+                                        }`}
+                                </span>
+                            </div>
+                        )}
                         {form.division && (
                             <div className="flex items-center gap-1">
                                 <Users className="w-4 h-4" />
                                 <span>
                                     Division:{" "}
-                                    {form.division.name ||
-                                        `Div ${form.divisionId}`}
+                                    {form.division.divisionName ||
+                                        `Div ${form.division.divisionName}`}
                                 </span>
-                            </div>
-                        )}
-                        {form.subject && (
-                            <div className="flex items-center gap-1">
-                                <BookOpen className="w-4 h-4" />
-                                <span>{form.subject.name}</span>
-                            </div>
-                        )}
-                        {form.faculty && (
-                            <div className="flex items-center gap-1">
-                                <School className="w-4 h-4" />
-                                <span>{form.faculty.name}</span>
                             </div>
                         )}
                         {form.questions && form.questions.length > 0 && (
@@ -163,66 +155,54 @@ export const FeedbackFormListItem = ({
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                            setShowOverrideStudents(!showOverrideStudents)
-                        }
-                        className="flex items-center gap-1"
+                    <button
+                        onClick={() => setShowOverrideStudents((prev) => !prev)}
+                        className="flex py-1 px-3 items-center gap-1 bg-transparent border rounded-xl border-primary-main
+               text-primary-main dark:text-light-highlight transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed
+               dark:border-dark-highlight hover:shadow-lg dark:hover:shadow-primary-dark/20"
                     >
                         <Users className="w-4 h-4" />
                         {showOverrideStudents ? (
                             <>
-                                <ChevronUp className="w-4 h-4" />
                                 Hide Students
+                                <ChevronUp className="w-4 h-4" />
                             </>
                         ) : (
                             <>
+                                Students List
                                 <ChevronDown className="w-4 h-4" />
-                                Override Students
                             </>
                         )}
-                        <Users className="w-4 h-4" />
-                        {showOverrideStudents ? (
-                            <>
-                                <ChevronUp className="w-4 h-4" />
-                                Hide Students
-                            </>
-                        ) : (
-                            <>
-                                <ChevronDown className="w-4 h-4" />
-                                Override Students
-                            </>
-                        )}
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
+                    </button>
+
+                    <button
                         onClick={() => onView(form.id.toString())}
-                        className="flex items-center gap-1"
+                        className="flex py-1 px-3 items-center gap-1 bg-transparent border rounded-xl border-primary-main
+               text-primary-main dark:text-light-highlight transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed
+               dark:border-dark-highlight hover:shadow-lg dark:hover:shadow-primary-dark/20"
                     >
                         <Eye className="w-4 h-4" />
                         View
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
+                    </button>
+
+                    <button
                         onClick={() => onEdit(form.id.toString())}
-                        className="flex items-center gap-1"
+                        className="flex py-1 px-3 items-center gap-1 bg-transparent border rounded-xl border-primary-main
+               text-primary-main dark:text-light-highlight transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed
+               dark:border-dark-highlight hover:shadow-lg dark:hover:shadow-primary-dark/20"
                     >
                         <Edit className="w-4 h-4" />
                         Edit
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
+                    </button>
+
+                    <button
                         onClick={() => onDelete(form.id.toString())}
-                        className="flex items-center gap-1 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                        className="flex py-1 px-3 items-center gap-1 bg-transparent border rounded-xl border-red-600
+               text-red-600 dark:text-red-400 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed dark:border-red-500 hover:shadow-lg dark:hover:shadow-red-700/20"
                     >
                         <Trash2 className="w-4 h-4" />
                         Delete
-                    </Button>
+                    </button>
                 </div>
             </div>
 

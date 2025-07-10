@@ -26,17 +26,6 @@ import {
 // Import interfaces
 import { FeedbackFormStatus } from "@/interfaces/feedbackForm";
 
-// Animation variants
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1,
-        },
-    },
-};
-
 export default function FeedbackFormManagement() {
     const router = useRouter();
 
@@ -169,7 +158,6 @@ export default function FeedbackFormManagement() {
                 <motion.div
                     initial="hidden"
                     animate="visible"
-                    variants={containerVariants}
                     className="space-y-8"
                 >
                     {/* Header Section */}

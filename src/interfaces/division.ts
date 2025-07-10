@@ -10,7 +10,7 @@ import { IdType } from "./common";
  */
 export interface Division {
     id: IdType;
-    name: string;
+    divisionName: string;
     departmentId: IdType;
     semesterId: IdType;
     createdAt: string;

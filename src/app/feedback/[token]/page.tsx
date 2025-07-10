@@ -825,7 +825,7 @@ export default function StudentFeedbackPage({
                                 )}
                             </Button>
                             <p className="text-sm text-light-muted-text dark:text-dark-muted-text mt-2">
-                                Please ensure all required fields are completed
+                                Please ensure all required fields are Closed
                                 before submitting.
                             </p>
                         </Card>

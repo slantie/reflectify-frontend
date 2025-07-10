@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { Search, Filter } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { FeedbackFormStatus } from "@/interfaces/feedbackForm";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Select } from "../ui";
 
 interface FeedbackFormSearchFilterProps {
     searchTerm: string;
@@ -12,22 +14,6 @@ interface FeedbackFormSearchFilterProps {
     onSearchChange: (value: string) => void;
     onStatusFilterChange: (value: FeedbackFormStatus | "ALL") => void;
 }
-
-// Status configuration for display
-const getStatusConfig = (status: FeedbackFormStatus) => {
-    switch (status) {
-        case FeedbackFormStatus.DRAFT:
-            return { label: "Draft" };
-        case FeedbackFormStatus.ACTIVE:
-            return { label: "Active" };
-        case FeedbackFormStatus.COMPLETED:
-            return { label: "Completed" };
-        case FeedbackFormStatus.ARCHIVED:
-            return { label: "Archived" };
-        default:
-            return { label: "Unknown" };
-    }
-};
 
 const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -49,32 +35,39 @@ export const FeedbackFormSearchFilter = ({
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-muted-text dark:text-dark-muted-text w-4 h-4" />
                     <Input
+                        leftIcon={
+                            <MagnifyingGlassIcon className="w-5 h-5 text-light-muted-text dark:text-dark-muted-text" />
+                        }
+                        type="text"
                         placeholder="Search forms by title..."
                         value={searchTerm}
                         onChange={(e) => onSearchChange(e.target.value)}
-                        className="pl-10"
+                        className="w-full bg-light-muted-background dark:bg-dark-muted-background 
+                     text-light-text dark:text-dark-text border border-light-secondary dark:border-dark-secondary 
+                     rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-main"
                     />
                 </div>
                 <div className="flex items-center gap-2">
-                    <Filter className="w-4 h-4 text-light-muted-text dark:text-dark-muted-text" />
-                    <select
+                    <Filter className="w-6 h-6 text-light-muted-text dark:text-dark-muted-text" />
+                    <Select
+                        id="status-select"
+                        name="status-select"
                         value={statusFilter}
                         onChange={(e) =>
                             onStatusFilterChange(
                                 e.target.value as FeedbackFormStatus | "ALL"
                             )
                         }
-                        className="px-3 py-2 rounded-md border border-light-secondary dark:border-dark-secondary bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text"
-                        title="Filter forms by status"
-                        aria-label="Filter forms by status"
                     >
                         <option value="ALL">All Status</option>
-                        {Object.values(FeedbackFormStatus).map((status) => (
-                            <option key={status} value={status}>
-                                {getStatusConfig(status).label}
-                            </option>
-                        ))}
-                    </select>
+                        <option value={FeedbackFormStatus.DRAFT}>Draft</option>
+                        <option value={FeedbackFormStatus.ACTIVE}>
+                            Active
+                        </option>
+                        <option value={FeedbackFormStatus.CLOSED}>
+                            Closed
+                        </option>
+                    </Select>
                 </div>
             </div>
         </motion.div>

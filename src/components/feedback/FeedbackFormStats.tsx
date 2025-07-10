@@ -2,13 +2,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-    FileText,
-    CheckCircle,
-    Clock,
-    Archive,
-    AlertCircle,
-} from "lucide-react";
+import { FileText, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import { StatCard } from "@/components/ui/StatCard";
 import { FeedbackForm, FeedbackFormStatus } from "@/interfaces/feedbackForm";
 
@@ -35,15 +29,10 @@ const getStatusConfig = (status: FeedbackFormStatus) => {
                 title: "Active Forms",
                 icon: CheckCircle,
             };
-        case FeedbackFormStatus.COMPLETED:
+        case FeedbackFormStatus.CLOSED:
             return {
-                title: "Completed Forms",
+                title: "Closed Forms",
                 icon: Clock,
-            };
-        case FeedbackFormStatus.ARCHIVED:
-            return {
-                title: "Archived Forms",
-                icon: Archive,
             };
         default:
             return {
@@ -60,9 +49,13 @@ export const FeedbackFormStats = ({
     return (
         <motion.div
             variants={itemVariants}
-            className="grid grid-cols-1 md:grid-cols-4 gap-4"
+            className="grid grid-cols-1 md:grid-cols-3 gap-4"
         >
-            {Object.values(FeedbackFormStatus).map((status) => {
+            {[
+                FeedbackFormStatus.DRAFT,
+                FeedbackFormStatus.ACTIVE,
+                FeedbackFormStatus.CLOSED,
+            ].map((status) => {
                 const count = forms.filter(
                     (form) => form.status === status
                 ).length;

@@ -16,7 +16,7 @@ import { Faculty } from "./faculty";
 export enum FeedbackFormStatus {
     DRAFT = "DRAFT",
     ACTIVE = "ACTIVE",
-    COMPLETED = "COMPLETED",
+    CLOSED = "CLOSED",
     ARCHIVED = "ARCHIVED",
 }
 
@@ -61,6 +61,9 @@ export interface FeedbackForm {
     createdAt: string;
     updatedAt: string;
     isActive: boolean;
+    subjectAllocation?: {
+        departmentId?: string;
+    };
 }
 
 /**

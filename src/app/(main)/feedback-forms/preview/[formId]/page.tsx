@@ -77,7 +77,7 @@ export default function PreviewFeedbackFormPage({
                 return "text-green-600 bg-green-50 border-green-200";
             case "draft":
                 return "text-yellow-600 bg-yellow-50 border-yellow-200";
-            case "completed":
+            case "Closed":
                 return "text-blue-600 bg-blue-50 border-blue-200";
             case "archived":
                 return "text-gray-600 bg-gray-50 border-gray-200";

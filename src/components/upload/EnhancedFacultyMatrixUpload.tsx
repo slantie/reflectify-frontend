@@ -37,7 +37,7 @@ export const EnhancedFacultyMatrixUpload: React.FC = () => {
 
             if (hasAnyIssues) {
                 showToast.info(
-                    '📋 Upload completed with some issues. Click "View Details" for more information.',
+                    '📋 Upload Closed with some issues. Click "View Details" for more information.',
                     { duration: 8000 }
                 );
             }

@@ -34,17 +34,22 @@ export const FeedbackFormList = ({
             <div className="p-4 border-b border-light-secondary dark:border-dark-secondary">
                 <div className="flex items-center justify-between">
                     <h2 className="text-lg font-semibold text-light-text dark:text-dark-text">
-                        Forms ({forms.length})
+                        Feedback Forms
                     </h2>
                     <div className="text-sm text-light-muted-text dark:text-dark-muted-text">
-                        Total: {totalForms} forms
+                        Showing: {forms.length}{" "}
+                        {totalForms === 0
+                            ? "forms"
+                            : forms.length === totalForms
+                            ? "forms"
+                            : `of ${totalForms} total`}
                     </div>
                 </div>
             </div>
 
             {forms.length === 0 ? (
                 <div className="p-8 text-center">
-                    <FileText className="w-12 h-12 mx-auto text-light-muted-text dark:text-dark-muted-text mb-4" />
+                    <FileText className="w-12 h-16 mx-auto text-light-muted-text dark:text-dark-muted-text mb-4" />
                     <p className="text-light-muted-text dark:text-dark-muted-text">
                         {totalForms === 0
                             ? "No feedback forms found. Create your first form to get started."
