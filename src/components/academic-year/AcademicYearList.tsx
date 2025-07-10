@@ -32,7 +32,7 @@ export const AcademicYearList: React.FC<AcademicYearListProps> = ({
     const getActiveBadge = (isActive: boolean) => {
         if (isActive) {
             return (
-                <Badge className="ml-2 bg-primary-lighter text-primary-main dark:bg-primary-darker dark:text-primary-lighter">
+                <Badge className="ml-2 bg-primary-lighter text-light-highlight dark:text-dark-highlight dark:bg-primary-darker dark:text-primary-lighter">
                     Active
                 </Badge>
             );
@@ -95,7 +95,7 @@ export const AcademicYearList: React.FC<AcademicYearListProps> = ({
             <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-3 text-light-text dark:text-dark-text">
                     <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                        <Calendar className="h-5 w-5 text-primary-main" />
+                        <Calendar className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                     </div>
                     Academic Years ({academicYears.length})
                 </CardTitle>

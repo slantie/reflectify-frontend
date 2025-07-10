@@ -1,41 +1,48 @@
-// src/interfaces/faculty.ts
+/**
+ * @file src/interfaces/faculty.ts
+ * @description Interfaces for Faculty entity and related API data
+ */
 
 import { IdType } from "./common";
 import { Designation } from "@/constants/designations";
 import { Department } from "./department";
 
-// Full Faculty Model (as returned from GET /faculties or after create/update)
+/**
+ * Represents a faculty entity.
+ */
 export interface Faculty {
     id: IdType;
     name: string;
     email: string;
     abbreviation: string;
     designation: Designation;
-    department: Department; // Full Department object
-    departmentId: IdType; // Foreign key to Department
-    departmentAbbreviation: string; // This field might be redundant if 'department' object is always present
+    department: Department;
+    departmentId: IdType;
+    departmentAbbreviation: string;
     seatingLocation: string;
-    joiningDate: string; // ISO date string
-    createdAt: string; // ISO date string
-    updatedAt: string; // ISO date string
-    isActive: boolean; // For soft delete
+    joiningDate: string;
+    createdAt: string;
+    updatedAt: string;
+    isActive: boolean;
 }
 
-// Data required to create a new Faculty
-// Corresponds to createFacultySchema in your backend
+/**
+ * Data required to create a new faculty.
+ */
 export interface CreateFacultyData {
     firstName: string;
     lastName: string;
     email: string;
     facultyAbbreviation: string;
     designation: Designation;
-    departmentId: IdType; // The actual ID of the department
+    departmentId: IdType;
     seatingLocation: string;
-    joiningDate: string; // Added this field (ISO date string)
+    joiningDate: string;
 }
 
-// Data for updating an existing Faculty (all fields are optional)
-// Corresponds to updateFacultySchema in your backend
+/**
+ * Data for updating an existing faculty (all fields optional).
+ */
 export interface UpdateFacultyData {
     firstName?: string;
     lastName?: string;
@@ -47,26 +54,32 @@ export interface UpdateFacultyData {
     joiningDate?: string;
 }
 
-// Data structure for batch creation of faculties
+/**
+ * Data structure for batch creation of faculties.
+ */
 export interface BatchCreateFacultyInput {
     faculties: CreateFacultyData[];
 }
 
-// Data structure for faculty abbreviations endpoint
+/**
+ * Data structure for faculty abbreviations endpoint.
+ */
 export interface FacultyAbbreviation {
     id: IdType;
     facultyAbbreviation: string;
-    fullName: string; // Assuming your backend returns a combined full name
+    fullName: string;
 }
 
+/**
+ * Form data structure for faculty creation/edit forms.
+ */
 export interface FacultyFormData {
     firstName: string;
     lastName: string;
     email: string;
     facultyAbbreviation: string;
     designation: Designation;
-    departmentId: IdType | ""; // Allow empty string for initial form state or 'Select Department'
-    // REMOVED: loading: boolean; <--- THIS LINE WAS THE PROBLEM
+    departmentId: IdType | "";
     seatingLocation: string;
-    joiningDate: string; // Keep as string for input value, convert to Date object when needed
+    joiningDate: string;
 }

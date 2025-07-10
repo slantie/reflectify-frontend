@@ -1,6 +1,12 @@
+/**
+ * @file src/services/analyticsService.ts
+ * @description Service for analytics API operations
+ */
+
 // src/services/analyticsService.ts
-import axiosInstance from "@/lib/axiosInstance"; // Adjust path as needed
-import { ANALYTICS_ENDPOINTS } from "@/constants/apiEndpoints"; // Adjust path as needed
+
+import axiosInstance from "@/lib/axiosInstance";
+import { ANALYTICS_ENDPOINTS } from "@/constants/apiEndpoints";
 
 // Import analytics interfaces
 import {
@@ -19,14 +25,11 @@ import {
     FilterDictionary,
     CompleteAnalyticsData,
     AnalyticsFilterParams,
-} from "@/interfaces/analytics"; // Adjust path
-import { ApiResponse, IdType } from "@/interfaces/common"; // Adjust path
+} from "@/interfaces/analytics";
+import { ApiResponse, IdType } from "@/interfaces/common";
 
 const analyticsService = {
-    /**
-     * Retrieves overall average rating for a specific semester, with optional filters.
-     * Corresponds to GET /api/v1/analytics/semesters/:id/overall-rating
-     */
+    // Retrieves overall average rating for a specific semester, with optional filters.
     getOverallSemesterRating: async (
         semesterId: IdType,
         divisionId?: IdType,
@@ -48,10 +51,7 @@ const analyticsService = {
         }
     },
 
-    /**
-     * Retrieves a list of semesters that have associated feedback responses, with optional filtering.
-     * Corresponds to GET /api/v1/analytics/semesters-with-responses
-     */
+    // Retrieves a list of semesters that have associated feedback responses, with optional filtering.
     getSemestersWithResponses: async (
         academicYearId?: IdType,
         departmentId?: IdType
@@ -69,10 +69,7 @@ const analyticsService = {
         }
     },
 
-    /**
-     * Calculates subject-wise ratings for a given semester, broken down by lecture type.
-     * Corresponds to GET /api/v1/analytics/semesters/:id/subject-wise-rating
-     */
+    // Calculates subject-wise ratings for a given semester, broken down by lecture type.
     getSubjectWiseLectureLabRating: async (
         semesterId: IdType
     ): Promise<SubjectLectureLabRating[]> => {
@@ -90,10 +87,7 @@ const analyticsService = {
         }
     },
 
-    /**
-     * Identifies high-impact feedback areas (questions with significant low ratings) for a given semester.
-     * Corresponds to GET /api/v1/analytics/semesters/:id/high-impact-areas
-     */
+    // Identifies high-impact feedback areas (questions with significant low ratings) for a given semester.
     getHighImpactFeedbackAreas: async (
         semesterId: IdType
     ): Promise<HighImpactFeedbackArea[]> => {
@@ -111,10 +105,7 @@ const analyticsService = {
         }
     },
 
-    /**
-     * Provides trend analysis of average ratings across semesters, optionally filtered by subject.
-     * Corresponds to GET /api/v1/analytics/semester-trend-analysis
-     */
+    // Provides trend analysis of average ratings across semesters, optionally filtered by subject.
     getSemesterTrendAnalysis: async (
         subjectId?: IdType
     ): Promise<SemesterTrend[]> => {
@@ -131,10 +122,7 @@ const analyticsService = {
         }
     },
 
-    /**
-     * Retrieves annual performance trends based on aggregated feedback analytics.
-     * Corresponds to GET /api/v1/analytics/annual-performance-trend
-     */
+    // Retrieves annual performance trends based on aggregated feedback analytics.
     getAnnualPerformanceTrend: async (): Promise<AnnualPerformanceTrend[]> => {
         try {
             const response = await axiosInstance.get<
@@ -147,10 +135,7 @@ const analyticsService = {
         }
     },
 
-    /**
-     * Compares average ratings across different divisions and batches for a given semester.
-     * Corresponds to GET /api/v1/analytics/semesters/:id/division-batch-comparisons
-     */
+    // Compares average ratings across different divisions and batches for a given semester.
     getDivisionBatchComparisons: async (
         semesterId: IdType
     ): Promise<DivisionBatchComparison[]> => {
@@ -168,10 +153,7 @@ const analyticsService = {
         }
     },
 
-    /**
-     * Compares average ratings between different lecture types (e.g., LECTURE, LAB) for a given semester.
-     * Corresponds to GET /api/v1/analytics/semesters/:id/lab-lecture-comparison
-     */
+    // Compares average ratings between different lecture types (e.g., LECTURE, LAB) for a given semester.
     getLabLectureComparison: async (
         semesterId: IdType
     ): Promise<LabLectureComparison[]> => {
@@ -189,10 +171,7 @@ const analyticsService = {
         }
     },
 
-    /**
-     * Retrieves performance data for a single faculty member across semesters for a given academic year.
-     * Corresponds to GET /api/v1/analytics/faculty/:facultyId/performance/:academicYearId
-     */
+    // Retrieves performance data for a single faculty member across semesters for a given academic year.
     getFacultyPerformanceYearData: async (
         facultyId: IdType,
         academicYearId: IdType
@@ -216,10 +195,7 @@ const analyticsService = {
         }
     },
 
-    /**
-     * Retrieves performance data for all faculty members for a given academic year.
-     * Corresponds to GET /api/v1/analytics/faculty/performance/:academicYearId
-     */
+    // Retrieves performance data for all faculty members for a given academic year.
     getAllFacultyPerformanceData: async (
         academicYearId: IdType
     ): Promise<FacultyOverallPerformanceSummary[]> => {
@@ -241,10 +217,7 @@ const analyticsService = {
         }
     },
 
-    /**
-     * Retrieves the total number of student responses.
-     * Corresponds to GET /api/v1/analytics/total-responses
-     */
+    // Retrieves the total number of student responses.
     getTotalResponses: async (): Promise<TotalResponsesCount> => {
         try {
             const response = await axiosInstance.get<
@@ -257,10 +230,7 @@ const analyticsService = {
         }
     },
 
-    /**
-     * Retrieves semesters and their divisions, including response counts for each division.
-     * Corresponds to GET /api/v1/analytics/semester-divisions-with-responses
-     */
+    // Retrieves semesters and their divisions, including response counts for each division.
     getSemesterDivisionsWithResponseCounts: async (): Promise<
         SemesterDivisionWithResponseCounts[]
     > => {
@@ -281,11 +251,7 @@ const analyticsService = {
         }
     },
 
-    /**
-     * NEW: Get filter dictionary with hierarchical structure
-     * Academic Years → Departments → Subjects
-     * Corresponds to GET /api/v1/analytics/filter-dictionary
-     */
+    // Get filter dictionary with hierarchical structure
     getFilterDictionary: async (): Promise<FilterDictionary> => {
         try {
             const response = await axiosInstance.get<
@@ -298,11 +264,7 @@ const analyticsService = {
         }
     },
 
-    /**
-     * NEW: Get complete analytics data with optional filters
-     * Returns all filtered data in one request for client-side processing
-     * Corresponds to GET /api/v1/analytics/complete-data
-     */
+    // Get complete analytics data with optional filters
     getCompleteAnalyticsData: async (
         filters?: AnalyticsFilterParams
     ): Promise<CompleteAnalyticsData> => {

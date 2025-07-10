@@ -1,126 +1,68 @@
-// src/services/departmentService.ts
-import axios from "axios";
+/**
+ * @file src/services/departmentService.ts
+ * @description Handles API requests related to departments.
+ */
+
 import axiosInstance from "@/lib/axiosInstance";
 import { DEPARTMENT_ENDPOINTS } from "@/constants/apiEndpoints";
-
-// Import the new interfaces
 import {
     Department,
     CreateDepartmentData,
     UpdateDepartmentData,
-} from "@/interfaces/department"; // Adjust path
-import { ApiResponse, IdType } from "@/interfaces/common"; // Adjust path
+} from "@/interfaces/department";
+import { ApiResponse, IdType } from "@/interfaces/common";
 
 const departmentService = {
-    /**
-     * Fetches all departments.
-     * Corresponds to GET /api/v1/departments
-     */
+    // Fetch all departments
     getAllDepartments: async (): Promise<Department[]> => {
-        try {
-            const response = await axiosInstance.get<
-                ApiResponse<{ departments: Department[] }>
-            >(DEPARTMENT_ENDPOINTS.BASE);
-            return response.data.data.departments;
-        } catch (error) {
-            console.error("Failed to fetch departments:", error);
-            throw error;
-        }
+        const response = await axiosInstance.get<
+            ApiResponse<{ departments: Department[] }>
+        >(DEPARTMENT_ENDPOINTS.BASE);
+        return response.data.data.departments;
     },
 
-    /**
-     * Fetches a single department by ID.
-     * Corresponds to GET /api/v1/departments/:id
-     */
+    // Fetch a single department by ID
     getDepartmentById: async (id: IdType): Promise<Department> => {
-        // Return type changed from Department | null to Department
-        try {
-            const response = await axiosInstance.get<
-                ApiResponse<{ department: Department }>
-            >(DEPARTMENT_ENDPOINTS.getById(id));
-            return response.data.data.department;
-        } catch (error: any) {
-            if (axios.isAxiosError(error) && error.response?.status === 404) {
-                console.warn(
-                    `Department with ID ${id} not found, throwing error for TanStack Query.`
-                );
-                throw error; // Throw the error for TanStack Query to handle
-            }
-            console.error(`Failed to fetch department with ID ${id}:`, error);
-            throw error; // Re-throw other errors
-        }
+        const response = await axiosInstance.get<
+            ApiResponse<{ department: Department }>
+        >(DEPARTMENT_ENDPOINTS.getById(id));
+        return response.data.data.department;
     },
 
-    /**
-     * Creates a new department.
-     * Corresponds to POST /api/v1/departments
-     */
+    // Create a new department
     createDepartment: async (
         departmentData: CreateDepartmentData
     ): Promise<Department> => {
-        try {
-            const response = await axiosInstance.post<
-                ApiResponse<{ department: Department }>
-            >(DEPARTMENT_ENDPOINTS.BASE, departmentData);
-            return response.data.data.department;
-        } catch (error) {
-            console.error("Failed to create department:", error);
-            throw error;
-        }
+        const response = await axiosInstance.post<
+            ApiResponse<{ department: Department }>
+        >(DEPARTMENT_ENDPOINTS.BASE, departmentData);
+        return response.data.data.department;
     },
 
-    /**
-     * Updates an existing department.
-     * Corresponds to PATCH /api/v1/departments/:id
-     */
+    // Update an existing department
     updateDepartment: async (
-        id: IdType, // Use IdType
+        id: IdType,
         updateData: UpdateDepartmentData
     ): Promise<Department> => {
-        try {
-            const response = await axiosInstance.patch<
-                ApiResponse<{ department: Department }>
-            >(DEPARTMENT_ENDPOINTS.getById(id), updateData);
-            return response.data.data.department;
-        } catch (error) {
-            console.error(`Failed to update department with ID ${id}:`, error);
-            throw error;
-        }
+        const response = await axiosInstance.patch<
+            ApiResponse<{ department: Department }>
+        >(DEPARTMENT_ENDPOINTS.getById(id), updateData);
+        return response.data.data.department;
     },
 
-    /**
-     * Soft deletes a department.
-     * Corresponds to DELETE /api/v1/departments/:id
-     */
+    // Soft delete a department
     softDeleteDepartment: async (id: IdType): Promise<void> => {
-        try {
-            await axiosInstance.delete(DEPARTMENT_ENDPOINTS.getById(id));
-            console.log(`Department with ID ${id} soft-deleted successfully.`);
-        } catch (error) {
-            console.error(
-                `Failed to soft-delete department with ID ${id}:`,
-                error
-            );
-            throw error;
-        }
+        await axiosInstance.delete(DEPARTMENT_ENDPOINTS.getById(id));
     },
 
-    /**
-     * Performs a batch creation of departments.
-     * Corresponds to POST /api/v1/departments/batch
-     */
+    // Batch create departments
     batchCreateDepartments: async (
         departments: CreateDepartmentData[]
     ): Promise<Department[]> => {
-        try {
-            const response = await axiosInstance.post<
-                ApiResponse<{ departments: Department[] }>
-            >(DEPARTMENT_ENDPOINTS.BATCH, { departments }); // Backend expects { departments: [...] }
-            return response.data.data.departments;
-        } catch (error) {
-            console.error("Failed to batch create departments:", error);
-            throw error;
-        }
+        const response = await axiosInstance.post<
+            ApiResponse<{ departments: Department[] }>
+        >(DEPARTMENT_ENDPOINTS.BATCH, { departments });
+        return response.data.data.departments;
     },
 };
 

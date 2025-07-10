@@ -1,4 +1,7 @@
-// src/hooks/useVisualAnalytics.ts
+/**
+@file src/hooks/useVisualAnalytics.ts
+@description React Query hooks for visual analytics data
+*/
 
 import { useQuery } from "@tanstack/react-query";
 import visualAnalyticsService from "@/services/visualAnalyticsService"; // Adjust path
@@ -12,7 +15,7 @@ import {
 } from "@/interfaces/visualAnalytics"; // Adjust path
 import { IdType } from "@/interfaces/common"; // Adjust path
 
-// --- Query Keys ---
+// Query keys for visual analytics
 export const VISUAL_ANALYTICS_QUERY_KEYS = {
     all: ["visualAnalytics"] as const,
     groupedBarChart: (facultyId: IdType) =>
@@ -45,7 +48,7 @@ export const VISUAL_ANALYTICS_QUERY_KEYS = {
         ] as const,
 };
 
-// --- Query Hook: Get Grouped Bar Chart Data ---
+// Get grouped bar chart data
 interface UseGroupedBarChartDataParams {
     facultyId: IdType;
     enabled?: boolean;
@@ -62,7 +65,7 @@ export const useGroupedBarChartData = ({
     });
 };
 
-// --- Query Hook: Get Faculty Performance Data for Line Chart ---
+// Get faculty performance data for line chart
 interface UseFacultyPerformanceDataForLineChartParams {
     facultyId: IdType;
     enabled?: boolean;
@@ -82,7 +85,7 @@ export const useFacultyPerformanceDataForLineChart = ({
     });
 };
 
-// --- Query Hook: Get Unique Faculties with Responses ---
+// Get unique faculties with responses
 interface UseUniqueFacultiesWithResponsesParams {
     enabled?: boolean;
 }
@@ -99,7 +102,7 @@ export const useUniqueFacultiesWithResponses = ({
     });
 };
 
-// --- Query Hook: Get Unique Subjects with Responses ---
+// Get unique subjects with responses
 interface UseUniqueSubjectsWithResponsesParams {
     enabled?: boolean;
 }
@@ -116,7 +119,7 @@ export const useUniqueSubjectsWithResponses = ({
     });
 };
 
-// --- Query Hook: Get Faculty Radar Data ---
+// Get faculty radar data
 interface UseFacultyRadarDataParams {
     facultyId: IdType;
     enabled?: boolean;
@@ -133,7 +136,7 @@ export const useFacultyRadarData = ({
     });
 };
 
-// --- Query Hook: Get Subject Performance Data ---
+// Get subject performance data
 interface UseSubjectPerformanceDataParams {
     subjectId: IdType;
     enabled?: boolean;

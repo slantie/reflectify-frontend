@@ -1,29 +1,29 @@
-// src/constants/designations.ts
+/**
+@file src/constants/designations.ts
+@description Designation types, display map, and options for faculty roles
+*/
 
-// Define the enum/literal types for designations
+// Designation literal type
 export type Designation = "HoD" | "Asst_Prof" | "Lab_Asst";
 
-// A map for displaying full designation names (for UI)
+// Display map for designations
 export const designationDisplayMap: Record<Designation, string> = {
     HoD: "Head of Department",
     Asst_Prof: "Assistant Professor",
     Lab_Asst: "Lab Assistant",
-    // Add other mappings here
 };
 
-// This is the object that z.nativeEnum expects.
-// It maps the enum string value to itself.
+// Enum-like object for Zod validation
 export const DesignationEnumForZod = {
     HoD: "HoD",
     Asst_Prof: "Asst_Prof",
     Lab_Asst: "Lab_Asst",
-    // Ensure all values from `Designation` type are present here
-} as const; // 'as const' is crucial here for Zod's type inference
+} as const;
 
-// Optional: If you want a list for dropdowns
+// Dropdown options for designations
 export const designationOptions = Object.entries(designationDisplayMap).map(
     ([value, label]) => ({
         value: value as Designation,
-        label: label,
+        label,
     })
 );

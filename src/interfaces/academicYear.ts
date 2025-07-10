@@ -1,32 +1,41 @@
-// src/interfaces/academicYear.ts
+/**
+ * @file src/interfaces/academicYear.ts
+ * @description Interfaces for Academic Year data structures and API responses
+ */
 
 import { IdType } from "./common";
 
-// Full AcademicYear Model (as returned from GET /academic-years or after create/update)
+/**
+ * Represents a single academic year entity.
+ */
 export interface AcademicYear {
     id: IdType;
     yearString: string; // e.g., "2023-2024"
-    isActive: boolean; // Indicates if this is the active academic year
-    isDeleted: boolean; // Backend uses isDeleted for soft deletion
+    isActive: boolean;
+    isDeleted: boolean;
     createdAt: string; // ISO date string
     updatedAt: string; // ISO date string
 }
 
-// Data required to create a new AcademicYear
-// Corresponds to createAcademicYearSchema in your backend
+/**
+ * Data required to create a new AcademicYear.
+ */
 export interface CreateAcademicYearData {
     yearString: string;
-    isActive?: boolean; // Whether this should be the active academic year
+    isActive?: boolean;
 }
 
-// Data for updating an existing AcademicYear (all fields are optional)
-// Corresponds to updateAcademicYearSchema in your backend
+/**
+ * Data for updating an existing AcademicYear (all fields optional).
+ */
 export interface UpdateAcademicYearData {
     yearString?: string;
-    isActive?: boolean; // Whether this should be the active academic year
+    isActive?: boolean;
 }
 
-// API Response types
+/**
+ * API response for a single academic year.
+ */
 export interface AcademicYearApiResponse {
     status: "success";
     message?: string;
@@ -35,6 +44,9 @@ export interface AcademicYearApiResponse {
     };
 }
 
+/**
+ * API response for multiple academic years.
+ */
 export interface AcademicYearsApiResponse {
     status: "success";
     results: number;
@@ -43,7 +55,9 @@ export interface AcademicYearsApiResponse {
     };
 }
 
-// Statistics for dashboard
+/**
+ * Statistics for dashboard widgets related to academic years.
+ */
 export interface AcademicYearStats {
     totalAcademicYears: number;
     currentYear: AcademicYear | null;

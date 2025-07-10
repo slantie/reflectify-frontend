@@ -358,7 +358,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({
               text-light-muted-text dark:text-dark-muted-text
               hover:text-light-text dark:hover:text-dark-text
               transition-colors duration-200
-              ${localFilters.some((f) => f.active) ? "text-primary-main" : ""}
+              ${
+                  localFilters.some((f) => f.active)
+                      ? "text-light-highlight dark:text-dark-highlight"
+                      : ""
+              }
             `}
                         title="Toggle filters"
                     >
@@ -437,7 +441,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                                         onChange={() =>
                                             handleFilterToggle(filter.id)
                                         }
-                                        className="w-4 h-4 text-primary-main bg-light-background dark:bg-dark-background border border-light-secondary dark:border-dark-secondary rounded focus:ring-2 focus:ring-primary-main"
+                                        className="w-4 h-4 text-light-highlight dark:text-dark-highlight bg-light-background dark:bg-dark-background border border-light-secondary dark:border-dark-secondary rounded focus:ring-2 focus:ring-primary-main"
                                     />
                                     <span className="text-sm text-light-text dark:text-dark-text">
                                         {filter.label}

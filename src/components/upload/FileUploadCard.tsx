@@ -14,7 +14,6 @@ import {
     FacultyMatrixUploadParams,
 } from "@/interfaces/upload";
 import { FacultyMatrixUploadInputs } from "./FacultyMatrixUploadInputs"; // Import the new component
-import { CompactStudentPromotionSection } from "./CompactStudentPromotionSection"; // Import the compact promotion component
 
 interface FileUploadCardProps {
     fileKey: string;
@@ -137,7 +136,7 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
                 {file && (
                     <div className="flex items-center justify-between">
                         <p className="text-sm text-primary-dark font-medium flex items-center gap-2 truncate max-w-[60%]">
-                            <span className="w-2 h-2 bg-primary-main rounded-full flex-shrink-0"></span>
+                            <span className="w-2 h-2 bg-light-highlight dark:bg-dark-highlight rounded-full flex-shrink-0"></span>
                             <span className="truncate">{file.name}</span>
                         </p>
                         <button
@@ -159,21 +158,11 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
                     />
                 )}
 
-                {/* Render the compact student promotion section for Faculty Matrix uploads */}
-                {isFacultyMatrixUpload && (
-                    <CompactStudentPromotionSection
-                        className="mt-4"
-                        onPromotionComplete={(results) => {
-                            console.log("Promotion completed:", results);
-                        }}
-                    />
-                )}
-
                 <div className="flex flex-col sm:flex-row gap-2">
                     <button
                         onClick={() => onPreview(fileKey)}
                         disabled={!file}
-                        className="flex-1 bg-transparent border-2 border-primary-main text-primary-main py-2.5 px-4 rounded-xl
+                        className="flex-1 bg-transparent border-2 border-primary-main text-light-highlight dark:text-dark-highlight py-2.5 px-4 rounded-xl
                             hover:bg-primary-lighter focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
                             transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -182,7 +171,7 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
                     <button
                         onClick={() => onSubmitUpload(fileKey)}
                         disabled={!canSubmit || isLoading}
-                        className="flex-1 bg-primary-main text-white py-2.5 px-4 rounded-xl
+                        className="flex-1 bg-light-highlight dark:bg-dark-highlight text-white py-2.5 px-4 rounded-xl
                             hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
                             transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                     >

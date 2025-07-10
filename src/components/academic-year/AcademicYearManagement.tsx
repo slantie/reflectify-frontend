@@ -10,12 +10,12 @@ import { StatCard } from "@/components/ui/StatCard";
 import { AcademicYearForm } from "./AcademicYearForm";
 import { AcademicYearList } from "./AcademicYearList";
 import {
-    useAcademicYears,
+    useAllAcademicYears,
     useAcademicYearStats,
     useCreateAcademicYear,
     useUpdateAcademicYear,
-    useDeleteAcademicYear,
-} from "@/hooks/useAcademicYear";
+    useSoftDeleteAcademicYear,
+} from "@/hooks/useAcademicYears";
 import {
     AcademicYear,
     CreateAcademicYearData,
@@ -55,11 +55,11 @@ export const AcademicYearManagement: React.FC = () => {
     );
 
     // Queries and mutations
-    const { data: academicYears = [], isLoading } = useAcademicYears();
+    const { data: academicYears = [], isLoading } = useAllAcademicYears();
     const { stats, isLoading: statsLoading } = useAcademicYearStats();
     const createMutation = useCreateAcademicYear();
     const updateMutation = useUpdateAcademicYear();
-    const deleteMutation = useDeleteAcademicYear();
+    const deleteMutation = useSoftDeleteAcademicYear();
 
     const handleCreate = () => {
         setEditingAcademicYear(null);
@@ -135,7 +135,7 @@ export const AcademicYearManagement: React.FC = () => {
                         {!showForm && (
                             <Button
                                 onClick={handleCreate}
-                                className="bg-primary-main hover:bg-primary-dark text-white flex items-center gap-2"
+                                className="bg-light-highlight dark:bg-dark-highlight hover:bg-primary-dark text-white flex items-center gap-2"
                             >
                                 <Plus className="h-4 w-4" />
                                 Add Academic Year

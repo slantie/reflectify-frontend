@@ -80,7 +80,7 @@ export class AnalyticsDataProcessor {
             uniqueFaculties,
             uniqueStudents,
             uniqueDepartments,
-            responseRate: validSnapshots.length > 0 ? 100 : 0, // Placeholder calculation
+            responseRate: validSnapshots.length > 0 ? 100 : 0,
         };
     }
 

@@ -1,34 +1,41 @@
-// src/interfaces/department.ts
+/**
+ * @file src/interfaces/department.ts
+ * @description Interfaces for Department entity and related API data
+ */
 
 import { IdType } from "./common";
 
-// Full Department Model
+/**
+ * Represents a department entity.
+ */
 export interface Department {
     id: IdType;
     name: string;
     abbreviation: string;
-    // Add any other fields from your Department Prisma model
-    createdAt: string; // ISO date string
-    updatedAt: string; // ISO date string
-    isActive: boolean; // For soft delete
-    // Potentially add counts if your getDepartmentsWithCounts endpoint returns them
-    // facultyCount?: number;
-    // studentCount?: number;
+    createdAt: string;
+    updatedAt: string;
+    isActive: boolean;
 }
 
-// Data required to create a new Department
+/**
+ * Data required to create a new department.
+ */
 export interface CreateDepartmentData {
     name: string;
     abbreviation: string;
 }
 
-// Data for updating an existing Department
+/**
+ * Data for updating an existing department (all fields optional).
+ */
 export interface UpdateDepartmentData {
     name?: string;
     abbreviation?: string;
 }
 
-// Data structure for batch creation of departments
+/**
+ * Data structure for batch creation of departments.
+ */
 export interface BatchCreateDepartmentInput {
     departments: CreateDepartmentData[];
 }

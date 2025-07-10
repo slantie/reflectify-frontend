@@ -1,3 +1,7 @@
+/**
+@file src/hooks/upload/useFileUpload.ts
+@description File upload hook for Excel files, preview, and faculty matrix upload logic
+*/
 import { useState, useCallback } from "react";
 import { showToast } from "@/lib/toast";
 import ExcelJS from "exceljs";
@@ -13,12 +17,12 @@ import uploadService from "@/services/uploadService";
 import { SemesterTypeEnum } from "@/constants/semesterTypes";
 import { ToastOptions } from "react-hot-toast";
 
-// Define the shape of the hook's return value
+// Return type for the file upload hook
 interface UseFileUploadResult {
     files: { [key: string]: File | null };
     loadingStates: { [key: string]: boolean };
     activeTable: TableData | null;
-    facultyMatrixParams: FacultyMatrixUploadParams; // Expose faculty matrix params
+    facultyMatrixParams: FacultyMatrixUploadParams;
     handleFileChange: (
         event: React.ChangeEvent<HTMLInputElement>,
         fileKey: string
@@ -28,10 +32,11 @@ interface UseFileUploadResult {
     handleSubmitUpload: (fileKey: string) => Promise<void>;
     setFacultyMatrixParams: React.Dispatch<
         React.SetStateAction<FacultyMatrixUploadParams>
-    >; // Expose setter
+    >;
 }
 
 export const useFileUpload = (): UseFileUploadResult => {
+    // State for selected files
     const [files, setFiles] = useState<{ [key: string]: File | null }>({
         studentData: null,
         facultyData: null,
@@ -39,6 +44,7 @@ export const useFileUpload = (): UseFileUploadResult => {
         facultyMatrix: null,
     });
 
+    // State for loading indicators
     const [loadingStates, setLoadingStates] = useState<{
         [key: string]: boolean;
     }>({
@@ -48,8 +54,10 @@ export const useFileUpload = (): UseFileUploadResult => {
         facultyMatrix: false,
     });
 
+    // State for preview table
     const [activeTable, setActiveTable] = useState<TableData | null>(null);
 
+    // State for faculty matrix upload params
     const [facultyMatrixParams, setFacultyMatrixParams] =
         useState<FacultyMatrixUploadParams>({
             academicYear: "",
@@ -57,6 +65,7 @@ export const useFileUpload = (): UseFileUploadResult => {
             deptAbbreviation: "",
         });
 
+    // Handle file input change
     const handleFileChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>, fileKey: string) => {
             const file = event.target.files?.[0] || null;
@@ -66,8 +75,7 @@ export const useFileUpload = (): UseFileUploadResult => {
                 return;
             }
             setFiles((prev) => ({ ...prev, [fileKey]: file }));
-            setActiveTable(null); // Clear preview when file changes
-
+            setActiveTable(null);
             if (fileKey === "facultyMatrix") {
                 setFacultyMatrixParams({
                     academicYear: "",
@@ -79,16 +87,14 @@ export const useFileUpload = (): UseFileUploadResult => {
         []
     );
 
+    // Handle clearing a file input
     const handleClearFile = useCallback((fileKey: string) => {
         const fileInput = document.querySelector(
             `input[name="${fileKey}"]`
         ) as HTMLInputElement;
-        if (fileInput) {
-            fileInput.value = "";
-        }
+        if (fileInput) fileInput.value = "";
         setFiles((prev) => ({ ...prev, [fileKey]: null }));
         setActiveTable(null);
-
         if (fileKey === "facultyMatrix") {
             setFacultyMatrixParams({
                 academicYear: "",
@@ -98,6 +104,7 @@ export const useFileUpload = (): UseFileUploadResult => {
         }
     }, []);
 
+    // Handle previewing the Excel file
     const handlePreview = useCallback(
         async (fileKey: string) => {
             const file = files[fileKey];
@@ -105,14 +112,11 @@ export const useFileUpload = (): UseFileUploadResult => {
                 showToast.error("Please select a file first to preview.");
                 return;
             }
-
             try {
                 const workbook = new ExcelJS.Workbook();
                 const arrayBuffer = await file.arrayBuffer();
                 await workbook.xlsx.load(arrayBuffer);
-
                 const worksheet = workbook.worksheets[0];
-
                 if (
                     !worksheet ||
                     worksheet.actualRowCount < 1 ||
@@ -122,12 +126,9 @@ export const useFileUpload = (): UseFileUploadResult => {
                     setActiveTable(null);
                     return;
                 }
-
                 const rawValuesFromRow1 = worksheet.getRow(1).values;
-
                 const rawHeaderValues: (ExcelJS.CellValue | undefined)[] =
                     Array.isArray(rawValuesFromRow1) ? rawValuesFromRow1 : [];
-
                 const headers: string[] = rawHeaderValues
                     .map((value: ExcelJS.CellValue | undefined): string => {
                         if (value instanceof Date) {
@@ -162,9 +163,6 @@ export const useFileUpload = (): UseFileUploadResult => {
                     })
                     .filter((value: string): boolean => value.trim() !== "")
                     .map((header: string): string => header.trim());
-
-                console.log("Parsed Headers after robust processing:", headers);
-
                 if (headers.length === 0) {
                     showToast.error(
                         "Excel file is empty or has no headers after processing."
@@ -172,17 +170,14 @@ export const useFileUpload = (): UseFileUploadResult => {
                     setActiveTable(null);
                     return;
                 }
-
                 const jsonData: UploadData[] = [];
                 const maxRowsToPreview = 10;
                 let processedRows = 0;
-
                 worksheet.eachRow((row, rowNumber) => {
                     if (rowNumber > 1 && processedRows < maxRowsToPreview) {
                         const rowData: UploadData = {};
                         headers.forEach((headerName, index) => {
                             const cell = row.getCell(index + 1);
-
                             if (cell.value instanceof Date) {
                                 rowData[headerName] = cell.value
                                     .toISOString()
@@ -201,7 +196,6 @@ export const useFileUpload = (): UseFileUploadResult => {
                                     cell.value?.toString() ?? null;
                             }
                         });
-
                         if (
                             Object.values(rowData).some(
                                 (value) => value !== null && value !== ""
@@ -212,7 +206,6 @@ export const useFileUpload = (): UseFileUploadResult => {
                         }
                     }
                 });
-
                 if (jsonData.length === 0) {
                     showToast.error(
                         "No data found in the Excel file after headers or first 10 rows are empty."
@@ -220,7 +213,6 @@ export const useFileUpload = (): UseFileUploadResult => {
                     setActiveTable(null);
                     return;
                 }
-
                 setActiveTable({
                     data: jsonData,
                     type: FILE_ROUTES[fileKey as keyof typeof FILE_ROUTES]
@@ -231,8 +223,7 @@ export const useFileUpload = (): UseFileUploadResult => {
                         FILE_ROUTES[fileKey as keyof typeof FILE_ROUTES].label
                     }`
                 );
-            } catch (error) {
-                console.error("Error during file preview:", error);
+            } catch {
                 showToast.error(
                     "Failed to preview file. Ensure it's a valid Excel format and not corrupted."
                 );
@@ -242,6 +233,7 @@ export const useFileUpload = (): UseFileUploadResult => {
         [files]
     );
 
+    // Handle uploading the file
     const handleSubmitUpload = useCallback(
         async (fileKey: string) => {
             const file = files[fileKey];
@@ -249,13 +241,10 @@ export const useFileUpload = (): UseFileUploadResult => {
                 showToast.error("Please select a file to upload.");
                 return;
             }
-
             setLoadingStates((prev) => ({ ...prev, [fileKey]: true }));
             try {
                 let response: UploadResult | FacultyMatrixUploadResult;
-
                 if (fileKey === "facultyMatrix") {
-                    // Validate facultyMatrixParams before sending
                     if (
                         !facultyMatrixParams.academicYear ||
                         !facultyMatrixParams.semesterRun ||
@@ -270,34 +259,23 @@ export const useFileUpload = (): UseFileUploadResult => {
                         }));
                         return;
                     }
-
                     response = await uploadService.uploadFacultyMatrix(
                         file,
                         facultyMatrixParams.academicYear,
-                        facultyMatrixParams.semesterRun as SemesterTypeEnum, // Cast to enum as it's validated by backend
+                        facultyMatrixParams.semesterRun as SemesterTypeEnum,
                         facultyMatrixParams.deptAbbreviation
                     );
-
-                    console.log("Faculty Matrix Upload Response:", response);
-
-                    // Always show all toasts for facultyMatrix: success, warnings, errors
                     const facultyMatrixResponse =
                         response as FacultyMatrixUploadResult;
-
                     const infoMessage = `Uploaded ${FILE_ROUTES[fileKey].label}. Affected ${facultyMatrixResponse.rowsAffected} rows.`;
-
-                    // Show success or failure toast based on flaskSuccess
                     if (facultyMatrixResponse.flaskSuccess) {
                         showToast.success(`Success! ${infoMessage}`);
                     } else {
                         showToast.info(
-                            `${infoMessage} but found some issues. Please review the
-                        following warnings and errors.`,
+                            `${infoMessage} but found some issues. Please review the following warnings and errors.`,
                             { duration: Infinity } as ToastOptions
                         );
                     }
-
-                    // Show all warnings as warning toasts
                     if (
                         facultyMatrixResponse.flaskWarnings &&
                         facultyMatrixResponse.flaskWarnings.length > 0
@@ -310,8 +288,6 @@ export const useFileUpload = (): UseFileUploadResult => {
                             }
                         );
                     }
-
-                    // Show all errors as error toasts
                     if (
                         facultyMatrixResponse.flaskErrors &&
                         facultyMatrixResponse.flaskErrors.length > 0
@@ -322,10 +298,7 @@ export const useFileUpload = (): UseFileUploadResult => {
                             } as ToastOptions);
                         });
                     }
-
-                    // If everything is well (no warnings/errors), show only the success toast (already handled above)
                 } else {
-                    // For other file types, use the generic uploadFile
                     response = await uploadService.uploadFile(
                         fileKey as keyof typeof FILE_ROUTES,
                         file
@@ -334,10 +307,8 @@ export const useFileUpload = (): UseFileUploadResult => {
                         `Success! Uploaded ${FILE_ROUTES[fileKey].label}. Affected ${response.rowsAffected} rows.`
                     );
                 }
-
                 handleClearFile(fileKey);
             } catch (error: any) {
-                console.error("Upload error:", error); // Log the full error object
                 showToast.error(
                     error.message ||
                         "An unexpected error occurred during upload."

@@ -1,10 +1,19 @@
-// src/app/(auth)/layout.tsx
-// No "use client" needed here typically, as it's just a container.
-// It can be a Server Component.
+/**
+ * @file src/app/(auth)/layout.tsx
+ * @description Layout for authentication pages, providing a consistent structure.
+ */
 
 export const metadata = {
-    title: "Auth - Reflectify",
+    title: "Authentication - Reflectify",
     description: "Login or Register pages",
+    keywords: ["auth", "login", "register", "reflectify"],
+    authors: [
+        { name: "Kandarp Gajjar", url: "https://github.com/slantie" },
+        { name: "Harsh Dodiya", url: "https://github.com/harshDodiya1" },
+    ],
+    icons: {
+        icon: "/favicon.ico",
+    },
 };
 
 export default function AuthGroupLayout({

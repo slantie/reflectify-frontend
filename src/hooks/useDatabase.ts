@@ -1,26 +1,23 @@
-// src/hooks/useDatabase.ts
+/**
+ * @file src/hooks/useDatabase.ts
+ * @description React Query hook for cleaning the database (destructive operation).
+ */
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import databaseService from "@/services/databaseService"; // Adjust path
-import { showToast } from "@/lib/toast"; // Example if you want specific toast feedback here
+import databaseService from "@/services/databaseService";
+import { showToast } from "@/lib/toast";
 
-// --- Mutation Hook: Clean Database ---
+// Clean the entire database (destructive!)
 export const useCleanDatabase = () => {
     const queryClient = useQueryClient();
     return useMutation<string, Error, void>({
-        // No variables passed for cleaning
         mutationFn: databaseService.cleanDatabase,
         onSuccess: (message) => {
-            console.log("Database cleaned successfully:", message);
-            // Optionally, you might invalidate ALL queries if the entire database state has changed
-            // This is a powerful and potentially dangerous operation, use with caution.
             queryClient.invalidateQueries({ queryKey: [""] }); // Invalidate all queries
-            showToast.success(message); // Example toast
+            showToast.success(message);
         },
         onError: (error) => {
-            console.error("Failed to clean database:", error);
-            // showToast.error(`Failed to clean database: ${error.message}`); // Example toast
+            showToast.error(`Failed to clean database: ${error.message}`);
         },
-        // No optimistic update for destructive operations like this typically
     });
 };

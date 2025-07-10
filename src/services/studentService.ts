@@ -1,124 +1,66 @@
-// src/services/studentService.ts
-import axios from "axios";
+/**
+ * @file src/services/studentService.ts
+ * @description Service for student API operations
+ */
+
 import axiosInstance from "@/lib/axiosInstance";
 import { STUDENT_ENDPOINTS } from "@/constants/apiEndpoints";
-
-// Import the new interfaces
 import {
     Student,
     CreateStudentData,
     UpdateStudentData,
-} from "@/interfaces/student"; // Adjust path
-import { ApiResponse, IdType } from "@/interfaces/common"; // Adjust path
+} from "@/interfaces/student";
+import { ApiResponse, IdType } from "@/interfaces/common";
 
 const studentService = {
-    /**
-     * Fetches all students.
-     * Corresponds to GET /api/v1/students
-     */
+    // Get all students
     getAllStudents: async (): Promise<Student[]> => {
-        try {
-            const response = await axiosInstance.get<
-                ApiResponse<{ students: Student[] }>
-            >(STUDENT_ENDPOINTS.BASE);
-            return response.data.data.students;
-        } catch (error) {
-            console.error("Failed to fetch students:", error);
-            throw error;
-        }
+        const response = await axiosInstance.get<
+            ApiResponse<{ students: Student[] }>
+        >(STUDENT_ENDPOINTS.BASE);
+        return response.data.data.students;
     },
 
-    /**
-     * Fetches a single student by ID.
-     * Corresponds to GET /api/v1/students/:id
-     */
+    // Get a single student by ID
     getStudentById: async (id: IdType): Promise<Student> => {
-        // Return type changed from Student | null to Student
-        try {
-            const response = await axiosInstance.get<
-                ApiResponse<{ student: Student }>
-            >(STUDENT_ENDPOINTS.getById(id));
-            return response.data.data.student;
-        } catch (error: any) {
-            if (axios.isAxiosError(error) && error.response?.status === 404) {
-                console.warn(
-                    `Student with ID ${id} not found, throwing error for TanStack Query.`
-                );
-                throw error; // Throw the error for TanStack Query to handle
-            }
-            console.error(`Failed to fetch student with ID ${id}:`, error);
-            throw error; // Re-throw other errors
-        }
+        const response = await axiosInstance.get<
+            ApiResponse<{ student: Student }>
+        >(STUDENT_ENDPOINTS.getById(id));
+        return response.data.data.student;
     },
 
-    /**
-     * Creates a new student.
-     * Corresponds to POST /api/v1/students
-     */
+    // Create a new student
     createStudent: async (studentData: CreateStudentData): Promise<Student> => {
-        try {
-            const response = await axiosInstance.post<
-                ApiResponse<{ student: Student }>
-            >(STUDENT_ENDPOINTS.BASE, studentData);
-            return response.data.data.student;
-        } catch (error) {
-            console.error("Failed to create student:", error);
-            throw error;
-        }
+        const response = await axiosInstance.post<
+            ApiResponse<{ student: Student }>
+        >(STUDENT_ENDPOINTS.BASE, studentData);
+        return response.data.data.student;
     },
 
-    /**
-     * Updates an existing student.
-     * Corresponds to PATCH /api/v1/students/:id
-     */
+    // Update an existing student
     updateStudent: async (
-        id: IdType, // Use IdType
+        id: IdType,
         updateData: UpdateStudentData
     ): Promise<Student> => {
-        try {
-            const response = await axiosInstance.patch<
-                ApiResponse<{ student: Student }>
-            >(STUDENT_ENDPOINTS.getById(id), updateData);
-            return response.data.data.student;
-        } catch (error) {
-            console.error(`Failed to update student with ID ${id}:`, error);
-            throw error;
-        }
+        const response = await axiosInstance.patch<
+            ApiResponse<{ student: Student }>
+        >(STUDENT_ENDPOINTS.getById(id), updateData);
+        return response.data.data.student;
     },
 
-    /**
-     * Soft deletes a student.
-     * Corresponds to DELETE /api/v1/students/:id
-     */
+    // Soft delete a student
     softDeleteStudent: async (id: IdType): Promise<void> => {
-        try {
-            await axiosInstance.delete(STUDENT_ENDPOINTS.getById(id));
-            console.log(`Student with ID ${id} soft-deleted successfully.`);
-        } catch (error) {
-            console.error(
-                `Failed to soft-delete student with ID ${id}:`,
-                error
-            );
-            throw error;
-        }
+        await axiosInstance.delete(STUDENT_ENDPOINTS.getById(id));
     },
 
-    /**
-     * Performs a batch creation of students.
-     * Corresponds to POST /api/v1/students/batch
-     */
+    // Batch create students
     batchCreateStudents: async (
         students: CreateStudentData[]
     ): Promise<Student[]> => {
-        try {
-            const response = await axiosInstance.post<
-                ApiResponse<{ students: Student[] }>
-            >(STUDENT_ENDPOINTS.BATCH, { students }); // Backend expects { students: [...] }
-            return response.data.data.students;
-        } catch (error) {
-            console.error("Failed to batch create students:", error);
-            throw error;
-        }
+        const response = await axiosInstance.post<
+            ApiResponse<{ students: Student[] }>
+        >(STUDENT_ENDPOINTS.BATCH, { students });
+        return response.data.data.students;
     },
 };
 

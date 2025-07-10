@@ -79,15 +79,15 @@ export const FacultyFilters = ({
                         Sort {sortOrder === "asc" ? "A→Z" : "Z→A"}
                     </span>
                     {sortOrder === "asc" ? (
-                        <ArrowUpIcon className="h-4 w-4 text-primary-main" />
+                        <ArrowUpIcon className="h-4 w-4 text-light-highlight dark:text-dark-highlight" />
                     ) : (
-                        <ArrowDownIcon className="h-4 w-4 text-primary-main" />
+                        <ArrowDownIcon className="h-4 w-4 text-light-highlight dark:text-dark-highlight" />
                     )}
                 </button>
 
                 <button
                     onClick={onAddFaculty}
-                    className="flex items-center justify-center gap-2 bg-primary-main text-white px-5 py-2.5 rounded-lg hover:bg-primary-dark transition-colors duration-200 shadow-sm whitespace-nowrap"
+                    className="flex items-center justify-center gap-2 bg-light-highlight dark:bg-dark-highlight text-white px-5 py-2.5 rounded-lg hover:bg-primary-dark transition-colors duration-200 shadow-sm whitespace-nowrap"
                 >
                     <PlusIcon className="h-5 w-5" />
                     Add Faculty

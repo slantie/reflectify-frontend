@@ -40,7 +40,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                             <div
                                 className={`w-3 h-3 rounded-full ${
                                     entry.color === "#3b82f6"
-                                        ? "bg-primary-main"
+                                        ? "bg-light-highlight dark:bg-dark-highlight"
                                         : "bg-secondary-main"
                                 }`}
                             />
@@ -122,7 +122,7 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <BookOpen className="h-5 w-5 text-primary-main" />
+                            <BookOpen className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
                             Subject Ratings Comparison
@@ -149,7 +149,7 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <BookOpen className="h-5 w-5 text-primary-main" />
+                            <BookOpen className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
                             Subject Ratings Comparison
@@ -179,7 +179,7 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <BookOpen className="h-5 w-5 text-primary-main" />
+                            <BookOpen className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
                             Subject Ratings Comparison
@@ -187,10 +187,10 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                            <Monitor className="h-4 w-4 text-primary-main" />
+                            <Monitor className="h-4 w-4 text-light-highlight dark:text-dark-highlight" />
                             <Badge
                                 variant="outline"
-                                className="text-primary-main border-primary-main"
+                                className="text-light-highlight dark:text-dark-highlight border-primary-main"
                             >
                                 Lecture: {stats.avgLectureRating}
                             </Badge>
@@ -267,7 +267,7 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                         </div>
                     </div>
                     <div className="text-center">
-                        <div className="text-2xl font-bold text-primary-main">
+                        <div className="text-2xl font-bold text-light-highlight dark:text-dark-highlight">
                             {stats.avgLectureRating}
                         </div>
                         <div className="text-sm text-light-muted-text dark:text-dark-muted-text">

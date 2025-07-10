@@ -153,7 +153,7 @@ export const FacultyPerformanceChart: React.FC<
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <GraduationCap className="h-5 w-5 text-primary-main" />
+                            <GraduationCap className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
                             Faculty Performance Rankings
@@ -180,7 +180,7 @@ export const FacultyPerformanceChart: React.FC<
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <GraduationCap className="h-5 w-5 text-primary-main" />
+                            <GraduationCap className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
                             Faculty Performance Rankings
@@ -210,7 +210,7 @@ export const FacultyPerformanceChart: React.FC<
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <GraduationCap className="h-5 w-5 text-primary-main" />
+                            <GraduationCap className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
                             Faculty Performance Rankings

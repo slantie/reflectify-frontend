@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
 import {
     BarChart3,
     TrendingUp,
@@ -137,7 +137,7 @@ const AnalyticsPage: React.FC = () => {
                             </p>
                             <Button
                                 onClick={handleRefresh}
-                                className="bg-primary-main hover:bg-primary-dark text-white"
+                                className="bg-light-highlight dark:bg-dark-highlight hover:bg-primary-dark text-white"
                             >
                                 <RefreshCw className="w-4 h-4 mr-2" />
                                 Try Again
@@ -215,7 +215,7 @@ const AnalyticsPage: React.FC = () => {
 
                     {/* Main Content */}
                     <div className="bg-light-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary rounded-2xl shadow-sm">
-                        <Tabs
+                        {/* <Tabs
                             value={activeTab}
                             onValueChange={(value: string) =>
                                 setActiveTab(value as any)
@@ -225,28 +225,28 @@ const AnalyticsPage: React.FC = () => {
                                 <TabsList className="grid w-full grid-cols-4 bg-light-muted-background dark:bg-dark-background rounded-xl p-1">
                                     <TabsTrigger
                                         value="overview"
-                                        className="flex items-center gap-2 data-[state=active]:bg-light-background dark:data-[state=active]:bg-dark-muted-background data-[state=active]:text-primary-main data-[state=active]:shadow-sm rounded-lg transition-all"
+                                        className="flex items-center gap-2 data-[state=active]:bg-light-background dark:data-[state=active]:bg-dark-muted-background data-[state=active]:text-light-highlight dark:text-dark-highlight data-[state=active]:shadow-sm rounded-lg transition-all"
                                     >
                                         <BarChart3 className="w-4 h-4" />
                                         Overview
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="subjects"
-                                        className="flex items-center gap-2 data-[state=active]:bg-light-background dark:data-[state=active]:bg-dark-muted-background data-[state=active]:text-primary-main data-[state=active]:shadow-sm rounded-lg transition-all"
+                                        className="flex items-center gap-2 data-[state=active]:bg-light-background dark:data-[state=active]:bg-dark-muted-background data-[state=active]:text-light-highlight dark:text-dark-highlight data-[state=active]:shadow-sm rounded-lg transition-all"
                                     >
                                         <TrendingUp className="w-4 h-4" />
                                         Subjects
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="trends"
-                                        className="flex items-center gap-2 data-[state=active]:bg-light-background dark:data-[state=active]:bg-dark-muted-background data-[state=active]:text-primary-main data-[state=active]:shadow-sm rounded-lg transition-all"
+                                        className="flex items-center gap-2 data-[state=active]:bg-light-background dark:data-[state=active]:bg-dark-muted-background data-[state=active]:text-light-highlight dark:text-dark-highlight data-[state=active]:shadow-sm rounded-lg transition-all"
                                     >
                                         <Eye className="w-4 h-4" />
                                         Trends
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="performance"
-                                        className="flex items-center gap-2 data-[state=active]:bg-light-background dark:data-[state=active]:bg-dark-muted-background data-[state=active]:text-primary-main data-[state=active]:shadow-sm rounded-lg transition-all"
+                                        className="flex items-center gap-2 data-[state=active]:bg-light-background dark:data-[state=active]:bg-dark-muted-background data-[state=active]:text-light-highlight dark:text-dark-highlight data-[state=active]:shadow-sm rounded-lg transition-all"
                                     >
                                         <Users className="w-4 h-4" />
                                         Performance
@@ -317,7 +317,7 @@ const AnalyticsPage: React.FC = () => {
                                     </div>
                                 </TabsContent>
                             </div>
-                        </Tabs>
+                        </Tabs> */}
                     </div>
                 </motion.div>
             </div>

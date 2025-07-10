@@ -8,7 +8,6 @@ import { FilePreviewTable } from "@/components/upload/FilePreviewTable";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { FacultyMatrixUploadInputs } from "@/components/upload/FacultyMatrixUploadInputs";
-import { CompactStudentPromotionSection } from "@/components/upload/CompactStudentPromotionSection";
 import { Loader } from "@/components/common/Loader";
 import { FILE_ROUTES } from "@/constants/fileUploadRoutes";
 import {
@@ -133,7 +132,7 @@ export default function FacultyMatrixPage() {
                             {file && (
                                 <div className="flex items-center justify-between bg-primary-lighter/50 p-3 rounded-lg">
                                     <p className="text-sm text-primary-dark font-medium flex items-center gap-2 truncate max-w-[60%]">
-                                        <span className="w-2 h-2 bg-primary-main rounded-full flex-shrink-0"></span>
+                                        <span className="w-2 h-2 bg-light-highlight dark:bg-dark-highlight rounded-full flex-shrink-0"></span>
                                         <span className="truncate">
                                             {file.name}
                                         </span>
@@ -155,17 +154,6 @@ export default function FacultyMatrixPage() {
                             <FacultyMatrixUploadInputs
                                 params={facultyMatrixParams}
                                 onParamChange={handleParamChange}
-                            />
-
-                            {/* Student Promotion Section */}
-                            <CompactStudentPromotionSection
-                                className="mt-6"
-                                onPromotionComplete={(results) => {
-                                    console.log(
-                                        "Promotion completed:",
-                                        results
-                                    );
-                                }}
                             />
 
                             {/* Action Buttons */}

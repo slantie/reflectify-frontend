@@ -1,11 +1,12 @@
-// src/interfaces/overrideStudent.ts
+/**
+ * @file src/interfaces/overrideStudent.ts
+ * @description Interfaces for override student entity and related API data
+ */
 
 import { IdType } from "./common";
 
 /**
- * Interface representing an override student.
- * Override students are manually added students (not from regular student data)
- * who can be granted access to a specific feedback form.
+ * Represents an override student (manually added for feedback form access).
  */
 export interface OverrideStudent {
     id: IdType;
@@ -23,7 +24,7 @@ export interface OverrideStudent {
 }
 
 /**
- * Interface for the response when uploading override students via Excel/CSV
+ * Response when uploading override students via Excel/CSV.
  */
 export interface OverrideStudentUploadResult {
     message: string;
@@ -33,7 +34,7 @@ export interface OverrideStudentUploadResult {
 }
 
 /**
- * Interface for the response when fetching paginated override students
+ * Response when fetching paginated override students.
  */
 export interface PaginatedOverrideStudents {
     students: OverrideStudent[];
@@ -48,7 +49,7 @@ export interface PaginatedOverrideStudents {
 }
 
 /**
- * Interface for the response when updating an override student
+ * Input for updating an override student.
  */
 export interface UpdateOverrideStudentInput {
     name?: string;

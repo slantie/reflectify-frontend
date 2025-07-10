@@ -1,4 +1,8 @@
-// src/services/overrideStudentsService.ts
+/**
+ * @file src/services/overrideStudentsService.ts
+ * @description Service for override students API operations
+ */
+
 import axiosInstance from "@/lib/axiosInstance";
 import { ApiResponse } from "@/interfaces/common";
 import {
@@ -8,153 +12,90 @@ import {
 } from "@/interfaces/overrideStudent";
 
 const overrideStudentsService = {
-    /**
-     * Upload override students for a specific feedback form
-     * Corresponds to POST /api/v1/feedback-forms/:id/override-students/upload
-     */
+    // Upload override students for a specific feedback form
     uploadOverrideStudents: async (
         formId: string,
         file: File
     ): Promise<UploadOverrideStudentsResponse> => {
-        try {
-            const formData = new FormData();
-            formData.append("file", file);
-
-            const response = await axiosInstance.post<
-                ApiResponse<UploadOverrideStudentsResponse>
-            >(
-                `/api/v1/feedback-forms/${formId}/override-students/upload`,
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
-
-            return response.data.data;
-        } catch (error) {
-            console.error("Failed to upload override students:", error);
-            throw error;
-        }
+        const formData = new FormData();
+        formData.append("file", file);
+        const response = await axiosInstance.post<
+            ApiResponse<UploadOverrideStudentsResponse>
+        >(
+            `/api/v1/feedback-forms/${formId}/override-students/upload`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
+        return response.data.data;
     },
 
-    /**
-     * Get override students for a feedback form with pagination
-     * Corresponds to GET /api/v1/feedback-forms/:id/override-students
-     */
+    // Get override students for a feedback form with pagination
     getOverrideStudents: async (
         formId: string,
         page = 1,
         limit = 50
     ): Promise<PaginatedOverrideStudents> => {
-        try {
-            const response = await axiosInstance.get<
-                ApiResponse<PaginatedOverrideStudents>
-            >(`/api/v1/feedback-forms/${formId}/override-students`, {
-                params: { page, limit },
-            });
-
-            return response.data.data;
-        } catch (error) {
-            console.error("Failed to fetch override students:", error);
-            throw error;
-        }
+        const response = await axiosInstance.get<
+            ApiResponse<PaginatedOverrideStudents>
+        >(`/api/v1/feedback-forms/${formId}/override-students`, {
+            params: { page, limit },
+        });
+        return response.data.data;
     },
 
-    /**
-     * Get the count of override students for a feedback form
-     * Corresponds to GET /api/v1/feedback-forms/:id/override-students/count
-     */
+    // Get the count of override students for a feedback form
     getOverrideStudentsCount: async (formId: string): Promise<number> => {
-        try {
-            const response = await axiosInstance.get<
-                ApiResponse<{ count: number }>
-            >(`/api/v1/feedback-forms/${formId}/override-students/count`);
-
-            return response.data.data.count;
-        } catch (error) {
-            console.error("Failed to fetch override students count:", error);
-            throw error;
-        }
+        const response = await axiosInstance.get<
+            ApiResponse<{ count: number }>
+        >(`/api/v1/feedback-forms/${formId}/override-students/count`);
+        return response.data.data.count;
     },
 
-    /**
-     * Get all override students for a feedback form without pagination
-     * Corresponds to GET /api/v1/feedback-forms/:id/override-students/all
-     */
+    // Get all override students for a feedback form without pagination
     getAllOverrideStudents: async (
         formId: string
     ): Promise<OverrideStudent[]> => {
-        try {
-            const response = await axiosInstance.get<
-                ApiResponse<{ students: OverrideStudent[] }>
-            >(`/api/v1/feedback-forms/${formId}/override-students/all`);
-
-            return response.data.data.students;
-        } catch (error) {
-            console.error("Failed to fetch all override students:", error);
-            throw error;
-        }
+        const response = await axiosInstance.get<
+            ApiResponse<{ students: OverrideStudent[] }>
+        >(`/api/v1/feedback-forms/${formId}/override-students/all`);
+        return response.data.data.students;
     },
 
-    /**
-     * Update a specific override student
-     * Corresponds to PATCH /api/v1/feedback-forms/:id/override-students/:studentId
-     */
+    // Update a specific override student
     updateOverrideStudent: async (
         formId: string,
         studentId: string,
         updateData: Partial<Omit<OverrideStudent, "id" | "createdAt">>
     ): Promise<OverrideStudent> => {
-        try {
-            const response = await axiosInstance.patch<
-                ApiResponse<{ student: OverrideStudent }>
-            >(
-                `/api/v1/feedback-forms/${formId}/override-students/${studentId}`,
-                updateData
-            );
-
-            return response.data.data.student;
-        } catch (error) {
-            console.error("Failed to update override student:", error);
-            throw error;
-        }
+        const response = await axiosInstance.patch<
+            ApiResponse<{ student: OverrideStudent }>
+        >(
+            `/api/v1/feedback-forms/${formId}/override-students/${studentId}`,
+            updateData
+        );
+        return response.data.data.student;
     },
 
-    /**
-     * Delete a specific override student
-     * Corresponds to DELETE /api/v1/feedback-forms/:id/override-students/:studentId
-     */
+    // Delete a specific override student
     deleteOverrideStudent: async (
         formId: string,
         studentId: string
     ): Promise<void> => {
-        try {
-            await axiosInstance.delete(
-                `/api/v1/feedback-forms/${formId}/override-students/${studentId}`
-            );
-        } catch (error) {
-            console.error("Failed to delete override student:", error);
-            throw error;
-        }
+        await axiosInstance.delete(
+            `/api/v1/feedback-forms/${formId}/override-students/${studentId}`
+        );
     },
 
-    /**
-     * Clear all override students for a feedback form
-     * Corresponds to DELETE /api/v1/feedback-forms/:id/override-students
-     */
+    // Clear all override students for a feedback form
     clearAllOverrideStudents: async (formId: string): Promise<number> => {
-        try {
-            const response = await axiosInstance.delete<
-                ApiResponse<{ deletedCount: number }>
-            >(`/api/v1/feedback-forms/${formId}/override-students`);
-
-            return response.data.data.deletedCount;
-        } catch (error) {
-            console.error("Failed to clear override students:", error);
-            throw error;
-        }
+        const response = await axiosInstance.delete<
+            ApiResponse<{ deletedCount: number }>
+        >(`/api/v1/feedback-forms/${formId}/override-students`);
+        return response.data.data.deletedCount;
     },
 };
 

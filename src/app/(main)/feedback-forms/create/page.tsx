@@ -24,7 +24,7 @@ import feedbackFormService from "@/services/feedbackFormService";
 import academicStructureService, {
     Semester,
     Division,
-} from "@/services/academicStructureService";
+} from "@/services/academicStructure.service";
 import { useAllAcademicYears } from "@/hooks/useAcademicYears";
 
 // Import interfaces
@@ -344,7 +344,9 @@ export default function CreateFeedbackForm() {
             !selection.departmentId ||
             Object.keys(selection.semesterSelections).length === 0
         ) {
-            showToast.error("Please select at least one department and semester");
+            showToast.error(
+                "Please select at least one department and semester"
+            );
             return;
         }
         setShowSelectionPreview(true);

@@ -1,12 +1,13 @@
-// src/interfaces/analytics.ts
+/**
+ * @file src/interfaces/analytics.ts
+ * @description Interfaces for analytics-related data structures and API responses
+ */
 
-import { IdType } from "./common"; // Assuming IdType is defined here
+import { IdType } from "./common";
 
-// --- Core Data Structures ---
-
-// Defines the shape of a single processed feedback record, derived from raw Prisma data
+// Represents a single processed feedback record (from raw Prisma data).
 export interface FeedbackSnapshot {
-    id: IdType; // Response ID
+    id: IdType;
     academicYearId: IdType;
     academicYearString: string;
     departmentId: IdType;
@@ -28,17 +29,17 @@ export interface FeedbackSnapshot {
     formId: IdType;
     formStatus: string;
     questionId: IdType;
-    questionType: string; // e.g., 'rating', 'text'
+    questionType: string;
     questionCategoryId: IdType;
     questionCategoryName: string;
-    questionBatch: string | null; // e.g., "1", "2", "None"
-    responseValue: string; // Keep as string as it comes from DB, parse to number for calculations
-    batch: string | null; // Same as questionBatch, for consistency
-    submittedAt: string; // Date as ISO string from backend
-    createdAt: string; // Date as ISO string from backend
+    questionBatch: string | null;
+    responseValue: string;
+    batch: string | null;
+    submittedAt: string;
+    createdAt: string;
 }
 
-// Filter Dictionary (for dropdowns)
+// Dictionary for analytics filter dropdowns.
 export interface FilterDictionary {
     academicYears: Array<{
         id: IdType;
@@ -69,7 +70,7 @@ export interface FilterDictionary {
     }>;
 }
 
-// Complete Analytics Data - This is what getCompleteAnalyticsData returns
+// Complete analytics data returned by getCompleteAnalyticsData.
 export interface CompleteAnalyticsData {
     semesters: Array<{
         id: IdType;
@@ -113,20 +114,18 @@ export interface CompleteAnalyticsData {
     feedbackSnapshots: FeedbackSnapshot[];
 }
 
-// Analytics Filter Parameters (for passing to backend)
+// Parameters for analytics filtering (for backend queries).
 export interface AnalyticsFilterParams {
     academicYearId?: IdType;
     departmentId?: IdType;
     subjectId?: IdType;
     semesterId?: IdType;
     divisionId?: IdType;
-    lectureType?: "LECTURE" | "LAB";
+    lectureType?: LectureLabType;
     includeDeleted?: boolean;
 }
 
-// --- Interfaces for Derived/Specific Analytics Data (used for charts/lists) ---
-
-// 1. Overall Semester Rating
+// Overall semester rating summary.
 export interface OverallSemesterRating {
     averageRating: number;
     totalResponses: number;
@@ -136,7 +135,7 @@ export interface OverallSemesterRating {
     departmentName: string;
 }
 
-// 2. Semesters with Responses
+// Semester with response count (for analytics charts).
 export interface SemesterWithResponseCount {
     id: IdType;
     semesterNumber: number;
@@ -146,9 +145,10 @@ export interface SemesterWithResponseCount {
     department: { id: IdType; name: string; abbreviation: string };
 }
 
-// 3. Subject-Wise Lecture/Lab Rating
+// Type for lecture/lab distinction.
 export type LectureLabType = "LECTURE" | "LAB";
 
+// Subject-wise lecture/lab rating summary.
 export interface SubjectLectureLabRating {
     subjectId: IdType;
     subjectName: string;
@@ -162,7 +162,9 @@ export interface SubjectLectureLabRating {
     totalOverallResponses: number;
 }
 
-// 4. High Impact Feedback Area
+/**
+ * High impact feedback area (for analytics insights).
+ */
 export interface HighImpactFeedbackArea {
     question: string;
     category: string;
@@ -172,7 +174,9 @@ export interface HighImpactFeedbackArea {
     averageRating: number;
 }
 
-// 5. Semester Trend Analysis
+/**
+ * Semester trend analysis data.
+ */
 export interface SemesterTrend {
     subject: string;
     semester: number;
@@ -182,27 +186,32 @@ export interface SemesterTrend {
     academicYear: string;
 }
 
-// 6. Annual Performance Trend
+/**
+ * Annual performance trend data.
+ */
 export interface AnnualPerformanceTrend {
     year: string;
     averageRating: number;
     responseCount: number;
 }
 
-// 7. Division/Batch Comparison (Frontend processed from rawSnapshots for DepartmentComparisonChart)
+/**
+ * Division/batch comparison for department analytics.
+ */
 export interface DivisionBatchComparison {
-    departmentId: IdType; // Added for more specificity
-    departmentName: string; // Added for display
+    departmentId: IdType;
+    departmentName: string;
     divisionId: IdType;
     divisionName: string;
-    batch: string; // This could be 'All', 'A', 'B', etc.
+    batch: string;
     averageRating: number;
     totalResponses: number;
-    // Add engagementScore if you calculate it for the chart
-    engagementScore?: number; // Example: 0-5 scale for UI
+    engagementScore?: number;
 }
 
-// 8. Lab/Lecture Comparison
+/**
+ * Lab/lecture comparison for department analytics.
+ */
 export interface LabLectureComparison {
     academicYearId: IdType;
     academicYear: string;
@@ -214,7 +223,9 @@ export interface LabLectureComparison {
     totalLabResponses: number;
 }
 
-// 9. Faculty Year Performance
+/**
+ * Faculty year performance summary.
+ */
 export interface FacultyYearPerformance {
     facultyId: IdType;
     facultyName: string;
@@ -231,22 +242,25 @@ export interface FacultyYearPerformance {
     academicYear: string;
 }
 
-// 10. Faculty Overall Performance Summary (Frontend processed from rawSnapshots for Top/Lowest Faculties)
+/**
+ * Faculty overall performance summary (for top/lowest faculties).
+ */
 export interface FacultyOverallPerformanceSummary {
     facultyId: IdType;
     facultyName: string;
-    academicYearId: IdType; // Contextual academic year
+    academicYearId: IdType;
     averageRating: number;
     totalResponses: number;
-    // Add other relevant performance metrics if needed
 }
 
-// 11. Total Responses Count
+/**
+ * Total responses count (for analytics widgets).
+ */
 export interface TotalResponsesCount {
     count: number;
 }
 
-// 12. Semester Divisions with Response Counts
+// Semester divisions with response counts (for analytics charts).
 export interface SemesterDivisionWithResponseCounts {
     semesterId: IdType;
     semesterNumber: number;

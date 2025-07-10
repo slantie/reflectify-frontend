@@ -1,6 +1,6 @@
 /**
  * @file src/hooks/useAnalyticsData.ts
- * @description Clean, simplified hooks for analytics data management
+ * @description React Query hooks for analytics data and processing
  */
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,7 +13,7 @@ import {
     CompleteAnalyticsData,
 } from "@/interfaces/analytics";
 
-// Query keys
+// Query keys for analytics data
 export const ANALYTICS_KEYS = {
     all: ["analytics"] as const,
     filterDictionary: () =>
@@ -23,33 +23,27 @@ export const ANALYTICS_KEYS = {
     totalResponses: () => [...ANALYTICS_KEYS.all, "totalResponses"] as const,
 };
 
-/**
- * Hook to get filter dictionary for dropdowns
- */
+// Fetch filter dictionary for dropdowns
 export const useFilterDictionary = () => {
     return useQuery<FilterDictionary>({
         queryKey: ANALYTICS_KEYS.filterDictionary(),
         queryFn: analyticsService.getFilterDictionary,
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        staleTime: 5 * 60 * 1000,
     });
 };
 
-/**
- * Hook to get complete analytics data with filters
- */
+// Fetch complete analytics data with filters
 export const useCompleteAnalyticsData = (
     filters: AnalyticsFilterParams = {}
 ) => {
     return useQuery<CompleteAnalyticsData>({
         queryKey: ANALYTICS_KEYS.completeData(filters),
         queryFn: () => analyticsService.getCompleteAnalyticsData(filters),
-        staleTime: 2 * 60 * 1000, // 2 minutes
+        staleTime: 2 * 60 * 1000,
     });
 };
 
-/**
- * Hook to get total responses count
- */
+// Fetch total responses count
 export const useTotalResponses = () => {
     return useQuery({
         queryKey: ANALYTICS_KEYS.totalResponses(),
@@ -58,9 +52,7 @@ export const useTotalResponses = () => {
     });
 };
 
-/**
- * Main hook that processes all analytics data
- */
+// Processed analytics data hook
 export const useProcessedAnalytics = (filters: AnalyticsFilterParams = {}) => {
     const {
         data: rawData,
@@ -68,7 +60,7 @@ export const useProcessedAnalytics = (filters: AnalyticsFilterParams = {}) => {
         error,
         refetch,
     } = useCompleteAnalyticsData(filters);
-
+    // Memoize processed analytics data
     const processedData = useMemo(() => {
         if (!rawData || !rawData.feedbackSnapshots) {
             return {
@@ -82,9 +74,7 @@ export const useProcessedAnalytics = (filters: AnalyticsFilterParams = {}) => {
                 rawSnapshots: [],
             };
         }
-
         const snapshots = rawData.feedbackSnapshots;
-
         return {
             overallStats: AnalyticsDataProcessor.processOverallStats(snapshots),
             subjectRatings:
@@ -102,38 +92,28 @@ export const useProcessedAnalytics = (filters: AnalyticsFilterParams = {}) => {
             rawSnapshots: snapshots,
         };
     }, [rawData]);
-
-    return {
-        data: processedData,
-        rawData,
-        isLoading,
-        error,
-        refetch,
-    };
+    return { data: processedData, rawData, isLoading, error, refetch };
 };
 
-/**
- * Hook for invalidating analytics cache
- */
+// Analytics cache invalidation actions
 export const useAnalyticsActions = () => {
     const queryClient = useQueryClient();
-
+    // Invalidate all analytics queries
     const invalidateAll = () => {
         queryClient.invalidateQueries({ queryKey: ANALYTICS_KEYS.all });
     };
-
+    // Invalidate only complete analytics data
     const invalidateCompleteData = () => {
         queryClient.invalidateQueries({
             queryKey: [...ANALYTICS_KEYS.all, "completeData"],
         });
     };
-
+    // Invalidate only filter dictionary
     const invalidateFilterDictionary = () => {
         queryClient.invalidateQueries({
             queryKey: ANALYTICS_KEYS.filterDictionary(),
         });
     };
-
     return {
         invalidateAll,
         invalidateCompleteData,

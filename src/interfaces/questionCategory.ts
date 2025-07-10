@@ -1,24 +1,33 @@
-// src/interfaces/questionCategory.ts
+/**
+ * @file src/interfaces/questionCategory.ts
+ * @description Interfaces for Question Category entity and related API data
+ */
 
 import { IdType } from "./common";
 
-// Full Question Category Model
+/**
+ * Represents a question category entity.
+ */
 export interface QuestionCategory {
     id: IdType;
     name: string;
     description?: string;
-    createdAt: string; // ISO date string
-    updatedAt: string; // ISO date string
-    isActive: boolean; // For soft delete
+    createdAt: string;
+    updatedAt: string;
+    isActive: boolean;
 }
 
-// Data required to create a new Question Category
+/**
+ * Data required to create a new question category.
+ */
 export interface CreateQuestionCategoryData {
     name: string;
     description?: string;
 }
 
-// Data for updating an existing Question Category (all fields are optional)
+/**
+ * Data for updating an existing question category (all fields optional).
+ */
 export interface UpdateQuestionCategoryData {
     name?: string;
     description?: string;

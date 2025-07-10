@@ -1,4 +1,8 @@
-// src/app/(auth)/login/page.tsx
+/**
+ * @file src/app/(auth)/login/page.tsx
+ * @description Login page for the application, utilizing the AuthLayout and LoginForm components.
+ */
+
 "use client";
 
 import { AuthLayout } from "@/components/auth/AuthLayout"; // Import the new layout

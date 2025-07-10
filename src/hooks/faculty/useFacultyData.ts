@@ -1,12 +1,15 @@
-// src/hooks/useFacultyData.ts
+/**
+@file src/hooks/faculty/useFacultyData.ts
+@description Provides faculty data, filtering, sorting, and department stats for faculty management UI
+*/
+
 import { useState, useMemo, useCallback } from "react";
 import { useAllFaculties } from "./useFaculties";
 import { useAllDepartments } from "../useDepartments";
 import { Faculty } from "@/interfaces/faculty";
-import { Department } from "@/interfaces/department"; // Correct import for Department
+import { Department } from "@/interfaces/department";
 import { IdType } from "@/interfaces/common";
 
-// Define and EXPORT the SortOrder type
 export type SortOrder = "asc" | "desc";
 
 // Define the structure for department statistics
@@ -39,7 +42,7 @@ export const useFacultyData = (): UseFacultyDataResult => {
     const [selectedDepartment, setSelectedDepartment] = useState<IdType | "">(
         ""
     );
-    const [sortOrder, setSortOrder] = useState<SortOrder>("asc"); // Use SortOrder type
+    const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
 
     // Fetch faculty data using TanStack Query hook
     const {
@@ -71,7 +74,7 @@ export const useFacultyData = (): UseFacultyDataResult => {
             const deptName =
                 allDepartments.find((dept) => dept.id === f.departmentId)
                     ?.name ||
-                f.departmentAbbreviation || // Used as a fallback
+                f.departmentAbbreviation ||
                 "Unknown Department";
 
             statsMap.set(deptName, (statsMap.get(deptName) || 0) + 1);
@@ -89,13 +92,13 @@ export const useFacultyData = (): UseFacultyDataResult => {
             const matchesSearch =
                 (f.name?.toLowerCase() || "").includes(
                     searchTerm.toLowerCase()
-                ) || // Use f.name here
+                ) ||
                 (f.email?.toLowerCase() || "").includes(
                     searchTerm.toLowerCase()
                 ) ||
                 (f.abbreviation?.toLowerCase() || "").includes(
                     searchTerm.toLowerCase()
-                ); // Keep this if it's a valid search field
+                );
 
             const matchesDepartment =
                 selectedDepartment === "" ||
@@ -106,8 +109,8 @@ export const useFacultyData = (): UseFacultyDataResult => {
 
         // Sort by the 'name' property directly
         filtered.sort((a, b) => {
-            const nameA = (a.name || "").toLowerCase(); // Use f.name here
-            const nameB = (b.name || "").toLowerCase(); // Use f.name here
+            const nameA = (a.name || "").toLowerCase();
+            const nameB = (b.name || "").toLowerCase();
             if (sortOrder === "asc") {
                 return nameA.localeCompare(nameB);
             }

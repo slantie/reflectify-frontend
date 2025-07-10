@@ -8,7 +8,7 @@
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import {
     BarChart3,
     TrendingUp,
@@ -294,7 +294,6 @@ const AnalyticsPage: React.FC = () => {
                     </Button>
                 </div>
             </div>
-
             {/* Filters */}
             <AnalyticsFilters
                 filterDictionary={filterDictionary}
@@ -303,7 +302,6 @@ const AnalyticsPage: React.FC = () => {
                 onRefresh={handleRefresh}
                 isLoading={isLoading}
             />
-
             {/* Quick Stats */}
             {hasData && (
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -377,9 +375,8 @@ const AnalyticsPage: React.FC = () => {
                     </Card>
                 </div>
             )}
-
-            {/* Main Content Tabs */}
-            <Tabs
+            Main Content Tabs
+            {/* <Tabs
                 value={activeTab}
                 onValueChange={(value: any) => setActiveTab(value)}
                 className="space-y-6"
@@ -430,8 +427,7 @@ const AnalyticsPage: React.FC = () => {
                 <TabsContent value="performance" className="space-y-6">
                     {tabContent.performance}
                 </TabsContent>
-            </Tabs>
-
+            </Tabs> */}
             {/* Debug Info (for development) */}
             {process.env.NODE_ENV === "development" && (
                 <Card className="mt-8 border-dashed">

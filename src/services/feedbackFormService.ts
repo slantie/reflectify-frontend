@@ -1,9 +1,10 @@
-// src/services/feedbackFormService.ts
-import axios from "axios";
-import axiosInstance from "@/lib/axiosInstance"; // Adjust path as needed
-import { FEEDBACK_FORM_ENDPOINTS } from "@/constants/apiEndpoints"; // Adjust path as needed
+/**
+ * @file src/services/feedbackFormService.ts
+ * @description Handles API requests related to feedback forms.
+ */
 
-// Import the new interfaces
+import axiosInstance from "@/lib/axiosInstance";
+import { FEEDBACK_FORM_ENDPOINTS } from "@/constants/apiEndpoints";
 import {
     FeedbackForm,
     GenerateFormsData,
@@ -11,197 +12,90 @@ import {
     UpdateFormData,
     UpdateFormStatusData,
     BulkUpdateFormStatusData,
-} from "@/interfaces/feedbackForm"; // Adjust path
-import { ApiResponse, IdType } from "@/interfaces/common"; // Adjust path
+} from "@/interfaces/feedbackForm";
+import { ApiResponse, IdType } from "@/interfaces/common";
 
 const feedbackFormService = {
-    /**
-     * Generates feedback forms based on department and selected semesters/divisions.
-     * Corresponds to POST /api/v1/feedback-forms/generate
-     */
+    // Generate feedback forms based on department and selected semesters/divisions
     generateForms: async (
         generationData: GenerateFormsData
     ): Promise<FeedbackForm[]> => {
-        try {
-            const response = await axiosInstance.post<
-                ApiResponse<{ forms: FeedbackForm[] }>
-            >(FEEDBACK_FORM_ENDPOINTS.GENERATE, generationData);
-            return response.data.data.forms;
-        } catch (error) {
-            console.error("Failed to generate feedback forms:", error);
-            throw error;
-        }
+        const response = await axiosInstance.post<
+            ApiResponse<{ forms: FeedbackForm[] }>
+        >(FEEDBACK_FORM_ENDPOINTS.GENERATE, generationData);
+        return response.data.data.forms;
     },
 
-    /**
-     * Retrieves all active feedback forms.
-     * Corresponds to GET /api/v1/feedback-forms
-     */
+    // Retrieve all active feedback forms
     getAllForms: async (): Promise<FeedbackForm[]> => {
-        try {
-            const response = await axiosInstance.get<
-                ApiResponse<{ forms: FeedbackForm[] }>
-            >(FEEDBACK_FORM_ENDPOINTS.BASE);
-            return response.data.data.forms;
-        } catch (error) {
-            console.error("Failed to fetch all feedback forms:", error);
-            throw error;
-        }
+        const response = await axiosInstance.get<
+            ApiResponse<{ forms: FeedbackForm[] }>
+        >(FEEDBACK_FORM_ENDPOINTS.BASE);
+        return response.data.data.forms;
     },
 
-    /**
-     * Retrieves a single feedback form by ID.
-     * Corresponds to GET /api/v1/feedback-forms/:id
-     */
+    // Retrieve a single feedback form by ID
     getFormById: async (id: IdType): Promise<FeedbackForm> => {
-        // Changed return type
-        try {
-            const response = await axiosInstance.get<
-                ApiResponse<{ form: FeedbackForm }>
-            >(FEEDBACK_FORM_ENDPOINTS.getById(id));
-            return response.data.data.form;
-        } catch (error: any) {
-            if (axios.isAxiosError(error) && error.response?.status === 404) {
-                console.warn(
-                    `Feedback form with ID ${id} not found, throwing error for TanStack Query.`
-                );
-                throw error; // Throw the error for TanStack Query to handle
-            }
-            console.error(
-                `Failed to fetch feedback form with ID ${id}:`,
-                error
-            );
-            throw error; // Re-throw other errors
-        }
+        const response = await axiosInstance.get<
+            ApiResponse<{ form: FeedbackForm }>
+        >(FEEDBACK_FORM_ENDPOINTS.getById(id));
+        return response.data.data.form;
     },
 
-    /**
-     * Updates an existing feedback form.
-     * Corresponds to PATCH /api/v1/feedback-forms/:id
-     */
+    // Update an existing feedback form
     updateForm: async (
         id: IdType,
         updateData: UpdateFormData
     ): Promise<FeedbackForm> => {
-        try {
-            const response = await axiosInstance.patch<
-                ApiResponse<{ form: FeedbackForm }>
-            >(FEEDBACK_FORM_ENDPOINTS.getById(id), updateData);
-            return response.data.data.form;
-        } catch (error) {
-            console.error(
-                `Failed to update feedback form with ID ${id}:`,
-                error
-            );
-            throw error;
-        }
+        const response = await axiosInstance.patch<
+            ApiResponse<{ form: FeedbackForm }>
+        >(FEEDBACK_FORM_ENDPOINTS.getById(id), updateData);
+        return response.data.data.form;
     },
 
-    /**
-     * Soft deletes a feedback form.
-     * Corresponds to DELETE /api/v1/feedback-forms/:id
-     */
+    // Soft delete a feedback form
     softDeleteForm: async (id: IdType): Promise<void> => {
-        try {
-            await axiosInstance.delete(FEEDBACK_FORM_ENDPOINTS.getById(id));
-            console.log(
-                `Feedback form with ID ${id} soft-deleted successfully.`
-            );
-        } catch (error) {
-            console.error(
-                `Failed to soft-delete feedback form with ID ${id}:`,
-                error
-            );
-            throw error;
-        }
+        await axiosInstance.delete(FEEDBACK_FORM_ENDPOINTS.getById(id));
     },
 
-    /**
-     * Adds a new question to an existing feedback form.
-     * Corresponds to POST /api/v1/feedback-forms/:id/questions
-     */
+    // Add a new question to an existing feedback form
     addQuestionToForm: async (
         formId: IdType,
         questionData: AddQuestionToFormInput
     ): Promise<FeedbackForm> => {
-        try {
-            const response = await axiosInstance.post<
-                ApiResponse<{ form: FeedbackForm }>
-            >(FEEDBACK_FORM_ENDPOINTS.ADD_QUESTION(formId), questionData);
-            return response.data.data.form;
-        } catch (error) {
-            console.error(
-                `Failed to add question to form with ID ${formId}:`,
-                error
-            );
-            throw error;
-        }
+        const response = await axiosInstance.post<
+            ApiResponse<{ form: FeedbackForm }>
+        >(FEEDBACK_FORM_ENDPOINTS.ADD_QUESTION(formId), questionData);
+        return response.data.data.form;
     },
 
-    /**
-     * Updates the status and dates of a single feedback form.
-     * Corresponds to PATCH /api/v1/feedback-forms/:id/status
-     */
+    // Update the status and dates of a single feedback form
     updateFormStatus: async (
         formId: IdType,
         statusData: UpdateFormStatusData
     ): Promise<FeedbackForm> => {
-        try {
-            const response = await axiosInstance.patch<
-                ApiResponse<{ form: FeedbackForm }>
-            >(FEEDBACK_FORM_ENDPOINTS.UPDATE_STATUS(formId), statusData);
-            return response.data.data.form;
-        } catch (error) {
-            console.error(
-                `Failed to update status for form with ID ${formId}:`,
-                error
-            );
-            throw error;
-        }
+        const response = await axiosInstance.patch<
+            ApiResponse<{ form: FeedbackForm }>
+        >(FEEDBACK_FORM_ENDPOINTS.UPDATE_STATUS(formId), statusData);
+        return response.data.data.form;
     },
 
-    /**
-     * Bulk updates the status and dates for multiple feedback forms.
-     * Corresponds to PATCH /api/v1/feedback-forms/bulk-status
-     */
+    // Bulk update the status and dates for multiple feedback forms
     bulkUpdateFormStatus: async (
         bulkStatusData: BulkUpdateFormStatusData
     ): Promise<FeedbackForm[]> => {
-        try {
-            const response = await axiosInstance.patch<
-                ApiResponse<{ forms: FeedbackForm[] }>
-            >(FEEDBACK_FORM_ENDPOINTS.BULK_UPDATE_STATUS, bulkStatusData);
-            return response.data.data.forms;
-        } catch (error) {
-            console.error("Failed to bulk update form statuses:", error);
-            throw error;
-        }
+        const response = await axiosInstance.patch<
+            ApiResponse<{ forms: FeedbackForm[] }>
+        >(FEEDBACK_FORM_ENDPOINTS.BULK_UPDATE_STATUS, bulkStatusData);
+        return response.data.data.forms;
     },
 
-    /**
-     * Retrieves a feedback form using an access token (public route).
-     * Corresponds to GET /api/v1/feedback-forms/access/:token
-     */
+    // Retrieve a feedback form using an access token (public route)
     getFormByAccessToken: async (token: string): Promise<FeedbackForm> => {
-        // Changed return type
-        try {
-            const response = await axiosInstance.get<
-                ApiResponse<{ form: FeedbackForm }>
-            >(FEEDBACK_FORM_ENDPOINTS.ACCESS_BY_TOKEN(token));
-            return response.data.data.form;
-        } catch (error: any) {
-            if (axios.isAxiosError(error) && error.response?.status === 404) {
-                console.warn(
-                    `Form with access token ${token} not found or inaccessible, throwing error for TanStack Query.`
-                );
-                throw error; // Throw the error for TanStack Query to handle
-            }
-            console.error(
-                `Failed to fetch form by access token ${token}:`,
-                error
-            );
-            throw error; // Re-throw other errors
-        }
+        const response = await axiosInstance.get<
+            ApiResponse<{ form: FeedbackForm }>
+        >(FEEDBACK_FORM_ENDPOINTS.ACCESS_BY_TOKEN(token));
+        return response.data.data.form;
     },
 };
 

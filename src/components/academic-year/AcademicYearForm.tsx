@@ -107,7 +107,7 @@ export const AcademicYearForm: React.FC<AcademicYearFormProps> = ({
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <Calendar className="h-5 w-5 text-primary-main" />
+                            <Calendar className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
                             {mode === "create"
@@ -184,7 +184,7 @@ export const AcademicYearForm: React.FC<AcademicYearFormProps> = ({
                         <Button
                             type="submit"
                             disabled={isLoading}
-                            className="bg-primary-main hover:bg-primary-dark text-white"
+                            className="bg-light-highlight dark:bg-dark-highlight hover:bg-primary-dark text-white"
                         >
                             {isLoading ? (
                                 <div className="flex items-center gap-2">

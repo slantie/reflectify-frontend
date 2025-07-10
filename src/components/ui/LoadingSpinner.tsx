@@ -40,7 +40,7 @@ const sizeConfig = {
 
 // Color configurations
 const colorConfig = {
-    primary: "text-primary-main",
+    primary: "text-light-highlight dark:text-dark-highlight",
     secondary: "text-secondary-main",
     white: "text-white",
     current: "text-current",

@@ -1,6 +1,6 @@
 /**
  * @file src/components/dashboard/AcademicYearSection.tsx
- * @description Academic Year management section for the dashboard
+ * @description  academic year management with better space utilization.
  */
 
 import React, { useState } from "react";
@@ -9,12 +9,11 @@ import { Button } from "@/components/ui/Button";
 import { StatCard } from "@/components/ui/StatCard";
 import { AcademicYearForm } from "@/components/academic-year/AcademicYearForm";
 import {
-    useAcademicYears,
-    useAcademicYearStats,
-    useCreateAcademicYear,
+    useAllAcademicYears,
     useUpdateAcademicYear,
-    useDeleteAcademicYear,
-} from "@/hooks/useAcademicYear";
+    useSoftDeleteAcademicYear,
+    useCreateAcademicYear,
+} from "@/hooks/useAcademicYears";
 import {
     AcademicYear,
     CreateAcademicYearData,
@@ -42,10 +41,10 @@ export const AcademicYearSection: React.FC = () => {
     );
 
     // Queries and mutations
-    const { data: academicYears = [], isLoading } = useAcademicYears();
+    const { data: academicYears = [], isLoading } = useAllAcademicYears();
     const createMutation = useCreateAcademicYear();
     const updateMutation = useUpdateAcademicYear();
-    const deleteMutation = useDeleteAcademicYear();
+    const deleteMutation = useSoftDeleteAcademicYear();
 
     const handleCreate = () => {
         setEditingAcademicYear(null);
@@ -123,14 +122,14 @@ export const AcademicYearSection: React.FC = () => {
     const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Academic Year Overview Card */}
-            <Card className="bg-light-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary rounded-2xl shadow-sm">
-                <CardHeader className="pb-4">
+            <Card className="bg-light-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary rounded-xl shadow-sm">
+                <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                         <CardTitle className="flex items-center gap-3 text-light-text dark:text-dark-text">
-                            <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                                <Calendar className="h-5 w-5 text-primary-main" />
+                            <div className="p-2 rounded-lg bg-primary-lighter dark:bg-primary-darker">
+                                <Calendar className="h-4 w-4 text-light-highlight dark:text-dark-highlight" />
                             </div>
                             Academic Year Management
                         </CardTitle>
@@ -138,7 +137,7 @@ export const AcademicYearSection: React.FC = () => {
                             <Button
                                 onClick={handleCreate}
                                 size="sm"
-                                className="bg-primary-main hover:bg-primary-dark text-white"
+                                className="bg-light-highlight dark:bg-dark-highlight hover:bg-primary-dark text-white"
                             >
                                 <Plus className="h-4 w-4 mr-2" />
                                 Add Year
@@ -159,7 +158,7 @@ export const AcademicYearSection: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
                         <StatCard
                             title="Total Years"
                             value={academicYears.length}
@@ -199,7 +198,7 @@ export const AcademicYearSection: React.FC = () => {
 
                     {/* Expandable Content */}
                     {isExpanded && (
-                        <div className="space-y-6 border-t border-light-secondary dark:border-dark-secondary pt-6">
+                        <div className="space-y-4 border-t border-light-secondary dark:border-dark-secondary pt-4">
                             {/* Form */}
                             {showForm && (
                                 <AcademicYearForm
@@ -218,28 +217,28 @@ export const AcademicYearSection: React.FC = () => {
                             {/* Academic Years List */}
                             {!showForm && (
                                 <div>
-                                    <h4 className="text-lg font-semibold text-light-text dark:text-dark-text mb-4">
+                                    <h4 className="text-base font-semibold text-light-text dark:text-dark-text mb-3">
                                         Existing Academic Years (
                                         {academicYears.length})
                                     </h4>
 
                                     {isLoading ? (
-                                        <div className="flex items-center justify-center py-8">
-                                            <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary-main border-t-transparent"></div>
+                                        <div className="flex items-center justify-center py-6">
+                                            <div className="animate-spin rounded-full h-5 w-5 border-2 border-primary-main border-t-transparent"></div>
                                             <span className="ml-2 text-light-muted-text dark:text-dark-muted-text">
                                                 Loading...
                                             </span>
                                         </div>
                                     ) : academicYears.length === 0 ? (
-                                        <div className="text-center py-8">
-                                            <Calendar className="h-8 w-8 mx-auto text-light-muted-text dark:text-dark-muted-text opacity-50 mb-2" />
+                                        <div className="text-center py-6">
+                                            <Calendar className="h-6 w-6 mx-auto text-light-muted-text dark:text-dark-muted-text opacity-50 mb-2" />
                                             <p className="text-light-muted-text dark:text-dark-muted-text">
                                                 No academic years found. Create
                                                 one to get started.
                                             </p>
                                         </div>
                                     ) : (
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                             {academicYears
                                                 .slice(0, 6)
                                                 .map((academicYear) => {
@@ -253,18 +252,18 @@ export const AcademicYearSection: React.FC = () => {
                                                             key={
                                                                 academicYear.id
                                                             }
-                                                            className="p-4 border border-light-secondary dark:border-dark-secondary rounded-xl hover:bg-light-muted-background dark:hover:bg-dark-noisy-background transition-colors"
+                                                            className="p-3 border border-light-secondary dark:border-dark-secondary rounded-lg hover:bg-light-muted-background dark:hover:bg-dark-noisy-background transition-colors"
                                                         >
                                                             <div className="flex items-start justify-between mb-2">
-                                                                <div>
-                                                                    <div className="flex items-center gap-2">
+                                                                <div className="flex-1">
+                                                                    <div className="flex items-center gap-2 mb-1">
                                                                         <h5 className="font-semibold text-light-text dark:text-dark-text">
                                                                             {
                                                                                 academicYear.yearString
                                                                             }
                                                                         </h5>
                                                                         {academicYear.isActive && (
-                                                                            <Badge className="bg-primary-lighter text-primary-main dark:bg-primary-darker dark:text-primary-lighter">
+                                                                            <Badge className="bg-primary-lighter text-light-highlight dark:text-dark-highlight dark:bg-primary-darker">
                                                                                 Active
                                                                             </Badge>
                                                                         )}
@@ -300,13 +299,11 @@ export const AcademicYearSection: React.FC = () => {
                                                                     </Button>
                                                                 </div>
                                                             </div>
-                                                            <div className="text-xs text-light-muted-text dark:text-dark-muted-text space-y-1">
-                                                                <div>
-                                                                    Created:{" "}
-                                                                    {new Date(
-                                                                        academicYear.createdAt
-                                                                    ).toLocaleDateString()}
-                                                                </div>
+                                                            <div className="text-xs text-light-muted-text dark:text-dark-muted-text">
+                                                                Created:{" "}
+                                                                {new Date(
+                                                                    academicYear.createdAt
+                                                                ).toLocaleDateString()}
                                                             </div>
                                                         </div>
                                                     );
@@ -315,7 +312,7 @@ export const AcademicYearSection: React.FC = () => {
                                     )}
 
                                     {academicYears.length > 6 && (
-                                        <div className="text-center mt-4">
+                                        <div className="text-center mt-3">
                                             <Button
                                                 variant="outline"
                                                 size="sm"
@@ -341,7 +338,7 @@ export const AcademicYearSection: React.FC = () => {
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-light-background dark:bg-dark-muted-background rounded-2xl p-6 max-w-md w-full mx-4 shadow-xl">
+                    <div className="bg-light-background dark:bg-dark-muted-background rounded-xl p-6 max-w-md w-full mx-4 shadow-xl">
                         <h3 className="text-lg font-semibold text-light-text dark:text-dark-text mb-4">
                             Delete Academic Year
                         </h3>

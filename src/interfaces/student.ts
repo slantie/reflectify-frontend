@@ -1,25 +1,31 @@
-// src/interfaces/student.ts
+/**
+ * @file src/interfaces/student.ts
+ * @description Interfaces for Student entity and related API data
+ */
 
 import { IdType } from "./common";
 
-// Full Student Model
+/**
+ * Represents a student entity.
+ */
 export interface Student {
     id: IdType;
     firstName: string;
     lastName: string;
     email: string;
     enrollmentNumber: string;
-    departmentId: IdType; // Foreign key to Department
-    departmentAbbreviation: string; // Often included for convenience
-    semesterId: IdType; // Foreign key to Semester
-    divisionId: IdType; // Foreign key to Division
-    // Add any other fields from your Student Prisma model
-    createdAt: string; // ISO date string
-    updatedAt: string; // ISO date string
-    isActive: boolean; // For soft delete
+    departmentId: IdType;
+    departmentAbbreviation: string;
+    semesterId: IdType;
+    divisionId: IdType;
+    createdAt: string;
+    updatedAt: string;
+    isActive: boolean;
 }
 
-// Data required to create a new Student
+/**
+ * Data required to create a new student.
+ */
 export interface CreateStudentData {
     firstName: string;
     lastName: string;
@@ -30,7 +36,9 @@ export interface CreateStudentData {
     divisionId: IdType;
 }
 
-// Data for updating an existing Student
+/**
+ * Data for updating an existing student (all fields optional).
+ */
 export interface UpdateStudentData {
     firstName?: string;
     lastName?: string;
@@ -41,7 +49,9 @@ export interface UpdateStudentData {
     divisionId?: IdType;
 }
 
-// Data structure for batch creation of students
+/**
+ * Data structure for batch creation of students.
+ */
 export interface BatchCreateStudentInput {
     students: CreateStudentData[];
 }

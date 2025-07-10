@@ -1,9 +1,12 @@
-// src/constants/fileUploadRoutes.ts
+/**
+@file src/constants/fileUploadRoutes.ts
+@description File upload route constants for different data types
+*/
 
 import { FileUploadRoute } from "@/interfaces/upload";
-import { UPLOAD_ENDPOINTS } from "./apiEndpoints";
-import { REFERENCE_FILE_URLS } from "./apiEndpoints"; // Import reference file URLs
+import { UPLOAD_ENDPOINTS, REFERENCE_FILE_URLS } from "./apiEndpoints";
 
+// File upload routes for each data type
 export const FILE_ROUTES: { [key: string]: FileUploadRoute } = {
     studentData: {
         route: UPLOAD_ENDPOINTS.UPLOAD_STUDENT_DATA,

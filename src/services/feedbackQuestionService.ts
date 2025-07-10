@@ -1,236 +1,116 @@
-// src/services/feedbackQuestionService.ts
-import axios from "axios";
-import axiosInstance from "@/lib/axiosInstance"; // Adjust path as needed
-import { FEEDBACK_QUESTION_ENDPOINTS } from "@/constants/apiEndpoints"; // Adjust path as needed
+/**
+ * @file src/services/feedbackQuestionService.ts
+ * @description Handles API requests related to feedback questions and categories.
+ */
 
-// Import interfaces
+import axiosInstance from "@/lib/axiosInstance";
+import { FEEDBACK_QUESTION_ENDPOINTS } from "@/constants/apiEndpoints";
 import {
     QuestionCategory,
     CreateQuestionCategoryData,
     UpdateQuestionCategoryData,
-} from "@/interfaces/questionCategory"; // Adjust path
+} from "@/interfaces/questionCategory";
 import {
     FeedbackQuestion,
     CreateFeedbackQuestionData,
     UpdateFeedbackQuestionData,
     BatchUpdateFeedbackQuestionItem,
-} from "@/interfaces/feedbackQuestion"; // Adjust path
-import { ApiResponse, IdType } from "@/interfaces/common"; // Adjust path
+} from "@/interfaces/feedbackQuestion";
+import { ApiResponse, IdType } from "@/interfaces/common";
 
 const feedbackQuestionService = {
-    // --- Question Category Operations ---
-
-    /**
-     * Retrieves all active question categories.
-     * Corresponds to GET /api/v1/feedback-questions/categories
-     */
+    // Retrieve all active question categories
     getAllQuestionCategories: async (): Promise<QuestionCategory[]> => {
-        try {
-            const response = await axiosInstance.get<
-                ApiResponse<{ categories: QuestionCategory[] }>
-            >(FEEDBACK_QUESTION_ENDPOINTS.CATEGORIES);
-            return response.data.data.categories;
-        } catch (error) {
-            console.error("Failed to fetch question categories:", error);
-            throw error;
-        }
+        const response = await axiosInstance.get<
+            ApiResponse<{ categories: QuestionCategory[] }>
+        >(FEEDBACK_QUESTION_ENDPOINTS.CATEGORIES);
+        return response.data.data.categories;
     },
 
-    /**
-     * Retrieves a single question category by ID.
-     * Corresponds to GET /api/v1/feedback-questions/categories/:id
-     */
+    // Retrieve a single question category by ID
     getQuestionCategoryById: async (id: IdType): Promise<QuestionCategory> => {
-        // Changed return type from QuestionCategory | null to QuestionCategory
-        try {
-            const response = await axiosInstance.get<
-                ApiResponse<{ category: QuestionCategory }>
-            >(FEEDBACK_QUESTION_ENDPOINTS.getCategoryById(id));
-            return response.data.data.category;
-        } catch (error: any) {
-            if (axios.isAxiosError(error) && error.response?.status === 404) {
-                console.warn(
-                    `Question category with ID ${id} not found, throwing error for TanStack Query.`
-                );
-                throw error; // Throw the error for TanStack Query to handle
-            }
-            console.error(
-                `Failed to fetch question category with ID ${id}:`,
-                error
-            );
-            throw error; // Re-throw other errors
-        }
+        const response = await axiosInstance.get<
+            ApiResponse<{ category: QuestionCategory }>
+        >(FEEDBACK_QUESTION_ENDPOINTS.getCategoryById(id));
+        return response.data.data.category;
     },
 
-    /**
-     * Creates a new question category.
-     * Corresponds to POST /api/v1/feedback-questions/categories
-     */
+    // Create a new question category
     createQuestionCategory: async (
         categoryData: CreateQuestionCategoryData
     ): Promise<QuestionCategory> => {
-        try {
-            const response = await axiosInstance.post<
-                ApiResponse<{ category: QuestionCategory }>
-            >(FEEDBACK_QUESTION_ENDPOINTS.CATEGORIES, categoryData);
-            return response.data.data.category;
-        } catch (error) {
-            console.error("Failed to create question category:", error);
-            throw error;
-        }
+        const response = await axiosInstance.post<
+            ApiResponse<{ category: QuestionCategory }>
+        >(FEEDBACK_QUESTION_ENDPOINTS.CATEGORIES, categoryData);
+        return response.data.data.category;
     },
 
-    /**
-     * Updates an existing question category.
-     * Corresponds to PATCH /api/v1/feedback-questions/categories/:id
-     */
+    // Update an existing question category
     updateQuestionCategory: async (
         id: IdType,
         updateData: UpdateQuestionCategoryData
     ): Promise<QuestionCategory> => {
-        try {
-            const response = await axiosInstance.patch<
-                ApiResponse<{ category: QuestionCategory }>
-            >(FEEDBACK_QUESTION_ENDPOINTS.getCategoryById(id), updateData);
-            return response.data.data.category;
-        } catch (error) {
-            console.error(
-                `Failed to update question category with ID ${id}:`,
-                error
-            );
-            throw error;
-        }
+        const response = await axiosInstance.patch<
+            ApiResponse<{ category: QuestionCategory }>
+        >(FEEDBACK_QUESTION_ENDPOINTS.getCategoryById(id), updateData);
+        return response.data.data.category;
     },
 
-    /**
-     * Soft deletes a question category.
-     * Corresponds to DELETE /api/v1/feedback-questions/categories/:id
-     */
+    // Soft delete a question category
     softDeleteQuestionCategory: async (id: IdType): Promise<void> => {
-        try {
-            await axiosInstance.delete(
-                FEEDBACK_QUESTION_ENDPOINTS.getCategoryById(id)
-            );
-            console.log(
-                `Question category with ID ${id} soft-deleted successfully.`
-            );
-        } catch (error) {
-            console.error(
-                `Failed to soft-delete question category with ID ${id}:`,
-                error
-            );
-            throw error;
-        }
+        await axiosInstance.delete(
+            FEEDBACK_QUESTION_ENDPOINTS.getCategoryById(id)
+        );
     },
 
-    // --- Feedback Question Operations ---
-
-    /**
-     * Creates a new feedback question for a specific form.
-     * Corresponds to POST /api/v1/feedback-questions/form/:formId/questions
-     */
+    // Create a new feedback question for a specific form
     createFeedbackQuestion: async (
         formId: IdType,
-        questionData: Omit<CreateFeedbackQuestionData, "formId"> // Exclude formId from input as it's from path
+        questionData: Omit<CreateFeedbackQuestionData, "formId">
     ): Promise<FeedbackQuestion> => {
-        try {
-            const payload = { ...questionData, formId }; // Re-add formId for the payload
-            const response = await axiosInstance.post<
-                ApiResponse<{ question: FeedbackQuestion }>
-            >(FEEDBACK_QUESTION_ENDPOINTS.QUESTIONS_BY_FORM(formId), payload);
-            return response.data.data.question;
-        } catch (error) {
-            console.error(
-                `Failed to create feedback question for form ID ${formId}:`,
-                error
-            );
-            throw error;
-        }
+        const payload = { ...questionData, formId };
+        const response = await axiosInstance.post<
+            ApiResponse<{ question: FeedbackQuestion }>
+        >(FEEDBACK_QUESTION_ENDPOINTS.QUESTIONS_BY_FORM(formId), payload);
+        return response.data.data.question;
     },
 
-    /**
-     * Updates an existing feedback question.
-     * Corresponds to PATCH /api/v1/feedback-questions/questions/:id
-     */
+    // Update an existing feedback question
     updateFeedbackQuestion: async (
         id: IdType,
         updateData: UpdateFeedbackQuestionData
     ): Promise<FeedbackQuestion> => {
-        try {
-            const response = await axiosInstance.patch<
-                ApiResponse<{ question: FeedbackQuestion }>
-            >(FEEDBACK_QUESTION_ENDPOINTS.getQuestionById(id), updateData);
-            return response.data.data.question;
-        } catch (error) {
-            console.error(
-                `Failed to update feedback question with ID ${id}:`,
-                error
-            );
-            throw error;
-        }
+        const response = await axiosInstance.patch<
+            ApiResponse<{ question: FeedbackQuestion }>
+        >(FEEDBACK_QUESTION_ENDPOINTS.getQuestionById(id), updateData);
+        return response.data.data.question;
     },
 
-    /**
-     * Soft deletes a feedback question.
-     * Corresponds to DELETE /api/v1/feedback-questions/questions/:id
-     */
+    // Soft delete a feedback question
     softDeleteFeedbackQuestion: async (id: IdType): Promise<void> => {
-        try {
-            await axiosInstance.delete(
-                FEEDBACK_QUESTION_ENDPOINTS.getQuestionById(id)
-            );
-            console.log(
-                `Feedback question with ID ${id} soft-deleted successfully.`
-            );
-        } catch (error) {
-            console.error(
-                `Failed to soft-delete feedback question with ID ${id}:`,
-                error
-            );
-            throw error;
-        }
+        await axiosInstance.delete(
+            FEEDBACK_QUESTION_ENDPOINTS.getQuestionById(id)
+        );
     },
 
-    /**
-     * Retrieves active feedback questions for a specific form.
-     * Corresponds to GET /api/v1/feedback-questions/form/:formId/questions
-     */
+    // Retrieve active feedback questions for a specific form
     getFeedbackQuestionsByFormId: async (
         formId: IdType
     ): Promise<FeedbackQuestion[]> => {
-        try {
-            const response = await axiosInstance.get<
-                ApiResponse<{ questions: FeedbackQuestion[] }>
-            >(FEEDBACK_QUESTION_ENDPOINTS.QUESTIONS_BY_FORM(formId));
-            return response.data.data.questions;
-        } catch (error) {
-            console.error(
-                `Failed to fetch feedback questions for form ID ${formId}:`,
-                error
-            );
-            throw error;
-        }
+        const response = await axiosInstance.get<
+            ApiResponse<{ questions: FeedbackQuestion[] }>
+        >(FEEDBACK_QUESTION_ENDPOINTS.QUESTIONS_BY_FORM(formId));
+        return response.data.data.questions;
     },
 
-    /**
-     * Performs a batch update of feedback questions.
-     * Corresponds to PATCH /api/v1/feedback-questions/questions/batch
-     */
+    // Batch update feedback questions
     batchUpdateFeedbackQuestions: async (
-        questions: BatchUpdateFeedbackQuestionItem[] // Array of { id, data: UpdateFeedbackQuestionData }
+        questions: BatchUpdateFeedbackQuestionItem[]
     ): Promise<FeedbackQuestion[]> => {
-        try {
-            const response = await axiosInstance.patch<
-                ApiResponse<{ questions: FeedbackQuestion[] }>
-            >(
-                FEEDBACK_QUESTION_ENDPOINTS.BATCH_UPDATE_QUESTIONS,
-                { questions } // Backend expects { questions: [...] }
-            );
-            return response.data.data.questions;
-        } catch (error) {
-            console.error("Failed to batch update feedback questions:", error);
-            throw error;
-        }
+        const response = await axiosInstance.patch<
+            ApiResponse<{ questions: FeedbackQuestion[] }>
+        >(FEEDBACK_QUESTION_ENDPOINTS.BATCH_UPDATE_QUESTIONS, { questions });
+        return response.data.data.questions;
     },
 };
 

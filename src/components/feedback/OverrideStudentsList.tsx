@@ -57,7 +57,7 @@ export const OverrideStudentsList = ({
                 className="mt-4 p-4 bg-light-background dark:bg-dark-muted-background rounded-md"
             >
                 <div className="flex items-center justify-center py-4">
-                    <Loader2 className="w-6 h-6 animate-spin text-primary-main" />
+                    <Loader2 className="w-6 h-6 animate-spin text-light-highlight dark:text-dark-highlight" />
                     <span className="ml-2 text-light-text dark:text-dark-text">
                         Loading override students...
                     </span>

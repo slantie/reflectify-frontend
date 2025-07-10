@@ -1,7 +1,10 @@
-// src/hooks/useFeedbackForms.ts
+/**
+@file src/hooks/useFeedbackForms.ts
+@description React Query hooks for feedback form data management
+*/
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import feedbackFormService from "@/services/feedbackFormService"; // Adjust path
+import feedbackFormService from "@/services/feedbackFormService";
 import {
     FeedbackForm,
     GenerateFormsData,
@@ -9,10 +12,10 @@ import {
     UpdateFormData,
     UpdateFormStatusData,
     BulkUpdateFormStatusData,
-} from "@/interfaces/feedbackForm"; // Adjust path
-import { IdType } from "@/interfaces/common"; // Adjust path
+} from "@/interfaces/feedbackForm";
+import { IdType } from "@/interfaces/common";
 
-// --- Query Keys ---
+// Query keys
 export const FEEDBACK_FORM_QUERY_KEYS = {
     all: ["feedbackForms"] as const,
     lists: () => [...FEEDBACK_FORM_QUERY_KEYS.all, "list"] as const,
@@ -21,58 +24,51 @@ export const FEEDBACK_FORM_QUERY_KEYS = {
         [...FEEDBACK_FORM_QUERY_KEYS.all, "access", token] as const,
 };
 
-// --- Query Hook: Get All Feedback Forms ---
-export const useAllFeedbackForms = () => {
-    return useQuery<FeedbackForm[], Error>({
+// Get all feedback forms
+export const useAllFeedbackForms = () =>
+    useQuery<FeedbackForm[], Error>({
         queryKey: FEEDBACK_FORM_QUERY_KEYS.lists(),
         queryFn: feedbackFormService.getAllForms,
     });
-};
 
-// --- Query Hook: Get Feedback Form by ID ---
-export const useFeedbackForm = (id: IdType) => {
-    return useQuery<FeedbackForm, Error>({
+// Get feedback form by ID
+export const useFeedbackForm = (id: IdType) =>
+    useQuery<FeedbackForm, Error>({
         queryKey: FEEDBACK_FORM_QUERY_KEYS.detail(id),
         queryFn: () => feedbackFormService.getFormById(id),
-        enabled: !!id, // Only run the query if 'id' is truthy
+        enabled: !!id,
     });
-};
 
-// --- Query Hook: Get Feedback Form by Access Token ---
-export const useFeedbackFormByAccessToken = (token: string) => {
-    return useQuery<FeedbackForm, Error>({
+// Get feedback form by access token
+export const useFeedbackFormByAccessToken = (token: string) =>
+    useQuery<FeedbackForm, Error>({
         queryKey: FEEDBACK_FORM_QUERY_KEYS.byAccessToken(token),
         queryFn: () => feedbackFormService.getFormByAccessToken(token),
-        enabled: !!token, // Only run the query if 'token' is truthy
-        // This query might be public, so consider staleTime/gcTime carefully if sensitive
-        staleTime: Infinity, // Forms accessed by token are usually static after load
-        gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes (renamed from cacheTime in v5)
+        enabled: !!token,
+        staleTime: Infinity,
+        gcTime: 5 * 60 * 1000,
     });
-};
 
-// --- Mutation Hook: Generate Forms ---
+// Generate feedback forms
 export const useGenerateFeedbackForms = () => {
     const queryClient = useQueryClient();
     return useMutation<FeedbackForm[], Error, GenerateFormsData>({
         mutationFn: feedbackFormService.generateForms,
         onSuccess: () => {
-            // Invalidate the list of feedback forms to refetch it after generation
             queryClient.invalidateQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.lists(),
             });
         },
-        // Optimistic update for generation is complex due to new IDs, so simple invalidation is safer.
     });
 };
 
-// --- Mutation Hook: Update Form ---
+// Update feedback form with optimistic update
 export const useUpdateFeedbackForm = () => {
     const queryClient = useQueryClient();
     return useMutation<
-        FeedbackForm, // TData
-        Error, // TError
-        { id: IdType; data: UpdateFormData }, // TVariables
-        // TContext
+        FeedbackForm,
+        Error,
+        { id: IdType; data: UpdateFormData },
         {
             previousForm: FeedbackForm | undefined;
             previousFormsList: FeedbackForm[] | undefined;
@@ -80,15 +76,12 @@ export const useUpdateFeedbackForm = () => {
     >({
         mutationFn: ({ id, data }) => feedbackFormService.updateForm(id, data),
         onSuccess: (updatedForm) => {
-            // Invalidate the list and specific detail query
             queryClient.invalidateQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.lists(),
             });
             queryClient.invalidateQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.detail(updatedForm.id),
             });
-
-            // Optimistically update the specific form in cache
             queryClient.setQueryData<FeedbackForm>(
                 FEEDBACK_FORM_QUERY_KEYS.detail(updatedForm.id),
                 updatedForm
@@ -101,19 +94,16 @@ export const useUpdateFeedbackForm = () => {
             await queryClient.cancelQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.lists(),
             });
-
             const previousForm = queryClient.getQueryData<FeedbackForm>(
                 FEEDBACK_FORM_QUERY_KEYS.detail(id)
             );
             const previousFormsList = queryClient.getQueryData<FeedbackForm[]>(
                 FEEDBACK_FORM_QUERY_KEYS.lists()
             );
-
             queryClient.setQueryData<FeedbackForm>(
                 FEEDBACK_FORM_QUERY_KEYS.detail(id),
                 (old) => (old ? { ...old, ...updateData } : old)
             );
-
             queryClient.setQueryData<FeedbackForm[]>(
                 FEEDBACK_FORM_QUERY_KEYS.lists(),
                 (old) =>
@@ -121,14 +111,9 @@ export const useUpdateFeedbackForm = () => {
                         form.id === id ? { ...form, ...updateData } : form
                     )
             );
-
             return { previousForm, previousFormsList };
         },
-        onError: (err, variables, context) => {
-            console.error(
-                `Failed optimistic update for form ID ${variables.id}:`,
-                err
-            );
+        onError: (_err, variables, context) => {
             if (context?.previousForm) {
                 queryClient.setQueryData(
                     FEEDBACK_FORM_QUERY_KEYS.detail(variables.id),
@@ -142,7 +127,7 @@ export const useUpdateFeedbackForm = () => {
                 );
             }
         },
-        onSettled: (data, error, variables) => {
+        onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.detail(variables.id),
             });
@@ -153,14 +138,13 @@ export const useUpdateFeedbackForm = () => {
     });
 };
 
-// --- Mutation Hook: Soft Delete Form ---
+// Soft delete feedback form with optimistic update
 export const useSoftDeleteFeedbackForm = () => {
     const queryClient = useQueryClient();
     return useMutation<
-        void, // TData
-        Error, // TError
-        IdType, // TVariables
-        // TContext
+        void,
+        Error,
+        IdType,
         { previousFormsList: FeedbackForm[] | undefined }
     >({
         mutationFn: (id) => feedbackFormService.softDeleteForm(id),
@@ -179,18 +163,13 @@ export const useSoftDeleteFeedbackForm = () => {
             const previousFormsList = queryClient.getQueryData<FeedbackForm[]>(
                 FEEDBACK_FORM_QUERY_KEYS.lists()
             );
-
             queryClient.setQueryData<FeedbackForm[]>(
                 FEEDBACK_FORM_QUERY_KEYS.lists(),
                 (old) => old?.filter((form) => form.id !== idToDelete)
             );
             return { previousFormsList };
         },
-        onError: (err, idToDelete, context) => {
-            console.error(
-                `Failed optimistic deletion for form ID ${idToDelete}:`,
-                err
-            );
+        onError: (_err, _idToDelete, context) => {
             if (context?.previousFormsList) {
                 queryClient.setQueryData(
                     FEEDBACK_FORM_QUERY_KEYS.lists(),
@@ -198,7 +177,7 @@ export const useSoftDeleteFeedbackForm = () => {
                 );
             }
         },
-        onSettled: (_data, _error, _idToDelete) => {
+        onSettled: () => {
             queryClient.invalidateQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.lists(),
             });
@@ -206,78 +185,43 @@ export const useSoftDeleteFeedbackForm = () => {
     });
 };
 
-// --- Mutation Hook: Add Question to Form ---
+// Add question to feedback form with optimistic update
 export const useAddQuestionToFeedbackForm = () => {
     const queryClient = useQueryClient();
     return useMutation<
-        FeedbackForm, // TData
-        Error, // TError
-        { formId: IdType; questionData: AddQuestionToFormInput }, // TVariables
-        // TContext
+        FeedbackForm,
+        Error,
+        { formId: IdType; questionData: AddQuestionToFormInput },
         { previousForm: FeedbackForm | undefined }
     >({
         mutationFn: ({ formId, questionData }) =>
             feedbackFormService.addQuestionToForm(formId, questionData),
         onSuccess: (updatedForm) => {
-            // Invalidate the specific form detail query and list (as questions might affect list representation)
             queryClient.invalidateQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.detail(updatedForm.id),
             });
             queryClient.invalidateQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.lists(),
             });
-
-            // Optimistically update the specific form in cache
             queryClient.setQueryData<FeedbackForm>(
                 FEEDBACK_FORM_QUERY_KEYS.detail(updatedForm.id),
                 updatedForm
             );
         },
-        onMutate: async ({ formId, questionData }) => {
+        onMutate: async ({ formId, questionData: _questionData }) => {
             await queryClient.cancelQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.detail(formId),
             });
             const previousForm = queryClient.getQueryData<FeedbackForm>(
                 FEEDBACK_FORM_QUERY_KEYS.detail(formId)
             );
-
-            // Optimistically add the new question (assuming backend adds it to questions array)
             queryClient.setQueryData<FeedbackForm>(
                 FEEDBACK_FORM_QUERY_KEYS.detail(formId),
-                (old) => {
-                    if (old) {
-                        // This assumes your FeedbackForm interface has a 'questions' array
-                        // and that questionData can be directly added or mapped to the correct question type.
-                        // You might need to adjust this based on the exact structure of your questionData and FeedbackForm.questions
-                        const newQuestions = old.questions
-                            ? [
-                                  ...old.questions,
-                                  {
-                                      ...questionData,
-                                      id: "temp-id-" + Date.now(),
-                                  },
-                              ]
-                            : [
-                                  {
-                                      ...questionData,
-                                      id: "temp-id-" + Date.now(),
-                                  },
-                              ];
-                        return {
-                            ...old,
-                            questions: newQuestions,
-                        };
-                    }
-                    return old;
-                }
+                (old) => old
             );
             return { previousForm };
         },
-        onError: (err, variables, context) => {
-            console.error(
-                `Failed optimistic add question for form ID ${variables.formId}:`,
-                err
-            );
+        onError: (_err, variables, context) => {
             if (context?.previousForm) {
                 queryClient.setQueryData(
                     FEEDBACK_FORM_QUERY_KEYS.detail(variables.formId),
@@ -285,25 +229,24 @@ export const useAddQuestionToFeedbackForm = () => {
                 );
             }
         },
-        onSettled: (data, error, variables) => {
+        onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.detail(variables.formId),
             });
             queryClient.invalidateQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.lists(),
-            }); // Invalidate list too
+            });
         },
     });
 };
 
-// --- Mutation Hook: Update Form Status ---
+// Update feedback form status with optimistic update
 export const useUpdateFeedbackFormStatus = () => {
     const queryClient = useQueryClient();
     return useMutation<
-        FeedbackForm, // TData
-        Error, // TError
-        { formId: IdType; statusData: UpdateFormStatusData }, // TVariables
-        // TContext
+        FeedbackForm,
+        Error,
+        { formId: IdType; statusData: UpdateFormStatusData },
         {
             previousForm: FeedbackForm | undefined;
             previousFormsList: FeedbackForm[] | undefined;
@@ -318,7 +261,6 @@ export const useUpdateFeedbackFormStatus = () => {
             queryClient.invalidateQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.detail(updatedForm.id),
             });
-
             queryClient.setQueryData<FeedbackForm>(
                 FEEDBACK_FORM_QUERY_KEYS.detail(updatedForm.id),
                 updatedForm
@@ -331,19 +273,16 @@ export const useUpdateFeedbackFormStatus = () => {
             await queryClient.cancelQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.lists(),
             });
-
             const previousForm = queryClient.getQueryData<FeedbackForm>(
                 FEEDBACK_FORM_QUERY_KEYS.detail(formId)
             );
             const previousFormsList = queryClient.getQueryData<FeedbackForm[]>(
                 FEEDBACK_FORM_QUERY_KEYS.lists()
             );
-
             queryClient.setQueryData<FeedbackForm>(
                 FEEDBACK_FORM_QUERY_KEYS.detail(formId),
                 (old) => (old ? { ...old, ...statusData } : old)
             );
-
             queryClient.setQueryData<FeedbackForm[]>(
                 FEEDBACK_FORM_QUERY_KEYS.lists(),
                 (old) =>
@@ -351,14 +290,9 @@ export const useUpdateFeedbackFormStatus = () => {
                         form.id === formId ? { ...form, ...statusData } : form
                     )
             );
-
             return { previousForm, previousFormsList };
         },
-        onError: (err, variables, context) => {
-            console.error(
-                `Failed optimistic update status for form ID ${variables.formId}:`,
-                err
-            );
+        onError: (_err, variables, context) => {
             if (context?.previousForm) {
                 queryClient.setQueryData(
                     FEEDBACK_FORM_QUERY_KEYS.detail(variables.formId),
@@ -372,7 +306,7 @@ export const useUpdateFeedbackFormStatus = () => {
                 );
             }
         },
-        onSettled: (data, error, variables) => {
+        onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.detail(variables.formId),
             });
@@ -383,19 +317,15 @@ export const useUpdateFeedbackFormStatus = () => {
     });
 };
 
-// --- Mutation Hook: Bulk Update Form Status ---
+// Bulk update feedback form status
 export const useBulkUpdateFeedbackFormStatus = () => {
     const queryClient = useQueryClient();
     return useMutation<FeedbackForm[], Error, BulkUpdateFormStatusData>({
         mutationFn: feedbackFormService.bulkUpdateFormStatus,
         onSuccess: () => {
-            // Bulk updates are complex for optimistic UI, so typically just invalidate affected queries
             queryClient.invalidateQueries({
                 queryKey: FEEDBACK_FORM_QUERY_KEYS.lists(),
             });
-            // If you know the IDs of the updated forms from the response, you could invalidate their specific detail queries too
-            // e.g., updatedForms.forEach(form => queryClient.invalidateQueries({ queryKey: FEEDBACK_FORM_QUERY_KEYS.detail(form.id) }));
         },
-        // No optimistic update on mutate for bulk operations for simplicity and safety
     });
 };

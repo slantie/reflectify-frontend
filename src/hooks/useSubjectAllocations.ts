@@ -1,4 +1,7 @@
-// src/hooks/useSubjectAllocations.ts
+/**
+@file src/hooks/useSubjectAllocations.ts
+@description React Query hooks for subject allocations
+*/
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import subjectAllocationService from "@/services/subjectAllocationService"; // Adjust path
@@ -9,14 +12,14 @@ import {
 } from "@/interfaces/subjectAllocation"; // Adjust path
 import { IdType } from "@/interfaces/common"; // Adjust path
 
-// --- Query Keys ---
+// Query keys for subject allocations
 export const SUBJECT_ALLOCATION_QUERY_KEYS = {
     all: ["subjectAllocations"] as const,
     lists: () => [...SUBJECT_ALLOCATION_QUERY_KEYS.all, "list"] as const,
     detail: (id: IdType) => [...SUBJECT_ALLOCATION_QUERY_KEYS.all, id] as const,
 };
 
-// --- Query Hook: Get All Subject Allocations ---
+// Get all subject allocations
 export const useAllSubjectAllocations = () => {
     return useQuery<SubjectAllocation[], Error>({
         queryKey: SUBJECT_ALLOCATION_QUERY_KEYS.lists(),
@@ -24,32 +27,29 @@ export const useAllSubjectAllocations = () => {
     });
 };
 
-// --- Query Hook: Get Subject Allocation by ID ---
+// Get subject allocation by ID
 export const useSubjectAllocation = (id: IdType) => {
     return useQuery<SubjectAllocation, Error>({
         queryKey: SUBJECT_ALLOCATION_QUERY_KEYS.detail(id),
         queryFn: () => subjectAllocationService.getSubjectAllocationById(id),
-        enabled: !!id, // Only run the query if 'id' is truthy
+        enabled: !!id,
     });
 };
 
-// --- Mutation Hook: Create Subject Allocation ---
+// Create subject allocation
 export const useCreateSubjectAllocation = () => {
     const queryClient = useQueryClient();
     return useMutation<SubjectAllocation, Error, CreateSubjectAllocationData>({
         mutationFn: subjectAllocationService.createSubjectAllocation,
         onSuccess: () => {
-            // Invalidate the list of subject allocations to refetch it after creation
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_ALLOCATION_QUERY_KEYS.lists(),
             });
         },
-        // Optional: Add optimistic update logic here if desired
-        // onMutate: async (newAllocation) => { ... }
     });
 };
 
-// --- Mutation Hook: Update Subject Allocation ---
+// Update subject allocation
 export const useUpdateSubjectAllocation = () => {
     const queryClient = useQueryClient();
     return useMutation<
@@ -65,33 +65,26 @@ export const useUpdateSubjectAllocation = () => {
         mutationFn: ({ id, data }) =>
             subjectAllocationService.updateSubjectAllocation(id, data),
         onSuccess: (updatedAllocation) => {
-            // Invalidate the list to ensure the updated item is reflected
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_ALLOCATION_QUERY_KEYS.lists(),
             });
-            // Invalidate the specific subject allocation detail query
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_ALLOCATION_QUERY_KEYS.detail(
                     updatedAllocation.id
                 ),
             });
-
-            // Optional: Optimistically update the specific item in the cache
             queryClient.setQueryData<SubjectAllocation>(
                 SUBJECT_ALLOCATION_QUERY_KEYS.detail(updatedAllocation.id),
                 updatedAllocation
             );
         },
         onMutate: async ({ id, data: updateData }) => {
-            // Cancel any outgoing refetches for this allocation and the list
             await queryClient.cancelQueries({
                 queryKey: SUBJECT_ALLOCATION_QUERY_KEYS.detail(id),
             });
             await queryClient.cancelQueries({
                 queryKey: SUBJECT_ALLOCATION_QUERY_KEYS.lists(),
             });
-
-            // Snapshot the previous values
             const previousAllocation =
                 queryClient.getQueryData<SubjectAllocation>(
                     SUBJECT_ALLOCATION_QUERY_KEYS.detail(id)
@@ -99,14 +92,10 @@ export const useUpdateSubjectAllocation = () => {
             const previousAllocationsList = queryClient.getQueryData<
                 SubjectAllocation[]
             >(SUBJECT_ALLOCATION_QUERY_KEYS.lists());
-
-            // Optimistically update the specific item in the cache
             queryClient.setQueryData<SubjectAllocation>(
                 SUBJECT_ALLOCATION_QUERY_KEYS.detail(id),
                 (old) => (old ? { ...old, ...updateData } : old)
             );
-
-            // Optimistically update the item within the list (if it exists)
             queryClient.setQueryData<SubjectAllocation[]>(
                 SUBJECT_ALLOCATION_QUERY_KEYS.lists(),
                 (old) =>
@@ -114,15 +103,9 @@ export const useUpdateSubjectAllocation = () => {
                         alloc.id === id ? { ...alloc, ...updateData } : alloc
                     )
             );
-
-            return { previousAllocation, previousAllocationsList }; // Return context for onError
+            return { previousAllocation, previousAllocationsList };
         },
-        onError: (err, variables, context) => {
-            console.error(
-                `Failed optimistic update for ID ${variables.id}:`,
-                err
-            );
-            // Rollback to the previous data if the mutation fails
+        onError: (_err, variables, context) => {
             if (context?.previousAllocation) {
                 queryClient.setQueryData(
                     SUBJECT_ALLOCATION_QUERY_KEYS.detail(variables.id),
@@ -136,8 +119,7 @@ export const useUpdateSubjectAllocation = () => {
                 );
             }
         },
-        onSettled: (data, error, variables) => {
-            // Always refetch to ensure consistency after optimistic update or rollback
+        onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_ALLOCATION_QUERY_KEYS.detail(variables.id),
             });
@@ -148,7 +130,7 @@ export const useUpdateSubjectAllocation = () => {
     });
 };
 
-// --- Mutation Hook: Soft Delete Subject Allocation ---
+// Soft delete subject allocation
 export const useSoftDeleteSubjectAllocation = () => {
     const queryClient = useQueryClient();
     return useMutation<
@@ -161,11 +143,9 @@ export const useSoftDeleteSubjectAllocation = () => {
         mutationFn: (id) =>
             subjectAllocationService.softDeleteSubjectAllocation(id),
         onSuccess: (_, id) => {
-            // Invalidate the list of subject allocations to reflect the deletion
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_ALLOCATION_QUERY_KEYS.lists(),
             });
-            // Optionally, remove the specific subject allocation from cache
             queryClient.removeQueries({
                 queryKey: SUBJECT_ALLOCATION_QUERY_KEYS.detail(id),
             });
@@ -177,18 +157,13 @@ export const useSoftDeleteSubjectAllocation = () => {
             const previousAllocationsList = queryClient.getQueryData<
                 SubjectAllocation[]
             >(SUBJECT_ALLOCATION_QUERY_KEYS.lists());
-
             queryClient.setQueryData<SubjectAllocation[]>(
                 SUBJECT_ALLOCATION_QUERY_KEYS.lists(),
                 (old) => old?.filter((alloc) => alloc.id !== idToDelete)
             );
             return { previousAllocationsList };
         },
-        onError: (err, idToDelete, context) => {
-            console.error(
-                `Failed optimistic deletion for ID ${idToDelete}:`,
-                err
-            );
+        onError: (_err, _idToDelete, context) => {
             if (context?.previousAllocationsList) {
                 queryClient.setQueryData(
                     SUBJECT_ALLOCATION_QUERY_KEYS.lists(),
@@ -196,7 +171,7 @@ export const useSoftDeleteSubjectAllocation = () => {
                 );
             }
         },
-        onSettled: (_data, _error, _idToDelete) => {
+        onSettled: () => {
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_ALLOCATION_QUERY_KEYS.lists(),
             });

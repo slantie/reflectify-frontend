@@ -70,22 +70,30 @@ export default function Dashboard() {
                     {/* Main Content - Right Side */}
                     <div className="lg:w-full space-y-8">
                         {/* Header Section */}
-                        <div className="bg-light-background dark:bg-dark-muted-background p-5 rounded-xl shadow-sm border border-light-secondary dark:border-dark-secondary">
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="relative bg-light-background dark:bg-dark-muted-background p-6 rounded-xl shadow-sm border border-light-secondary dark:border-dark-secondary overflow-hidden">
+                            {/* Optional: Subtle background pattern or gradient for modern bento feel */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-light-background/50 to-light-secondary/20 dark:from-dark-muted-background/50 dark:to-dark-secondary/20 opacity-30 pointer-events-none rounded-xl"></div>
+                            <div className="absolute top-0 left-0 w-24 h-24 bg-primary-main rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-blob pointer-events-none"></div>
+                            <div className="absolute bottom-0 right-0 w-32 h-32 bg-accent-light-main rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-blob animation-delay-2000 pointer-events-none"></div>
+
+                            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                                {/* Left Section: Title and Descriptions */}
                                 <div>
-                                    <h1 className="text-2xl md:text-3xl font-bold text-light-text dark:text-dark-text flex items-center gap-2">
+                                    <h1 className="text-3xl md:text-4xl font-extrabold text-light-text dark:text-dark-text flex items-center gap-3">
                                         Dashboard Overview
-                                        <ChartBarIcon className="h-6 w-6 text-primary-main" />
+                                        <ChartBarIcon className="h-8 w-8 text-primary-main" />
                                     </h1>
-                                    <p className="text-sm md:text-base text-light-muted-text dark:text-dark-muted-text flex items-center gap-1 mt-1">
-                                        <ArrowTrendingUpIcon className="h-4 w-4 text-positive-main" />
-                                        System metrics and quick actions
+                                    <p className="text-base text-light-muted-text dark:text-dark-muted-text flex items-center gap-2 mt-2">
+                                        <ArrowTrendingUpIcon className="h-5 w-5 text-positive-main" />
+                                        Real-time system metrics and quick
+                                        actions at a glance.
                                     </p>
+                                    {/* Active Academic Year */}
                                     {stats?.activeAcademicYear && (
-                                        <p className="text-sm text-light-muted-text dark:text-dark-muted-text flex items-center gap-1 mt-1">
+                                        <p className="text-sm text-light-muted-text dark:text-dark-muted-text flex items-center gap-2 mt-2 font-medium">
                                             <CalendarIcon className="h-4 w-4 text-primary-main" />
-                                            Active Year:{" "}
-                                            <span className="font-medium text-primary-main">
+                                            Active Academic Year:{" "}
+                                            <span className="font-semibold text-primary-main">
                                                 {
                                                     stats.activeAcademicYear
                                                         .yearString
@@ -94,35 +102,39 @@ export default function Dashboard() {
                                         </p>
                                     )}
                                 </div>
-                                <div className="w-full sm:w-auto text-left sm:text-right">
-                                    <div className="flex justify-start sm:justify-end mb-2">
+
+                                {/* Right Section: Response Count and Last Updated */}
+                                <div className="w-full sm:w-auto text-left sm:text-right space-y-3">
+                                    <div className="flex justify-start sm:justify-end">
                                         <Badge
                                             variant="default"
                                             size="lg"
-                                            className="gap-2"
+                                            className="gap-2 px-4 py-2 text-lg font-semibold text-primary-foreground dark:bg-primary-dark-main dark:text-primary-dark-foreground shadow-lg"
                                         >
-                                            <ChartBarIcon className="h-5 w-5" />
+                                            {/* <ChartBarIcon className="h-6 w-6" /> */}
                                             <span>
                                                 <CountUp
                                                     end={
                                                         stats?.responseCount ||
                                                         0
                                                     }
-                                                    duration={2}
+                                                    duration={2.5} // Slightly longer duration for smoother count
                                                     separator=","
                                                     enableScrollSpy={true}
                                                     scrollSpyOnce={true}
                                                 />{" "}
-                                                Responses
+                                                Total Responses
                                             </span>
                                         </Badge>
                                     </div>
-                                    <p className="text-sm text-light-muted-text dark:text-dark-muted-text">
-                                        Last updated
-                                    </p>
-                                    <p className="text-sm font-medium text-light-text dark:text-dark-text">
-                                        {currentDate}
-                                    </p>
+                                    <div>
+                                        <p className="text-sm text-light-muted-text dark:text-dark-muted-text">
+                                            Data last updated:
+                                        </p>
+                                        <p className="text-base font-semibold text-light-text dark:text-dark-text">
+                                            {currentDate}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -1,28 +1,37 @@
-// src/app/(main)/layout.tsx
-"use client"; // Essential because Header/Footer will likely use useAuth() and ProtectedRoute is a client component
+/**
+ * @file src/app/(main)/layout.tsx
+ * @description Layout component for the main group of the Reflectify application
+ */
 
+import type { Metadata } from "next";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { ProtectedRoute } from "@/components/ProtectedRoute"; // Import the ProtectedRoute component
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+
+// Metadata for the main group layout
+export const metadata: Metadata = {
+    title: "Reflectify - Admin",
+    description: "Main pages of the Reflectify application",
+    keywords: ["main", "reflectify", "feedback", "system"],
+    authors: [
+        { name: "Kandarp Gajjar", url: "https://github.com/slantie" },
+        { name: "Harsh Dodiya", url: "https://github.com/harshDodiya1" },
+    ],
+    icons: {
+        icon: "/favicon.ico",
+    },
+};
 
 export default function MainGroupLayout({
-    // Renamed to MainGroupLayout for clarity with folder name
     children,
 }: {
     children: React.ReactNode;
 }) {
     return (
-        // Wrap the entire main content with ProtectedRoute
-        // This ensures that any page within the (main) group is protected.
-        // The `requireAuth={true}` prop is crucial for preventing access if not logged in.
         <ProtectedRoute requireAuth={true}>
             <>
-                {/* Header and Footer are now rendered within the protected route context.
-                    If they also use `useAuth`, they'll wait for the auth check from the Provider. */}
                 <Header />
-                <main>{children}</main>{" "}
-                {/* Use main tag for semantic structure */}
-                <Footer />
+                <main>{children}</main> <Footer />
             </>
         </ProtectedRoute>
     );

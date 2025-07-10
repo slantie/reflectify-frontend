@@ -1,12 +1,15 @@
-// src/interfaces/auth.ts
+/**
+ * @file src/interfaces/admin.ts
+ * @description Interface for Admin user entity
+ */
 
+/**
+ * Represents an admin user (as returned by /auth/me and related endpoints).
+ */
 export interface Admin {
     id: string;
     name: string;
     email: string;
     designation: string;
     isSuper: boolean;
-    // Add any other user properties returned by your /auth/me endpoint
 }
-
-// Add other authentication related interfaces here if needed (e.g., LoginPayload, RegisterPayload)

@@ -11,15 +11,15 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 default:
-                    "bg-primary-main text-white hover:bg-primary-dark focus:ring-primary-dark/50 shadow-lg shadow-primary-dark/30 dark:shadow-primary-main/20",
+                    "bg-light-highlight dark:bg-dark-highlight text-white hover:bg-primary-dark focus:ring-primary-dark/50 shadow-lg shadow-primary-dark/30 dark:shadow-primary-main/20",
                 destructive:
                     "bg-negative-main text-white hover:bg-negative-dark focus:ring-negative-main/50",
                 outline:
-                    "border border-primary-main text-primary-main bg-transparent hover:bg-primary-main hover:text-white focus:ring-primary-main/50",
+                    "border border-primary-main text-light-highlight dark:text-dark-highlight bg-transparent hover:bg-light-highlight dark:bg-dark-highlight hover:text-white focus:ring-primary-main/50",
                 secondary:
                     "bg-secondary-lighter text-secondary-darker hover:bg-secondary-light dark:bg-dark-secondary dark:text-dark-text dark:hover:bg-dark-hover focus:ring-secondary-main/50",
                 ghost: "text-secondary-darker hover:bg-secondary-lighter dark:text-dark-text dark:hover:bg-dark-hover focus:ring-secondary-main/50",
-                link: "text-primary-main underline-offset-4 hover:underline focus:ring-primary-main/50",
+                link: "text-light-highlight dark:text-dark-highlight underline-offset-4 hover:underline focus:ring-primary-main/50",
                 gradient:
                     "bg-gradient-to-r from-primary-dark to-primary-main text-white hover:from-primary-darker hover:to-primary-dark focus:ring-primary-dark/50 shadow-lg shadow-primary-dark/30 dark:shadow-primary-main/20",
             },

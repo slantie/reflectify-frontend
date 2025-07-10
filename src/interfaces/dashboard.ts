@@ -1,5 +1,11 @@
-// src/interfaces/dashboard.ts
+/**
+ * @file src/interfaces/dashboard.ts
+ * @description Interface for dashboard statistics summary
+ */
 
+/**
+ * Dashboard statistics summary for main dashboard widgets.
+ */
 export interface DashboardStats {
     responseCount: number;
     facultyCount: number;

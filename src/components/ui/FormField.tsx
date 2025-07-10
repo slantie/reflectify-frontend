@@ -223,7 +223,7 @@ export const FormField = forwardRef<any, FormFieldProps>(
                                 required={required}
                                 readOnly={readonly}
                                 className={`
-                w-4 h-4 text-primary-main 
+                w-4 h-4 text-light-highlight dark:text-dark-highlight 
                 bg-light-background dark:bg-dark-background
                 border border-light-secondary dark:border-dark-secondary
                 rounded focus:ring-2 focus:ring-primary-main
@@ -268,7 +268,7 @@ export const FormField = forwardRef<any, FormFieldProps>(
                                         required={required}
                                         readOnly={readonly}
                                         className={`
-                    w-4 h-4 text-primary-main 
+                    w-4 h-4 text-light-highlight dark:text-dark-highlight 
                     bg-light-background dark:bg-dark-background
                     border border-light-secondary dark:border-dark-secondary
                     focus:ring-2 focus:ring-primary-main

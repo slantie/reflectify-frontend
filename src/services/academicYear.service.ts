@@ -14,9 +14,7 @@ import {
 } from "@/interfaces/academicYear";
 
 export class AcademicYearService {
-    /**
-     * Get all academic years
-     */
+    // Get all academic years
     async getAllAcademicYears(): Promise<AcademicYear[]> {
         const response = await apiClient.get<AcademicYearsApiResponse>(
             ACADEMIC_YEAR_ENDPOINTS.BASE
@@ -24,9 +22,7 @@ export class AcademicYearService {
         return response.data.data.academicYears;
     }
 
-    /**
-     * Get academic year by ID
-     */
+    // Get academic year by ID
     async getAcademicYearById(id: string): Promise<AcademicYear> {
         const response = await apiClient.get<AcademicYearApiResponse>(
             ACADEMIC_YEAR_ENDPOINTS.getById(id)
@@ -34,9 +30,7 @@ export class AcademicYearService {
         return response.data.data.academicYear;
     }
 
-    /**
-     * Create new academic year
-     */
+    // Create new academic year
     async createAcademicYear(
         data: CreateAcademicYearData
     ): Promise<AcademicYear> {
@@ -47,9 +41,7 @@ export class AcademicYearService {
         return response.data.data.academicYear;
     }
 
-    /**
-     * Update academic year
-     */
+    // Update academic year
     async updateAcademicYear(
         id: string,
         data: UpdateAcademicYearData
@@ -61,16 +53,12 @@ export class AcademicYearService {
         return response.data.data.academicYear;
     }
 
-    /**
-     * Delete academic year (soft delete)
-     */
+    // Delete academic year (soft delete)
     async deleteAcademicYear(id: string): Promise<void> {
         await apiClient.delete(ACADEMIC_YEAR_ENDPOINTS.getById(id));
     }
 
-    /**
-     * Get the active academic year
-     */
+    // Get the active academic year
     async getActiveAcademicYear(): Promise<AcademicYear | null> {
         try {
             const response = await apiClient.get<AcademicYearApiResponse>(

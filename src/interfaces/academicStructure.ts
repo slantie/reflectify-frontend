@@ -47,18 +47,7 @@ export interface DepartmentWithAcademicStructure {
 // The type that represents the complete academic structure
 export type AcademicStructureData = DepartmentWithAcademicStructure[];
 
-// For backward compatibility, keep the simplified interfaces
-export interface AcademicStructure {
-    id: IdType;
-    name: string;
-    departments: DepartmentWithAcademicStructure[];
-}
-
-// Helper types for filtering and grouping
-export interface AcademicYearGroup {
-    academicYear: AcademicYearInfo;
-    departments: DepartmentWithAcademicStructure[];
-}
+// ...existing code...
 
 // Parameters for fetching academic structure
 export interface AcademicStructureParams {

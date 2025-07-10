@@ -57,7 +57,7 @@ function Error({
 
             <div className="text-center space-y-8 max-w-2xl w-full">
                 <div className="relative inline-block">
-                    <div className="w-24 h-24 mx-auto bg-primary-main dark:bg-primary-dark rounded-full flex items-center justify-center shadow-2xl">
+                    <div className="w-24 h-24 mx-auto bg-light-highlight dark:bg-dark-highlight dark:bg-primary-dark rounded-full flex items-center justify-center shadow-2xl">
                         <AlertTriangle className="w-12 h-12 text-white" />
                     </div>
                 </div>
@@ -77,7 +77,7 @@ function Error({
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                     <Link
                         href="/"
-                        className={`${baseButtonClasses} bg-primary-main text-white hover:bg-primary-dark`}
+                        className={`${baseButtonClasses} bg-light-highlight dark:bg-dark-highlight text-white hover:bg-primary-dark`}
                     >
                         <Home className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                         <span>Go Home</span>
@@ -87,7 +87,7 @@ function Error({
                         onClick={handleRefresh}
                         className={`${baseButtonClasses} bg-light-muted-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary hover:border-primary-main dark:hover:border-primary-light text-light-text dark:text-dark-text`}
                     >
-                        <RefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500 text-primary-main dark:text-primary-light" />
+                        <RefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500 text-light-highlight dark:text-dark-highlight dark:text-primary-light" />
                         <span>Refresh</span>
                     </button>
 
@@ -95,7 +95,7 @@ function Error({
                         onClick={goBack}
                         className={`${baseButtonClasses} bg-light-muted-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary hover:border-primary-main dark:hover:border-primary-light text-light-text dark:text-dark-text`}
                     >
-                        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300 text-primary-main dark:text-primary-light" />
+                        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300 text-light-highlight dark:text-dark-highlight dark:text-primary-light" />
                         <span>Go Back</span>
                     </button>
                 </div>

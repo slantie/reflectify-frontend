@@ -1,54 +1,29 @@
-// src/services/dashboardService.ts
+/**
+ * @file src/services/dashboardService.ts
+ * @description Service for Dashboard API operations
+ */
 
-import axiosInstance from "@/lib/axiosInstance"; // Use your configured axios instance
+import axiosInstance from "@/lib/axiosInstance";
 import { DASHBOARD_ENDPOINTS } from "@/constants/apiEndpoints";
 import { DashboardStats } from "@/interfaces/dashboard";
-import { ApiResponse } from "@/interfaces/common"; // <--- ADD THIS IMPORT
+import { ApiResponse } from "@/interfaces/common";
 
+// Service for Dashboard API operations
 const dashboardService = {
-    /**
-     * Fetches general statistics for the dashboard.
-     * This service now leverages the global axiosInstance for authentication
-     * and error handling.
-     * @returns A promise that resolves to DashboardStats.
-     * @throws {Error} If the API call fails, the error is re-thrown for TanStack Query to catch.
-     */
+    // Fetch general statistics for the dashboard
     getDashboardStats: async (): Promise<DashboardStats> => {
-        try {
-            // Correctly type the expected response from the API
-            const response = await axiosInstance.get<
-                ApiResponse<DashboardStats>
-            >(DASHBOARD_ENDPOINTS.STATS);
-
-            // IMPORTANT: Now access the nested 'data' property
-            return response.data.data;
-        } catch (error: any) {
-            console.error("Error fetching dashboard data:", error);
-            throw error;
-        }
+        const response = await axiosInstance.get<ApiResponse<DashboardStats>>(
+            DASHBOARD_ENDPOINTS.STATS
+        );
+        return response.data.data;
     },
 
-    /**
-     * Deletes all data from the database (development only).
-     * This service now leverages the global axiosInstance for authentication
-     * and error handling.
-     * @returns A promise that resolves when the operation is complete.
-     * @throws {Error} If the API call fails, the error is re-thrown for TanStack Query to catch.
-     */
+    // Deletes all data from the database (development only)
     deleteAllData: async (): Promise<void> => {
-        try {
-            // Only allow this operation in development
-            if (process.env.NODE_ENV === "production") {
-                throw new Error(
-                    "Database deletion is not allowed in production."
-                );
-            }
-
-            await axiosInstance.delete(DASHBOARD_ENDPOINTS.DELETE_ALL_DATA);
-        } catch (error: any) {
-            console.error("Error deleting database data:", error);
-            throw error;
+        if (process.env.NODE_ENV === "production") {
+            throw new Error("Database deletion is not allowed in production.");
         }
+        await axiosInstance.delete(DASHBOARD_ENDPOINTS.DELETE_ALL_DATA);
     },
 };
 

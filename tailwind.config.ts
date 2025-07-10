@@ -129,12 +129,11 @@ export default {
                         background: "#C2C2C4",
                     },
                     hover: "#E4E4E9",
-                    secondary: "#FFFFFF", // Used for default toast border in light mode
+                    secondary: "#EBEBEF", // Used for default toast border in light mode
                     tertiary: "#98989F",
                 },
             },
         },
     },
-    // Added Flowbite plugin
     plugins: [],
 } satisfies Config;

@@ -1,62 +1,74 @@
-// src/hooks/useAcademicYears.ts
+/**
+ * @file src/hooks/useAcademicYears.ts
+ * @description React Query hooks for Academic Year CRUD operations
+ */
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import academicYearService from "@/services/academicYearService"; // Adjust path
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { academicYearService } from "@/services/academicYear.service";
 import {
     AcademicYear,
     CreateAcademicYearData,
     UpdateAcademicYearData,
-} from "@/interfaces/academicYear"; // Adjust path
-import { IdType } from "@/interfaces/common"; // Adjust path
+    AcademicYearStats,
+} from "@/interfaces/academicYear";
+import { IdType } from "@/interfaces/common";
+import { showToast } from "@/lib/toast";
 
-// --- Query Keys ---
+// Query keys for academic year data
 export const ACADEMIC_YEAR_QUERY_KEYS = {
     all: ["academicYears"] as const,
     lists: () => [...ACADEMIC_YEAR_QUERY_KEYS.all, "list"] as const,
     detail: (id: IdType) => [...ACADEMIC_YEAR_QUERY_KEYS.all, id] as const,
+    active: () => [...ACADEMIC_YEAR_QUERY_KEYS.all, "active"] as const,
 };
 
-// --- Query Hook: Get All Academic Years ---
+// Fetch all academic years
 export const useAllAcademicYears = () => {
     return useQuery<AcademicYear[], Error>({
         queryKey: ACADEMIC_YEAR_QUERY_KEYS.lists(),
         queryFn: academicYearService.getAllAcademicYears,
+        staleTime: 5 * 60 * 1000,
     });
 };
 
-// --- Query Hook: Get Academic Year by ID ---
+// Fetch a single academic year by ID
 export const useAcademicYear = (id: IdType) => {
     return useQuery<AcademicYear, Error>({
         queryKey: ACADEMIC_YEAR_QUERY_KEYS.detail(id),
         queryFn: () => academicYearService.getAcademicYearById(id),
-        enabled: !!id, // Only run the query if 'id' is truthy
+        enabled: !!id,
+        staleTime: 5 * 60 * 1000,
     });
 };
 
-// --- Mutation Hook: Create Academic Year ---
+// Create a new academic year
 export const useCreateAcademicYear = () => {
     const queryClient = useQueryClient();
     return useMutation<AcademicYear, Error, CreateAcademicYearData>({
         mutationFn: academicYearService.createAcademicYear,
-        onSuccess: () => {
-            // Invalidate the list of academic years to refetch it after creation
+        onSuccess: (newAcademicYear) => {
             queryClient.invalidateQueries({
                 queryKey: ACADEMIC_YEAR_QUERY_KEYS.lists(),
             });
+            queryClient.setQueryData<AcademicYear[]>(
+                ACADEMIC_YEAR_QUERY_KEYS.lists(),
+                (old) => (old ? [newAcademicYear, ...old] : [newAcademicYear])
+            );
+            showToast.success("Academic year created successfully");
         },
-        // Optional: Add optimistic update logic here if desired
-        // onMutate: async (newYear) => { ... }
+        onError: (error: Error) => {
+            showToast.error(error?.message || "Failed to create academic year");
+        },
     });
 };
 
-// --- Mutation Hook: Update Academic Year ---
+// Update an academic year
 export const useUpdateAcademicYear = () => {
     const queryClient = useQueryClient();
     return useMutation<
-        AcademicYear, // TData: Expected return type on success
-        Error, // TError: Expected error type
-        { id: IdType; data: UpdateAcademicYearData }, // TVariables: Type of the variables passed to mutate
-        // TContext: Type of the context object returned by onMutate
+        AcademicYear,
+        Error,
+        { id: IdType; data: UpdateAcademicYearData },
         {
             previousYear: AcademicYear | undefined;
             previousYearsList: AcademicYear[] | undefined;
@@ -64,47 +76,23 @@ export const useUpdateAcademicYear = () => {
     >({
         mutationFn: ({ id, data }) =>
             academicYearService.updateAcademicYear(id, data),
-        onSuccess: (updatedYear) => {
-            // Invalidate the list to ensure the updated item is reflected
-            queryClient.invalidateQueries({
-                queryKey: ACADEMIC_YEAR_QUERY_KEYS.lists(),
-            });
-            // Invalidate the specific academic year detail query
-            queryClient.invalidateQueries({
-                queryKey: ACADEMIC_YEAR_QUERY_KEYS.detail(updatedYear.id),
-            });
-
-            // Optional: Optimistically update the specific item in the cache
-            queryClient.setQueryData<AcademicYear>(
-                ACADEMIC_YEAR_QUERY_KEYS.detail(updatedYear.id),
-                updatedYear
-            );
-        },
-        // Optional: Optimistic update example for PATCH
         onMutate: async ({ id, data: updateData }) => {
-            // Cancel any outgoing refetches for this academic year and the list
             await queryClient.cancelQueries({
                 queryKey: ACADEMIC_YEAR_QUERY_KEYS.detail(id),
             });
             await queryClient.cancelQueries({
                 queryKey: ACADEMIC_YEAR_QUERY_KEYS.lists(),
             });
-
-            // Snapshot the previous values
             const previousYear = queryClient.getQueryData<AcademicYear>(
                 ACADEMIC_YEAR_QUERY_KEYS.detail(id)
             );
             const previousYearsList = queryClient.getQueryData<AcademicYear[]>(
                 ACADEMIC_YEAR_QUERY_KEYS.lists()
             );
-
-            // Optimistically update the specific item in the cache
             queryClient.setQueryData<AcademicYear>(
                 ACADEMIC_YEAR_QUERY_KEYS.detail(id),
                 (old) => (old ? { ...old, ...updateData } : old)
             );
-
-            // Optimistically update the item within the list (if it exists)
             queryClient.setQueryData<AcademicYear[]>(
                 ACADEMIC_YEAR_QUERY_KEYS.lists(),
                 (old) =>
@@ -112,32 +100,40 @@ export const useUpdateAcademicYear = () => {
                         year.id === id ? { ...year, ...updateData } : year
                     )
             );
-
-            return { previousYear, previousYearsList }; // Return context for onError
+            return { previousYear, previousYearsList };
+        },
+        onSuccess: (updatedAcademicYear, variables) => {
+            queryClient.setQueryData<AcademicYear[]>(
+                ACADEMIC_YEAR_QUERY_KEYS.lists(),
+                (old) =>
+                    old?.map((academicYear) =>
+                        academicYear.id === variables.id
+                            ? updatedAcademicYear
+                            : academicYear
+                    ) || []
+            );
+            queryClient.setQueryData(
+                ACADEMIC_YEAR_QUERY_KEYS.detail(variables.id),
+                updatedAcademicYear
+            );
+            showToast.success("Academic year updated successfully");
         },
         onError: (err, variables, context) => {
-            console.error(
-                `Failed optimistic update for ID ${variables.id}:`,
-                err
-            );
-            // Rollback to the previous data if the mutation fails
             if (context?.previousYear) {
-                // Now 'context' is correctly typed
                 queryClient.setQueryData(
                     ACADEMIC_YEAR_QUERY_KEYS.detail(variables.id),
                     context.previousYear
                 );
             }
             if (context?.previousYearsList) {
-                // Now 'context' is correctly typed
                 queryClient.setQueryData(
                     ACADEMIC_YEAR_QUERY_KEYS.lists(),
                     context.previousYearsList
                 );
             }
+            showToast.error(err?.message || "Failed to update academic year");
         },
         onSettled: (data, error, variables) => {
-            // Always refetch to ensure consistency after optimistic update or rollback
             queryClient.invalidateQueries({
                 queryKey: ACADEMIC_YEAR_QUERY_KEYS.detail(variables.id),
             });
@@ -148,28 +144,16 @@ export const useUpdateAcademicYear = () => {
     });
 };
 
-// --- Mutation Hook: Soft Delete Academic Year ---
+// Soft delete an academic year
 export const useSoftDeleteAcademicYear = () => {
     const queryClient = useQueryClient();
     return useMutation<
-        void, // TData
-        Error, // TError
-        IdType, // TVariables
-        // TContext
+        void,
+        Error,
+        IdType,
         { previousYearsList: AcademicYear[] | undefined }
     >({
-        mutationFn: (id) => academicYearService.softDeleteAcademicYear(id),
-        onSuccess: (_, id) => {
-            // Invalidate the list of academic years to reflect the deletion
-            queryClient.invalidateQueries({
-                queryKey: ACADEMIC_YEAR_QUERY_KEYS.lists(),
-            });
-            // Optionally, remove the specific academic year from cache
-            queryClient.removeQueries({
-                queryKey: ACADEMIC_YEAR_QUERY_KEYS.detail(id),
-            });
-        },
-        // Optional: Optimistic update for deletion
+        mutationFn: (id) => academicYearService.deleteAcademicYear(id),
         onMutate: async (idToDelete) => {
             await queryClient.cancelQueries({
                 queryKey: ACADEMIC_YEAR_QUERY_KEYS.lists(),
@@ -177,25 +161,29 @@ export const useSoftDeleteAcademicYear = () => {
             const previousYearsList = queryClient.getQueryData<AcademicYear[]>(
                 ACADEMIC_YEAR_QUERY_KEYS.lists()
             );
-
             queryClient.setQueryData<AcademicYear[]>(
                 ACADEMIC_YEAR_QUERY_KEYS.lists(),
                 (old) => old?.filter((year) => year.id !== idToDelete)
             );
             return { previousYearsList };
         },
+        onSuccess: (_, deletedId) => {
+            queryClient.invalidateQueries({
+                queryKey: ACADEMIC_YEAR_QUERY_KEYS.lists(),
+            });
+            queryClient.removeQueries({
+                queryKey: ACADEMIC_YEAR_QUERY_KEYS.detail(deletedId),
+            });
+            showToast.success("Academic year deleted successfully");
+        },
         onError: (err, idToDelete, context) => {
-            console.error(
-                `Failed optimistic deletion for ID ${idToDelete}:`,
-                err
-            );
             if (context?.previousYearsList) {
-                // Now 'context' is correctly typed
                 queryClient.setQueryData(
                     ACADEMIC_YEAR_QUERY_KEYS.lists(),
                     context.previousYearsList
                 );
             }
+            showToast.error(err?.message || "Failed to delete academic year");
         },
         onSettled: (_data, _error, _idToDelete) => {
             queryClient.invalidateQueries({
@@ -203,4 +191,40 @@ export const useSoftDeleteAcademicYear = () => {
             });
         },
     });
+};
+
+// Calculate academic year statistics
+export const useAcademicYearStats = () => {
+    const { data: academicYears = [], isLoading } = useAllAcademicYears();
+    const stats: AcademicYearStats = {
+        totalAcademicYears: academicYears.length,
+        activeYearsCount: academicYears.filter((year) => !year.isDeleted)
+            .length,
+        currentYear: getCurrentAcademicYear(academicYears),
+        upcomingYear: getUpcomingAcademicYear(academicYears),
+    };
+    return { stats, isLoading };
+};
+
+// Fetch the active academic year
+export const useActiveAcademicYear = () => {
+    return useQuery<AcademicYear | null, Error>({
+        queryKey: ACADEMIC_YEAR_QUERY_KEYS.active(),
+        queryFn: () => academicYearService.getActiveAcademicYear(),
+        staleTime: 5 * 60 * 1000,
+    });
+};
+
+// Get the current academic year
+const getCurrentAcademicYear = (
+    academicYears: AcademicYear[]
+): AcademicYear | null => {
+    return academicYears.find((year) => year.isActive) || null;
+};
+
+// Get the upcoming academic year (returns null as per spec)
+const getUpcomingAcademicYear = (
+    _academicYears: AcademicYear[]
+): AcademicYear | null => {
+    return null;
 };

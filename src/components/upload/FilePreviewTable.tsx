@@ -29,7 +29,7 @@ export const FilePreviewTable: React.FC<FilePreviewTableProps> = ({
         <Card className="bg-light-background dark:bg-dark-muted-background shadow-sm border border-light-secondary dark:border-dark-secondary rounded-2xl overflow-hidden">
             <div className="p-4 border-b border-light-secondary dark:border-dark-secondary">
                 <div className="flex items-center gap-3">
-                    <TableCellsIcon className="h-8 w-8 text-primary-main" />
+                    <TableCellsIcon className="h-8 w-8 text-light-highlight dark:text-dark-highlight" />
                     <h2 className="text-2xl font-semibold text-light-text dark:text-dark-text">
                         {activeTable.type} Preview
                     </h2>

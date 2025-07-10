@@ -111,7 +111,7 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <Filter className="h-5 w-5 text-primary-main" />
+                            <Filter className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <div>
                             <h3 className="text-lg font-semibold text-light-text dark:text-dark-text">
@@ -123,7 +123,7 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
                             </p>
                         </div>
                         {getActiveFiltersCount() > 0 && (
-                            <Badge className="bg-primary-main text-white font-medium">
+                            <Badge className="bg-light-highlight dark:bg-dark-highlight text-white font-medium">
                                 {getActiveFiltersCount()} active
                             </Badge>
                         )}

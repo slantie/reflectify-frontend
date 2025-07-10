@@ -102,7 +102,7 @@ const NavItemComponent: React.FC<NavItemComponentProps> = ({
                 w-5 h-5 flex-shrink-0
                 ${
                     isActive
-                        ? "text-primary-main"
+                        ? "text-light-highlight dark:text-dark-highlight"
                         : "text-light-muted-text dark:text-dark-muted-text"
                 }
                 ${isCollapsed ? "mx-auto" : ""}
@@ -117,7 +117,7 @@ const NavItemComponent: React.FC<NavItemComponentProps> = ({
                     </div>
 
                     {!isCollapsed && item.badge && (
-                        <span className="px-2 py-1 text-xs font-medium bg-primary-main text-white rounded-full">
+                        <span className="px-2 py-1 text-xs font-medium bg-light-highlight dark:bg-dark-highlight text-white rounded-full">
                             {item.badge}
                         </span>
                     )}
@@ -145,7 +145,7 @@ const NavItemComponent: React.FC<NavItemComponentProps> = ({
                 w-5 h-5 flex-shrink-0
                 ${
                     isParentActive
-                        ? "text-primary-main"
+                        ? "text-light-highlight dark:text-dark-highlight"
                         : "text-light-muted-text dark:text-dark-muted-text"
                 }
                 ${isCollapsed ? "mx-auto" : ""}
@@ -162,7 +162,7 @@ const NavItemComponent: React.FC<NavItemComponentProps> = ({
                     {!isCollapsed && (
                         <div className="flex items-center gap-2">
                             {item.badge && (
-                                <span className="px-2 py-1 text-xs font-medium bg-primary-main text-white rounded-full">
+                                <span className="px-2 py-1 text-xs font-medium bg-light-highlight dark:bg-dark-highlight text-white rounded-full">
                                     {item.badge}
                                 </span>
                             )}

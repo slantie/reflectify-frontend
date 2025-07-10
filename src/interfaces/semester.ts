@@ -1,28 +1,31 @@
-// src/interfaces/semester.ts
+/**
+ * @file src/interfaces/semester.ts
+ * @description Interfaces for Semester entity and related API data
+ */
 
 import { IdType } from "./common";
-import { Department } from "./department"; // Assuming Semester links to Department
-import { AcademicYear } from "./academicYear"; // Assuming Semester links to AcademicYear
+import { Department } from "./department";
+import { AcademicYear } from "./academicYear";
 
-// Full Semester Model (as returned from GET /semesters or after create/update)
+/**
+ * Represents a semester entity.
+ */
 export interface Semester {
     id: IdType;
-    name: string; // e.g., "Semester 1", "Odd Semester", "Even Semester"
-    semesterNumber: number; // e.g., 1, 2, 3...
-    academicYearId: IdType; // Foreign key to AcademicYear
-    departmentId: IdType; // Foreign key to Department
-    // Add any other fields present in your Semester Prisma model
-    createdAt: string; // ISO date string
-    updatedAt: string; // ISO date string
-    isActive: boolean; // For soft delete
-
-    // Optional nested relations if your backend includes them on fetch
+    name: string;
+    semesterNumber: number;
+    academicYearId: IdType;
+    departmentId: IdType;
+    createdAt: string;
+    updatedAt: string;
+    isActive: boolean;
     academicYear?: AcademicYear;
     department?: Department;
 }
 
-// Data required to create a new Semester
-// Corresponds to createSemesterSchema in your backend
+/**
+ * Data required to create a new semester.
+ */
 export interface CreateSemesterData {
     name: string;
     semesterNumber: number;
@@ -30,25 +33,28 @@ export interface CreateSemesterData {
     departmentId: IdType;
 }
 
-// Data for updating an existing Semester (all fields are optional)
-// Corresponds to updateSemesterSchema in your backend
+/**
+ * Data for updating an existing semester (all fields optional).
+ */
 export interface UpdateSemesterData {
     name?: string;
     semesterNumber?: number;
     academicYearId?: IdType;
     departmentId?: IdType;
-    isActive?: boolean; // If you allow changing active status
+    isActive?: boolean;
 }
 
-// Data structure for filtering semesters (e.g., for getAllSemesters)
-// Corresponds to getSemestersQuerySchema in your backend
+/**
+ * Data structure for filtering semesters (e.g., for getAllSemesters).
+ */
 export interface GetSemestersFilters {
     departmentId?: IdType;
     academicYearId?: IdType;
-    // Add any other filterable properties
 }
 
-// Data structure for batch creation of semesters
+/**
+ * Data structure for batch creation of semesters.
+ */
 export interface BatchCreateSemesterInput {
     semesters: CreateSemesterData[];
 }

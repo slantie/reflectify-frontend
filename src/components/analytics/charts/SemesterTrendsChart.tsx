@@ -40,7 +40,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                             <div
                                 className={`w-3 h-3 rounded-full ${
                                     entry.stroke === "#3b82f6"
-                                        ? "bg-primary-main"
+                                        ? "bg-light-highlight dark:bg-dark-highlight"
                                         : "bg-secondary-main"
                                 }`}
                             />
@@ -176,7 +176,7 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <TrendingUp className="h-5 w-5 text-primary-main" />
+                            <TrendingUp className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
                             Semester Performance Trends
@@ -203,7 +203,7 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <TrendingUp className="h-5 w-5 text-primary-main" />
+                            <TrendingUp className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
                             Semester Performance Trends

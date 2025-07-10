@@ -1,13 +1,26 @@
-// src/interfaces/auth.ts
+/**
+ * @file src/interfaces/auth.ts
+ * @description Interfaces for authentication API responses and forms
+ */
 
-export interface Admin {
-    id: string;
-    name: string;
-    email: string;
-    designation: string;
-    isSuper: boolean;
+import { Admin } from "./admin";
+
+// API response for login endpoint.
+export interface LoginResponse {
+    token: string;
+    data: {
+        admin: Admin;
+    };
 }
 
+// API response for /me endpoint.
+export interface MeResponse {
+    data: {
+        admin: Admin;
+    };
+}
+
+// Login form input fields.
 export interface LoginFormInputs {
     email: string;
     password: string;

@@ -1,62 +1,59 @@
-// src/hooks/useDepartments.ts
+/**
+@file src/hooks/useDepartments.ts
+@description React Query hooks for department data management
+*/
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import departmentService from "@/services/departmentService"; // Adjust path
+import departmentService from "@/services/departmentService";
 import {
     Department,
     CreateDepartmentData,
     UpdateDepartmentData,
-} from "@/interfaces/department"; // Adjust path
-import { IdType } from "@/interfaces/common"; // Adjust path
+} from "@/interfaces/department";
+import { IdType } from "@/interfaces/common";
 
-// --- Query Keys ---
+// Query keys
 export const DEPARTMENT_QUERY_KEYS = {
     all: ["departments"] as const,
     lists: () => [...DEPARTMENT_QUERY_KEYS.all, "list"] as const,
     detail: (id: IdType) => [...DEPARTMENT_QUERY_KEYS.all, id] as const,
 };
 
-// --- Query Hook: Get All Departments ---
-export const useAllDepartments = () => {
-    return useQuery<Department[], Error>({
+// Get all departments
+export const useAllDepartments = () =>
+    useQuery<Department[], Error>({
         queryKey: DEPARTMENT_QUERY_KEYS.lists(),
         queryFn: departmentService.getAllDepartments,
     });
-};
 
-// --- Query Hook: Get Department by ID ---
-export const useDepartment = (id: IdType) => {
-    return useQuery<Department, Error>({
+// Get department by ID
+export const useDepartment = (id: IdType) =>
+    useQuery<Department, Error>({
         queryKey: DEPARTMENT_QUERY_KEYS.detail(id),
         queryFn: () => departmentService.getDepartmentById(id),
-        enabled: !!id, // Only run the query if 'id' is truthy
+        enabled: !!id,
     });
-};
 
-// --- Mutation Hook: Create Department ---
+// Create department
 export const useCreateDepartment = () => {
     const queryClient = useQueryClient();
     return useMutation<Department, Error, CreateDepartmentData>({
         mutationFn: departmentService.createDepartment,
         onSuccess: () => {
-            // Invalidate the list of departments to refetch it after creation
             queryClient.invalidateQueries({
                 queryKey: DEPARTMENT_QUERY_KEYS.lists(),
             });
         },
-        // Optional: Add optimistic update logic here if desired
-        // onMutate: async (newDept) => { ... }
     });
 };
 
-// --- Mutation Hook: Update Department ---
+// Update department with optimistic update
 export const useUpdateDepartment = () => {
     const queryClient = useQueryClient();
     return useMutation<
-        Department, // TData: Expected return type on success
-        Error, // TError: Expected error type
-        { id: IdType; data: UpdateDepartmentData }, // TVariables: Type of the variables passed to mutate
-        // TContext: Type of the context object returned by onMutate
+        Department,
+        Error,
+        { id: IdType; data: UpdateDepartmentData },
         {
             previousDepartment: Department | undefined;
             previousDepartmentsList: Department[] | undefined;
@@ -65,45 +62,34 @@ export const useUpdateDepartment = () => {
         mutationFn: ({ id, data }) =>
             departmentService.updateDepartment(id, data),
         onSuccess: (updatedDepartment) => {
-            // Invalidate the list to ensure the updated item is reflected
             queryClient.invalidateQueries({
                 queryKey: DEPARTMENT_QUERY_KEYS.lists(),
             });
-            // Invalidate the specific department detail query
             queryClient.invalidateQueries({
                 queryKey: DEPARTMENT_QUERY_KEYS.detail(updatedDepartment.id),
             });
-
-            // Optional: Optimistically update the specific item in the cache
             queryClient.setQueryData<Department>(
                 DEPARTMENT_QUERY_KEYS.detail(updatedDepartment.id),
                 updatedDepartment
             );
         },
         onMutate: async ({ id, data: updateData }) => {
-            // Cancel any outgoing refetches for this department and the list
             await queryClient.cancelQueries({
                 queryKey: DEPARTMENT_QUERY_KEYS.detail(id),
             });
             await queryClient.cancelQueries({
                 queryKey: DEPARTMENT_QUERY_KEYS.lists(),
             });
-
-            // Snapshot the previous values
             const previousDepartment = queryClient.getQueryData<Department>(
                 DEPARTMENT_QUERY_KEYS.detail(id)
             );
             const previousDepartmentsList = queryClient.getQueryData<
                 Department[]
             >(DEPARTMENT_QUERY_KEYS.lists());
-
-            // Optimistically update the specific item in the cache
             queryClient.setQueryData<Department>(
                 DEPARTMENT_QUERY_KEYS.detail(id),
                 (old) => (old ? { ...old, ...updateData } : old)
             );
-
-            // Optimistically update the item within the list (if it exists)
             queryClient.setQueryData<Department[]>(
                 DEPARTMENT_QUERY_KEYS.lists(),
                 (old) =>
@@ -111,15 +97,9 @@ export const useUpdateDepartment = () => {
                         dept.id === id ? { ...dept, ...updateData } : dept
                     )
             );
-
-            return { previousDepartment, previousDepartmentsList }; // Return context for onError
+            return { previousDepartment, previousDepartmentsList };
         },
-        onError: (err, variables, context) => {
-            console.error(
-                `Failed optimistic update for ID ${variables.id}:`,
-                err
-            );
-            // Rollback to the previous data if the mutation fails
+        onError: (_err, variables, context) => {
             if (context?.previousDepartment) {
                 queryClient.setQueryData(
                     DEPARTMENT_QUERY_KEYS.detail(variables.id),
@@ -133,8 +113,7 @@ export const useUpdateDepartment = () => {
                 );
             }
         },
-        onSettled: (data, error, variables) => {
-            // Always refetch to ensure consistency after optimistic update or rollback
+        onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({
                 queryKey: DEPARTMENT_QUERY_KEYS.detail(variables.id),
             });
@@ -145,23 +124,20 @@ export const useUpdateDepartment = () => {
     });
 };
 
-// --- Mutation Hook: Soft Delete Department ---
+// Soft delete department with optimistic update
 export const useSoftDeleteDepartment = () => {
     const queryClient = useQueryClient();
     return useMutation<
-        void, // TData
-        Error, // TError
-        IdType, // TVariables
-        // TContext
+        void,
+        Error,
+        IdType,
         { previousDepartmentsList: Department[] | undefined }
     >({
         mutationFn: (id) => departmentService.softDeleteDepartment(id),
         onSuccess: (_, id) => {
-            // Invalidate the list of departments to reflect the deletion
             queryClient.invalidateQueries({
                 queryKey: DEPARTMENT_QUERY_KEYS.lists(),
             });
-            // Optionally, remove the specific department from cache
             queryClient.removeQueries({
                 queryKey: DEPARTMENT_QUERY_KEYS.detail(id),
             });
@@ -173,18 +149,13 @@ export const useSoftDeleteDepartment = () => {
             const previousDepartmentsList = queryClient.getQueryData<
                 Department[]
             >(DEPARTMENT_QUERY_KEYS.lists());
-
             queryClient.setQueryData<Department[]>(
                 DEPARTMENT_QUERY_KEYS.lists(),
                 (old) => old?.filter((dept) => dept.id !== idToDelete)
             );
             return { previousDepartmentsList };
         },
-        onError: (err, idToDelete, context) => {
-            console.error(
-                `Failed optimistic deletion for ID ${idToDelete}:`,
-                err
-            );
+        onError: (_err, _idToDelete, context) => {
             if (context?.previousDepartmentsList) {
                 queryClient.setQueryData(
                     DEPARTMENT_QUERY_KEYS.lists(),
@@ -192,7 +163,7 @@ export const useSoftDeleteDepartment = () => {
                 );
             }
         },
-        onSettled: (_data, _error, _idToDelete) => {
+        onSettled: () => {
             queryClient.invalidateQueries({
                 queryKey: DEPARTMENT_QUERY_KEYS.lists(),
             });
@@ -200,17 +171,15 @@ export const useSoftDeleteDepartment = () => {
     });
 };
 
-// --- Mutation Hook: Batch Create Departments ---
+// Batch create departments
 export const useBatchCreateDepartments = () => {
     const queryClient = useQueryClient();
     return useMutation<Department[], Error, CreateDepartmentData[]>({
         mutationFn: departmentService.batchCreateDepartments,
         onSuccess: () => {
-            // Invalidate the list of departments to refetch it after batch creation
             queryClient.invalidateQueries({
                 queryKey: DEPARTMENT_QUERY_KEYS.lists(),
             });
         },
-        // No optimistic update for batch create unless you have a robust temporary ID strategy
     });
 };

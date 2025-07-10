@@ -1,67 +1,71 @@
-// src/interfaces/feedbackForm.ts
+/**
+ * @file src/interfaces/feedbackForm.ts
+ * @description Interfaces for Feedback Form entity and related API data
+ */
 
 import { IdType } from "./common";
-import { Department } from "./department"; // Assuming FeedbackForm links to Department
-import { Semester } from "./semester"; // Assuming FeedbackForm links to Semester
-import { Division } from "./division"; // Assuming FeedbackForm links to Division
-import { Subject } from "./subject"; // Assuming FeedbackForm links to Subject
-import { Faculty } from "./faculty"; // Assuming FeedbackForm links to Faculty
+import { Department } from "./department";
+import { Semester } from "./semester";
+import { Division } from "./division";
+import { Subject } from "./subject";
+import { Faculty } from "./faculty";
 
-// Enum for Feedback Form Status (adjust based on your Prisma enum if different)
+/**
+ * Enum for feedback form status.
+ */
 export enum FeedbackFormStatus {
     DRAFT = "DRAFT",
     ACTIVE = "ACTIVE",
     COMPLETED = "COMPLETED",
     ARCHIVED = "ARCHIVED",
-    // Add other statuses as per your backend (e.g., SCHEDULED, PAUSED)
 }
 
-// Interface for a Question within a Feedback Form
-// You'll need to align this with your Question Prisma model
+/**
+ * Interface for a question within a feedback form.
+ */
 export interface FeedbackQuestion {
     id: IdType;
     text: string;
-    type: "RATING" | "TEXT" | "MULTIPLE_CHOICE" | "BOOLEAN"; // Example types, align with backend
-    displayOrder: number; // Order in which the question appears
+    type: "RATING" | "TEXT" | "MULTIPLE_CHOICE" | "BOOLEAN";
+    displayOrder: number;
     categoryId: IdType;
     facultyId: IdType;
     subjectId: IdType;
     batch?: string;
     isRequired?: boolean;
-    // Add any other fields from your Question Prisma model
 }
 
-// Full Feedback Form Model
+/**
+ * Represents a feedback form entity.
+ */
 export interface FeedbackForm {
     id: IdType;
     title: string;
     description?: string;
     departmentId: IdType;
-    academicYearId: IdType; // Assuming forms are tied to academic years
+    academicYearId: IdType;
     semesterId: IdType;
     divisionId: IdType;
-    subjectId?: IdType; // Optional, for subject-specific forms
-    facultyId?: IdType; // Optional, for faculty-specific forms
-    status: FeedbackFormStatus; // Current status of the form
-    startDate?: string; // ISO date string, when form becomes active
-    endDate?: string; // ISO date string, when form closes
-    accessTokens?: string[]; // Array of UUIDs for student access (Sensitive, might not be returned on all GETs)
-    questions: FeedbackQuestion[]; // Array of questions associated with the form
-
-    // Optional nested relations if your backend includes them on fetch
+    subjectId?: IdType;
+    facultyId?: IdType;
+    status: FeedbackFormStatus;
+    startDate?: string;
+    endDate?: string;
+    accessTokens?: string[];
+    questions: FeedbackQuestion[];
     department?: Department;
     semester?: Semester;
     division?: Division;
     subject?: Subject;
     faculty?: Faculty;
-
-    createdAt: string; // ISO date string
-    updatedAt: string; // ISO date string
-    isActive: boolean; // For soft delete
+    createdAt: string;
+    updatedAt: string;
+    isActive: boolean;
 }
 
-// Data required to generate new Feedback Forms
-// Corresponds to generateFormsSchema in your backend
+/**
+ * Data required to generate new feedback forms.
+ */
 export interface GenerateFormsData {
     departmentId: IdType;
     selectedSemesters: {
@@ -70,21 +74,23 @@ export interface GenerateFormsData {
     }[];
 }
 
-// Data required to add a question to an existing form
-// Corresponds to addQuestionToFormSchema in your backend
+/**
+ * Data required to add a question to an existing form.
+ */
 export interface AddQuestionToFormInput {
     categoryId: string;
     facultyId: string;
     subjectId: string;
-    batch?: string; // Optional, defaults to "None"
+    batch?: string;
     text: string;
-    type: "RATING" | "TEXT" | "MULTIPLE_CHOICE" | "BOOLEAN"; // Align with backend
-    isRequired?: boolean; // Optional, defaults to true
+    type: "RATING" | "TEXT" | "MULTIPLE_CHOICE" | "BOOLEAN";
+    isRequired?: boolean;
     displayOrder: number;
 }
 
-// Data for updating an existing Feedback Form (partial update)
-// Corresponds to updateFormSchema in your backend
+/**
+ * Data for updating an existing feedback form (partial update).
+ */
 export interface UpdateFormData {
     title?: string;
     description?: string;
@@ -94,23 +100,24 @@ export interface UpdateFormData {
     divisionId?: IdType;
     subjectId?: IdType;
     facultyId?: IdType;
-    // status and dates are handled by specific PATCH routes
     isActive?: boolean;
 }
 
-// Data for updating a single form's status and dates
-// Corresponds to updateFormStatusSchema in your backend
+/**
+ * Data for updating a single form's status and dates.
+ */
 export interface UpdateFormStatusData {
     status: FeedbackFormStatus;
-    startDate?: string; // ISO date string
-    endDate?: string; // ISO date string
+    startDate?: string;
+    endDate?: string;
 }
 
-// Data for bulk updating forms status and dates
-// Corresponds to bulkUpdateFormStatusSchema in your backend
+/**
+ * Data for bulk updating forms status and dates.
+ */
 export interface BulkUpdateFormStatusData {
     formIds: IdType[];
     status: FeedbackFormStatus;
-    startDate?: string; // ISO date string
-    endDate?: string; // ISO date string
+    startDate?: string;
+    endDate?: string;
 }

@@ -311,7 +311,7 @@ export function DataTable<T extends Record<string, any>>({
                                 className={`px-3 py-1 text-sm border rounded
                          ${
                              page === currentPage
-                                 ? "bg-primary-main text-white border-primary-main"
+                                 ? "bg-light-highlight dark:bg-dark-highlight text-white border-primary-main"
                                  : "border-light-secondary dark:border-dark-secondary bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text hover:bg-light-hover dark:hover:bg-dark-hover"
                          }`}
                             >

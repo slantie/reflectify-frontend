@@ -166,7 +166,7 @@ export const DivisionComparisonChart: React.FC<
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <Users className="h-5 w-5 text-primary-main" />
+                            <Users className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
                             Division Performance Comparison
@@ -193,7 +193,7 @@ export const DivisionComparisonChart: React.FC<
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <Users className="h-5 w-5 text-primary-main" />
+                            <Users className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
                             Division Performance Comparison
@@ -223,7 +223,7 @@ export const DivisionComparisonChart: React.FC<
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <Users className="h-5 w-5 text-primary-main" />
+                            <Users className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
                             Division Performance Comparison
@@ -232,7 +232,7 @@ export const DivisionComparisonChart: React.FC<
                     <div className="flex items-center gap-4">
                         <Badge
                             variant="outline"
-                            className="text-primary-main border-primary-main"
+                            className="text-light-highlight dark:text-dark-highlight border-primary-main"
                         >
                             <BarChart3 className="h-3 w-3 mr-1" />
                             Avg: {stats?.avgRating}

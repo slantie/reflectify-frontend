@@ -1,8 +1,13 @@
-// src/interfaces/college.ts
+/**
+ * @file src/interfaces/college.ts
+ * @description Interfaces for College entity and related API data
+ */
 
 import { IdType } from "./common";
 
-// Full College Model
+/**
+ * Represents a college entity.
+ */
 export interface College {
     id: IdType;
     name: string;
@@ -13,17 +18,17 @@ export interface College {
     zipCode: string;
     country: string;
     contactEmail: string;
-    contactPhone?: string; // Optional
-    website?: string; // Optional
-    establishedYear?: number; // Optional
-    // Add any other fields from your College Prisma model
-    createdAt: string; // ISO date string
-    updatedAt: string; // ISO date string
-    isActive: boolean; // For soft delete
+    contactPhone?: string;
+    website?: string;
+    establishedYear?: number;
+    createdAt: string;
+    updatedAt: string;
+    isActive: boolean;
 }
 
-// Data required to create/upsert a College (for POST /api/v1/colleges)
-// Corresponds to createCollegeSchema in your backend
+/**
+ * Data required to create or upsert a college.
+ */
 export interface CreateCollegeData {
     name: string;
     code: string;
@@ -38,8 +43,9 @@ export interface CreateCollegeData {
     establishedYear?: number;
 }
 
-// Data for updating an existing College (all fields are optional)
-// Corresponds to updateCollegeSchema in your backend
+/**
+ * Data for updating an existing college (all fields optional).
+ */
 export interface UpdateCollegeData {
     name?: string;
     code?: string;
@@ -52,11 +58,12 @@ export interface UpdateCollegeData {
     contactPhone?: string;
     website?: string;
     establishedYear?: number;
-    isActive?: boolean; // If you allow reactivating/deactivating this way
+    isActive?: boolean;
 }
 
-// Data structure for batch update of the primary college
-// Corresponds to batchUpdateCollegeSchema in your backend
+/**
+ * Data structure for batch update of the primary college.
+ */
 export interface BatchUpdateCollegeInput {
-    updates: UpdateCollegeData; // Your controller expects { updates: Partial<CollegeData> }
+    updates: UpdateCollegeData;
 }

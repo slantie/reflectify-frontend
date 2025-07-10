@@ -1,18 +1,20 @@
-// src/interfaces/common.ts
+/**
+ * @file src/interfaces/common.ts
+ * @description Common types and generic API response structure
+ */
 
 /**
- * Generic API Response structure for successful operations.
- * T will be the type of the 'data' field.
+ * Generic API response structure for successful operations.
+ * T is the type of the 'data' field.
  */
 export interface ApiResponse<T> {
     status: "success";
     message?: string;
-    results?: number; // For list responses
+    results?: number;
     data: T;
 }
 
 /**
- * Common structure for an ID parameter.
- * Your backend uses string IDs (UUIDs probably), so string is appropriate.
+ * Common structure for an ID parameter (UUID string).
  */
 export type IdType = string;

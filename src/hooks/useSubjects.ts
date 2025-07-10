@@ -1,4 +1,7 @@
-// src/hooks/useSubjects.ts
+/**
+@file src/hooks/useSubjects.ts
+@description React Query hooks for subjects
+*/
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import subjectService from "@/services/subjectService"; // Adjust path
@@ -10,7 +13,7 @@ import {
 } from "@/interfaces/subject"; // Adjust path
 import { IdType } from "@/interfaces/common"; // Adjust path
 
-// --- Query Keys ---
+// Query keys for subjects
 export const SUBJECT_QUERY_KEYS = {
     all: ["subjects"] as const,
     lists: () => [...SUBJECT_QUERY_KEYS.all, "list"] as const,
@@ -21,7 +24,7 @@ export const SUBJECT_QUERY_KEYS = {
         [...SUBJECT_QUERY_KEYS.all, "abbreviations", deptAbbr] as const,
 };
 
-// --- Query Hook: Get All Subjects ---
+// Get all subjects
 export const useAllSubjects = () => {
     return useQuery<Subject[], Error>({
         queryKey: SUBJECT_QUERY_KEYS.lists(),
@@ -29,16 +32,16 @@ export const useAllSubjects = () => {
     });
 };
 
-// --- Query Hook: Get Subject by ID ---
+// Get subject by ID
 export const useSubject = (id: IdType) => {
     return useQuery<Subject, Error>({
         queryKey: SUBJECT_QUERY_KEYS.detail(id),
         queryFn: () => subjectService.getSubjectById(id),
-        enabled: !!id, // Only run the query if 'id' is truthy
+        enabled: !!id,
     });
 };
 
-// --- Query Hook: Get Subjects by Semester ID ---
+// Get subjects by semester ID
 interface UseSubjectsBySemesterParams {
     semesterId: IdType;
     enabled?: boolean;
@@ -54,7 +57,7 @@ export const useSubjectsBySemester = ({
     });
 };
 
-// --- Query Hook: Get Subject Abbreviations ---
+// Get subject abbreviations
 interface UseSubjectAbbreviationsParams {
     deptAbbr?: string;
     enabled?: boolean;
@@ -70,26 +73,23 @@ export const useSubjectAbbreviations = ({
     });
 };
 
-// --- Mutation Hook: Create Subject ---
+// Create subject
 export const useCreateSubject = () => {
     const queryClient = useQueryClient();
     return useMutation<Subject, Error, CreateSubjectData>({
         mutationFn: subjectService.createSubject,
         onSuccess: () => {
-            // Invalidate all subject lists and abbreviations to refetch them after creation
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_QUERY_KEYS.lists(),
             });
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_QUERY_KEYS.abbreviations(),
-            }); // Invalidate all abbreviations
+            });
         },
-        // Optional: Add optimistic update logic here if desired
-        // onMutate: async (newSubject) => { ... }
     });
 };
 
-// --- Mutation Hook: Update Subject ---
+// Update subject
 export const useUpdateSubject = () => {
     const queryClient = useQueryClient();
     return useMutation<
@@ -104,31 +104,21 @@ export const useUpdateSubject = () => {
     >({
         mutationFn: ({ id, data }) => subjectService.updateSubject(id, data),
         onSuccess: (updatedSubject) => {
-            // Invalidate the list to ensure the updated item is reflected
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_QUERY_KEYS.lists(),
             });
-            // Invalidate the specific subject detail query
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_QUERY_KEYS.detail(updatedSubject.id),
             });
-            // Invalidate abbreviations if department or name might affect them
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_QUERY_KEYS.abbreviations(),
             });
-            // Invalidate by semester if subject is part of a semester's subjects
-            // This would require knowing the semesterId, which isn't directly in Subject interface.
-            // If needed, you'd fetch the subject first or pass semesterId to the mutation.
-            // For now, a broader invalidation or specific refetch might be needed.
-
-            // Optional: Optimistically update the specific item in the cache
             queryClient.setQueryData<Subject>(
                 SUBJECT_QUERY_KEYS.detail(updatedSubject.id),
                 updatedSubject
             );
         },
         onMutate: async ({ id, data: updateData }) => {
-            // Cancel any outgoing refetches for this subject and the list
             await queryClient.cancelQueries({
                 queryKey: SUBJECT_QUERY_KEYS.detail(id),
             });
@@ -138,22 +128,16 @@ export const useUpdateSubject = () => {
             await queryClient.cancelQueries({
                 queryKey: SUBJECT_QUERY_KEYS.abbreviations(),
             });
-
-            // Snapshot the previous values
             const previousSubject = queryClient.getQueryData<Subject>(
                 SUBJECT_QUERY_KEYS.detail(id)
             );
             const previousSubjectsList = queryClient.getQueryData<Subject[]>(
                 SUBJECT_QUERY_KEYS.lists()
             );
-
-            // Optimistically update the specific item in the cache
             queryClient.setQueryData<Subject>(
                 SUBJECT_QUERY_KEYS.detail(id),
                 (old) => (old ? { ...old, ...updateData } : old)
             );
-
-            // Optimistically update the item within the list (if it exists)
             queryClient.setQueryData<Subject[]>(
                 SUBJECT_QUERY_KEYS.lists(),
                 (old) =>
@@ -163,15 +147,9 @@ export const useUpdateSubject = () => {
                             : subject
                     )
             );
-
-            return { previousSubject, previousSubjectsList }; // Return context for onError
+            return { previousSubject, previousSubjectsList };
         },
-        onError: (err, variables, context) => {
-            console.error(
-                `Failed optimistic update for ID ${variables.id}:`,
-                err
-            );
-            // Rollback to the previous data if the mutation fails
+        onError: (_err, variables, context) => {
             if (context?.previousSubject) {
                 queryClient.setQueryData(
                     SUBJECT_QUERY_KEYS.detail(variables.id),
@@ -185,8 +163,7 @@ export const useUpdateSubject = () => {
                 );
             }
         },
-        onSettled: (data, error, variables) => {
-            // Always refetch to ensure consistency after optimistic update or rollback
+        onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_QUERY_KEYS.detail(variables.id),
             });
@@ -196,14 +173,11 @@ export const useUpdateSubject = () => {
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_QUERY_KEYS.abbreviations(),
             });
-            // If the subject is part of a semester, you might need to invalidate that specific semester's subject list
-            // This would require knowing the semesterId, which isn't directly available here.
-            // If this is a common pattern, consider passing semesterId as part of variables or fetching it in onMutate.
         },
     });
 };
 
-// --- Mutation Hook: Soft Delete Subject ---
+// Soft delete subject
 export const useSoftDeleteSubject = () => {
     const queryClient = useQueryClient();
     return useMutation<
@@ -215,14 +189,12 @@ export const useSoftDeleteSubject = () => {
     >({
         mutationFn: (id) => subjectService.softDeleteSubject(id),
         onSuccess: (_, id) => {
-            // Invalidate the list of subjects and abbreviations to reflect the deletion
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_QUERY_KEYS.lists(),
             });
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_QUERY_KEYS.abbreviations(),
             });
-            // Optionally, remove the specific subject from cache
             queryClient.removeQueries({
                 queryKey: SUBJECT_QUERY_KEYS.detail(id),
             });
@@ -234,22 +206,16 @@ export const useSoftDeleteSubject = () => {
             await queryClient.cancelQueries({
                 queryKey: SUBJECT_QUERY_KEYS.abbreviations(),
             });
-
             const previousSubjectsList = queryClient.getQueryData<Subject[]>(
                 SUBJECT_QUERY_KEYS.lists()
             );
-
             queryClient.setQueryData<Subject[]>(
                 SUBJECT_QUERY_KEYS.lists(),
                 (old) => old?.filter((subject) => subject.id !== idToDelete)
             );
             return { previousSubjectsList };
         },
-        onError: (err, idToDelete, context) => {
-            console.error(
-                `Failed optimistic deletion for ID ${idToDelete}:`,
-                err
-            );
+        onError: (_err, _idToDelete, context) => {
             if (context?.previousSubjectsList) {
                 queryClient.setQueryData(
                     SUBJECT_QUERY_KEYS.lists(),
@@ -257,7 +223,7 @@ export const useSoftDeleteSubject = () => {
                 );
             }
         },
-        onSettled: (_data, _error, _idToDelete) => {
+        onSettled: () => {
             queryClient.invalidateQueries({
                 queryKey: SUBJECT_QUERY_KEYS.lists(),
             });
@@ -268,7 +234,7 @@ export const useSoftDeleteSubject = () => {
     });
 };
 
-// --- Mutation Hook: Batch Create Subjects ---
+// Batch create subjects
 export const useBatchCreateSubjects = () => {
     const queryClient = useQueryClient();
     return useMutation<Subject[], Error, CreateSubjectData[]>({

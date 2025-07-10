@@ -1,7 +1,11 @@
-// src/hooks/useFacultyModals.ts
+/**
+@file src/hooks/faculty/useFacultyModals.ts
+@description Modal state and handlers for faculty add/edit/delete dialogs
+*/
+
 import { useState, useCallback } from "react";
-import { Faculty } from "@/interfaces/faculty"; // Adjust path
-import { IdType } from "@/interfaces/common"; // Adjust path
+import { Faculty } from "@/interfaces/faculty";
+import { IdType } from "@/interfaces/common";
 
 interface UseFacultyModalsResult {
     isAddModalOpen: boolean;

@@ -1,15 +1,18 @@
-// src/hooks/useDivisions.ts
+/**
+@file src/hooks/useDivisions.ts
+@description React Query hooks for division data management
+*/
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import divisionService from "@/services/divisionService"; // Adjust path
+import divisionService from "@/services/divisionService";
 import {
     Division,
     CreateDivisionData,
     UpdateDivisionData,
-} from "@/interfaces/division"; // Adjust path
-import { IdType } from "@/interfaces/common"; // Adjust path
+} from "@/interfaces/division";
+import { IdType } from "@/interfaces/common";
 
-// --- Query Keys ---
+// Query keys
 export const DIVISION_QUERY_KEYS = {
     all: ["divisions"] as const,
     lists: (departmentId?: IdType, semesterId?: IdType) =>
@@ -17,7 +20,7 @@ export const DIVISION_QUERY_KEYS = {
     detail: (id: IdType) => [...DIVISION_QUERY_KEYS.all, id] as const,
 };
 
-// --- Query Hook: Get All Divisions ---
+// Get all divisions
 interface UseAllDivisionsParams {
     departmentId?: IdType;
     semesterId?: IdType;
@@ -27,51 +30,42 @@ export const useAllDivisions = ({
     departmentId,
     semesterId,
     enabled = true,
-}: UseAllDivisionsParams = {}) => {
-    return useQuery<Division[], Error>({
+}: UseAllDivisionsParams = {}) =>
+    useQuery<Division[], Error>({
         queryKey: DIVISION_QUERY_KEYS.lists(departmentId, semesterId),
         queryFn: () =>
             divisionService.getAllDivisions(departmentId, semesterId),
-        enabled: enabled, // Query runs by default unless explicitly disabled
+        enabled,
     });
-};
 
-// --- Query Hook: Get Division by ID ---
-export const useDivision = (id: IdType) => {
-    return useQuery<Division, Error>({
+// Get division by ID
+export const useDivision = (id: IdType) =>
+    useQuery<Division, Error>({
         queryKey: DIVISION_QUERY_KEYS.detail(id),
         queryFn: () => divisionService.getDivisionById(id),
-        enabled: !!id, // Only run the query if 'id' is truthy
+        enabled: !!id,
     });
-};
 
-// --- Mutation Hook: Create Division ---
+// Create division
 export const useCreateDivision = () => {
     const queryClient = useQueryClient();
     return useMutation<Division, Error, CreateDivisionData>({
         mutationFn: divisionService.createDivision,
-        onSuccess: (_newDivision) => {
-            // Invalidate all division lists that might be affected
-            // This will refetch any useAllDivisions queries
+        onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: DIVISION_QUERY_KEYS.all,
-            }); // Invalidate all lists
-            // Optionally, specifically invalidate lists with relevant department/semester IDs if known
-            // queryClient.invalidateQueries({ queryKey: DIVISION_QUERY_KEYS.lists(newDivision.departmentId, newDivision.semesterId) });
+            });
         },
-        // Optional: Add optimistic update logic here if desired
-        // onMutate: async (newDivision) => { ... }
     });
 };
 
-// --- Mutation Hook: Update Division ---
+// Update division with optimistic update
 export const useUpdateDivision = () => {
     const queryClient = useQueryClient();
     return useMutation<
-        Division, // TData: Expected return type on success
-        Error, // TError: Expected error type
-        { id: IdType; data: UpdateDivisionData }, // TVariables: Type of the variables passed to mutate
-        // TContext: Type of the context object returned by onMutate
+        Division,
+        Error,
+        { id: IdType; data: UpdateDivisionData },
         {
             previousDivision: Division | undefined;
             previousDivisionsList: Division[] | undefined;
@@ -79,45 +73,34 @@ export const useUpdateDivision = () => {
     >({
         mutationFn: ({ id, data }) => divisionService.updateDivision(id, data),
         onSuccess: (updatedDivision) => {
-            // Invalidate all division lists that might be affected
             queryClient.invalidateQueries({
                 queryKey: DIVISION_QUERY_KEYS.all,
             });
-            // Invalidate the specific division detail query
             queryClient.invalidateQueries({
                 queryKey: DIVISION_QUERY_KEYS.detail(updatedDivision.id),
             });
-
-            // Optional: Optimistically update the specific item in the cache
             queryClient.setQueryData<Division>(
                 DIVISION_QUERY_KEYS.detail(updatedDivision.id),
                 updatedDivision
             );
         },
         onMutate: async ({ id, data: updateData }) => {
-            // Cancel any outgoing refetches for this division and relevant lists
             await queryClient.cancelQueries({
                 queryKey: DIVISION_QUERY_KEYS.detail(id),
             });
             await queryClient.cancelQueries({
                 queryKey: DIVISION_QUERY_KEYS.all,
             });
-
-            // Snapshot the previous values
             const previousDivision = queryClient.getQueryData<Division>(
                 DIVISION_QUERY_KEYS.detail(id)
             );
             const previousDivisionsList = queryClient.getQueryData<Division[]>(
                 DIVISION_QUERY_KEYS.all
             );
-
-            // Optimistically update the specific item in the cache
             queryClient.setQueryData<Division>(
                 DIVISION_QUERY_KEYS.detail(id),
                 (old) => (old ? { ...old, ...updateData } : old)
             );
-
-            // Optimistically update the item within the list (if it exists)
             queryClient.setQueryData<Division[]>(
                 DIVISION_QUERY_KEYS.all,
                 (old) =>
@@ -125,15 +108,9 @@ export const useUpdateDivision = () => {
                         div.id === id ? { ...div, ...updateData } : div
                     )
             );
-
-            return { previousDivision, previousDivisionsList }; // Return context for onError
+            return { previousDivision, previousDivisionsList };
         },
-        onError: (err, variables, context) => {
-            console.error(
-                `Failed optimistic update for ID ${variables.id}:`,
-                err
-            );
-            // Rollback to the previous data if the mutation fails
+        onError: (_err, variables, context) => {
             if (context?.previousDivision) {
                 queryClient.setQueryData(
                     DIVISION_QUERY_KEYS.detail(variables.id),
@@ -147,8 +124,7 @@ export const useUpdateDivision = () => {
                 );
             }
         },
-        onSettled: (data, error, variables) => {
-            // Always refetch to ensure consistency after optimistic update or rollback
+        onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({
                 queryKey: DIVISION_QUERY_KEYS.detail(variables.id),
             });
@@ -159,23 +135,20 @@ export const useUpdateDivision = () => {
     });
 };
 
-// --- Mutation Hook: Soft Delete Division ---
+// Soft delete division with optimistic update
 export const useSoftDeleteDivision = () => {
     const queryClient = useQueryClient();
     return useMutation<
-        void, // TData
-        Error, // TError
-        IdType, // TVariables
-        // TContext
+        void,
+        Error,
+        IdType,
         { previousDivisionsList: Division[] | undefined }
     >({
         mutationFn: (id) => divisionService.softDeleteDivision(id),
         onSuccess: (_, id) => {
-            // Invalidate all division lists to reflect the deletion
             queryClient.invalidateQueries({
                 queryKey: DIVISION_QUERY_KEYS.all,
             });
-            // Optionally, remove the specific division from cache
             queryClient.removeQueries({
                 queryKey: DIVISION_QUERY_KEYS.detail(id),
             });
@@ -187,18 +160,13 @@ export const useSoftDeleteDivision = () => {
             const previousDivisionsList = queryClient.getQueryData<Division[]>(
                 DIVISION_QUERY_KEYS.all
             );
-
             queryClient.setQueryData<Division[]>(
                 DIVISION_QUERY_KEYS.all,
                 (old) => old?.filter((div) => div.id !== idToDelete)
             );
             return { previousDivisionsList };
         },
-        onError: (err, idToDelete, context) => {
-            console.error(
-                `Failed optimistic deletion for ID ${idToDelete}:`,
-                err
-            );
+        onError: (_err, _idToDelete, context) => {
             if (context?.previousDivisionsList) {
                 queryClient.setQueryData(
                     DIVISION_QUERY_KEYS.all,
@@ -206,7 +174,7 @@ export const useSoftDeleteDivision = () => {
                 );
             }
         },
-        onSettled: (_data, _error, _idToDelete) => {
+        onSettled: () => {
             queryClient.invalidateQueries({
                 queryKey: DIVISION_QUERY_KEYS.all,
             });
@@ -214,17 +182,15 @@ export const useSoftDeleteDivision = () => {
     });
 };
 
-// --- Mutation Hook: Batch Create Divisions ---
+// Batch create divisions
 export const useBatchCreateDivisions = () => {
     const queryClient = useQueryClient();
     return useMutation<Division[], Error, CreateDivisionData[]>({
         mutationFn: divisionService.batchCreateDivisions,
         onSuccess: () => {
-            // Invalidate all division lists to refetch it after batch creation
             queryClient.invalidateQueries({
                 queryKey: DIVISION_QUERY_KEYS.all,
             });
         },
-        // No optimistic update for batch create unless you have a robust temporary ID strategy
     });
 };
