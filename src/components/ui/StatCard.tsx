@@ -13,7 +13,7 @@ interface StatCardProps {
     isLoading?: boolean;
     error?: string | null;
     subtitle?: string;
-    className?: string;
+    className?: string; // Additional classes for the Card wrapper
 }
 
 export const StatCard = ({
@@ -31,45 +31,64 @@ export const StatCard = ({
     return (
         <Card
             onClick={onClick}
+            // Use clsx for cleaner conditional class application
             className={clsx(
-                "relative overflow-hidden transition-all duration-300 rounded-2xl group",
+                "relative overflow-hidden transition-all duration-300 rounded-2xl",
                 "bg-light-background dark:bg-dark-muted-background",
                 "border border-light-secondary dark:border-dark-secondary",
+                "flex flex-col justify-between", // Ensure content is spaced
                 {
-                    "cursor-pointer": isClickable,
-                    "hover:bg-light-muted-background dark:hover:bg-dark-noisy-background hover:shadow-lg":
-                        isClickable,
+                    "cursor-pointer group hover:shadow-lg": isClickable, // Added 'group' here for hover effects
+                    "hover:border-primary-main": isClickable, // Border color change on hover
+                    "hover:bg-light-muted-background dark:hover:bg-dark-noisy-background":
+                        isClickable, // Background change
                 },
                 className
             )}
+            // Add accessibility attributes for clickable cards
+            {...(isClickable && {
+                role: "button",
+                tabIndex: 0, // Make it focusable
+                "aria-label": `View details for ${title}`,
+            })}
         >
+            {/* Animated left border for clickable cards */}
             {isClickable && (
-                <div className="absolute top-0 left-0 w-2 h-full bg-light-highlight dark:bg-dark-highlight transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+                <div className="absolute top-0 left-0 w-2 h-full bg-primary-main transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
             )}
-            <div className="p-4 flex justify-between items-center">
-                <div className="space-y-1">
-                    <p className="text-base font-medium text-light-muted-text dark:text-dark-muted-text">
+
+            <div className="p-5 flex justify-between items-start gap-4">
+                {" "}
+                {/* Increased padding slightly */}
+                <div className="flex-grow">
+                    {" "}
+                    {/* Added flex-grow */}
+                    <p className="text-sm font-semibold text-light-muted-text dark:text-dark-muted-text">
+                        {" "}
+                        {/* Made title text slightly smaller and bolder */}
                         {title}
                     </p>
-                    <div className="text-4xl font-bold group-hover:text-light-highlight dark:text-dark-highlight transition-colors">
+                    <div className="text-4xl md:text-5xl font-extrabold text-light-text dark:text-dark-text group-hover:text-primary-main transition-colors duration-300">
+                        {" "}
+                        {/* Larger, bolder value, with primary hover color */}
                         {error ? (
                             <div
-                                className="flex items-center text-red-500"
-                                title={error}
+                                className="flex items-center text-negative-main" // Using negative-main for error color
+                                title={error} // Added title for hover info on error
                             >
-                                {" "}
-                                {/* Added title for hover info */}
-                                <AlertCircle className="w-6 h-6 mr-2" />
-                                <span className="text-sm">Error</span>
+                                <AlertCircle className="w-8 h-8 mr-2" />{" "}
+                                {/* Larger error icon */}
+                                <span className="text-lg">Error</span>
                             </div>
                         ) : isLoading ? (
                             <div className="flex items-center">
-                                <div className="animate-spin rounded-full h-6 w-6 border-2 border-current border-t-transparent"></div>
+                                <div className="animate-spin rounded-full h-8 w-8 border-4 border-current border-t-transparent text-primary-main"></div>{" "}
+                                {/* Larger spinner, primary color */}
                             </div>
                         ) : typeof value === "number" ? (
                             <CountUp
                                 end={value}
-                                duration={2}
+                                duration={2.5} // Slightly longer duration for smoother animation
                                 separator=","
                                 enableScrollSpy={true}
                                 scrollSpyOnce={true}
@@ -79,13 +98,16 @@ export const StatCard = ({
                         )}
                     </div>
                     {subtitle && (
-                        <p className="text-xs text-light-muted-text dark:text-dark-muted-text">
+                        <p className="text-xs text-light-muted-text dark:text-dark-muted-text mt-1">
+                            {" "}
+                            {/* Added margin top for spacing */}
                             {subtitle}
                         </p>
                     )}
                 </div>
-                {/* Icon to be scaled up when the card is hovered */}
-                <Icon className="h-14 w-14 text-light-highlight dark:text-dark-highlight transition-all duration-300 group-hover:scale-110" />
+                {/* Icon scaled up and slightly repositioned on hover */}
+                <Icon className="h-20 w-20 text-primary-main/70 group-hover:text-primary-main transition-all duration-300 group-hover:scale-110 flex-shrink-0" />{" "}
+                {/* Larger icon, subtle default color, primary on hover */}
             </div>
         </Card>
     );

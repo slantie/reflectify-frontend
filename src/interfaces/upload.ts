@@ -68,7 +68,7 @@ export interface TableData {
 export interface FileUploadRoute {
     route: string;
     label: string;
-    icon: string;
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
     requiredParams?: string[];
     referenceFileUrl?: string;
     description?: string;

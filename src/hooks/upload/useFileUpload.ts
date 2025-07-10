@@ -171,10 +171,10 @@ export const useFileUpload = (): UseFileUploadResult => {
                     return;
                 }
                 const jsonData: UploadData[] = [];
-                const maxRowsToPreview = 10;
-                let processedRows = 0;
+                // Process all rows instead of limiting to first 10
                 worksheet.eachRow((row, rowNumber) => {
-                    if (rowNumber > 1 && processedRows < maxRowsToPreview) {
+                    if (rowNumber > 1) {
+                        // Skip header row
                         const rowData: UploadData = {};
                         headers.forEach((headerName, index) => {
                             const cell = row.getCell(index + 1);
@@ -196,19 +196,19 @@ export const useFileUpload = (): UseFileUploadResult => {
                                     cell.value?.toString() ?? null;
                             }
                         });
+                        // Only add rows that have at least one non-empty value
                         if (
                             Object.values(rowData).some(
                                 (value) => value !== null && value !== ""
                             )
                         ) {
                             jsonData.push(rowData);
-                            processedRows++;
                         }
                     }
                 });
                 if (jsonData.length === 0) {
                     showToast.error(
-                        "No data found in the Excel file after headers or first 10 rows are empty."
+                        "No data found in the Excel file after headers."
                     );
                     setActiveTable(null);
                     return;

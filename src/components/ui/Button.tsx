@@ -11,7 +11,7 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 default:
-                    "bg-light-highlight dark:bg-dark-highlight text-white hover:bg-primary-dark focus:ring-primary-dark/50 shadow-lg shadow-primary-dark/30 dark:shadow-primary-main/20",
+                    "bg-light-highlight dark:bg-dark-highlight text-light-text dark:text-dark-text hover:bg-primary-dark",
                 destructive:
                     "bg-negative-main text-white hover:bg-negative-dark focus:ring-negative-main/50",
                 outline:
@@ -21,7 +21,7 @@ const buttonVariants = cva(
                 ghost: "text-secondary-darker hover:bg-secondary-lighter dark:text-dark-text dark:hover:bg-dark-hover focus:ring-secondary-main/50",
                 link: "text-light-highlight dark:text-dark-highlight underline-offset-4 hover:underline focus:ring-primary-main/50",
                 gradient:
-                    "bg-gradient-to-r from-primary-dark to-primary-main text-white hover:from-primary-darker hover:to-primary-dark focus:ring-primary-dark/50 shadow-lg shadow-primary-dark/30 dark:shadow-primary-main/20",
+                    "bg-gradient-to-r from-primary-dark to-primary-main text-white hover:from-primary-darker hover:to-primary-dark focus:ring-primary-dark/50",
             },
             size: {
                 default: "h-10 px-4 py-2 text-sm",

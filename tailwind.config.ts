@@ -39,7 +39,7 @@ export default {
                     darker: "#c2410c", // Even darker for contrast
                     // New shades for loading toast specific needs
                     textDark: "#ffb762", // Brighter text for dark loading toast
-                    bgDark: "#2d1600", // Very dark, slightly orange-tinted background for dark loading toast
+                    bgDark: "#8d4a1e", // Very dark, slightly orange-tinted background for dark loading toast
                     borderLight: "#fbd29a", // Lighter border for light loading toast
                 },
 

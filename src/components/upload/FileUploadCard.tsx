@@ -1,19 +1,12 @@
 // src/components/upload/FileUploadCard.tsx
 "use client";
 
-import React, { useEffect } from "react";
-import {
-    DocumentArrowUpIcon,
-    XMarkIcon,
-    ArrowDownTrayIcon,
-} from "@heroicons/react/24/outline";
+import React from "react";
+import { XMarkIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { Card } from "@/components/ui/Card";
 import { Loader } from "@/components/common/Loader";
-import {
-    FileUploadRoute,
-    FacultyMatrixUploadParams,
-} from "@/interfaces/upload";
-import { FacultyMatrixUploadInputs } from "./FacultyMatrixUploadInputs"; // Import the new component
+import { FileUploadRoute } from "@/interfaces/upload";
+import { Button } from "../ui";
 
 interface FileUploadCardProps {
     fileKey: string;
@@ -27,11 +20,6 @@ interface FileUploadCardProps {
     onClearFile: (fileKey: string) => void;
     onPreview: (fileKey: string) => Promise<void>;
     onSubmitUpload: (fileKey: string) => Promise<void>;
-    // Props for Faculty Matrix specific parameters
-    facultyMatrixParams: FacultyMatrixUploadParams;
-    onFacultyMatrixParamsChange: React.Dispatch<
-        React.SetStateAction<FacultyMatrixUploadParams>
-    >;
 }
 
 export const FileUploadCard: React.FC<FileUploadCardProps> = ({
@@ -43,55 +31,24 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
     onClearFile,
     onPreview,
     onSubmitUpload,
-    facultyMatrixParams,
-    onFacultyMatrixParamsChange,
 }) => {
-    const { label, icon, requiredParams, referenceFileUrl, description } =
-        routeConfig;
-
-    // Reset params when fileKey changes or file is cleared
-    useEffect(() => {
-        if (fileKey === "facultyMatrix" && !file) {
-            onFacultyMatrixParamsChange({
-                academicYear: "",
-                semesterRun: "",
-                deptAbbreviation: "",
-            });
-        }
-    }, [fileKey, file, onFacultyMatrixParamsChange]);
-
-    const handleParamChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-    ) => {
-        const { name, value } = e.target;
-        onFacultyMatrixParamsChange((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
-
-    const isFacultyMatrixUpload = fileKey === "facultyMatrix";
-    const canSubmit =
-        file &&
-        (!isFacultyMatrixUpload ||
-            (facultyMatrixParams.academicYear &&
-                facultyMatrixParams.semesterRun &&
-                facultyMatrixParams.deptAbbreviation));
+    const { label, icon, referenceFileUrl, description } = routeConfig;
+    const canSubmit = file && isLoading === false;
 
     return (
         <Card className="bg-light-background dark:bg-dark-muted-background shadow-sm border border-light-secondary dark:border-dark-secondary p-6 rounded-2xl">
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-primary-lighter rounded-xl">
-                            {typeof icon === "string" && icon.length < 3 ? (
-                                <span className="text-xl">{icon}</span>
-                            ) : (
-                                <DocumentArrowUpIcon className="h-5 w-5 text-primary-dark" />
-                            )}
+                        <div className="p-2 bg-light-secondary dark:bg-dark-secondary rounded-xl">
+                            {icon &&
+                                React.createElement(icon, {
+                                    className:
+                                        "h-6 w-6 text-light-highlight dark:text-dark-highlight",
+                                })}
                         </div>
                         <div>
-                            <h2 className="text-lg font-semibold text-light-text dark:text-text">
+                            <h2 className="text-lg font-semibold text-light-text dark:text-dark-text">
                                 {label}
                             </h2>
                             {description && (
@@ -104,16 +61,16 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
 
                     {/* Reference File Download Button */}
                     {referenceFileUrl && (
-                        <button
+                        <Button
                             onClick={() =>
                                 window.open(referenceFileUrl, "_blank")
                             }
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary-dark bg-primary-lighter rounded-lg hover:bg-primary-light transition-colors"
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-light-text dark:text-dark-text bg-light-secondary dark:bg-dark-secondary rounded-lg hover:bg-light-hover hover:dark:bg-dark-hover transition-colors"
                             title="Download reference file"
                         >
-                            <ArrowDownTrayIcon className="h-3 w-3" />
+                            <ArrowDownTrayIcon className="h-5 w-5" />
                             File Format
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -128,9 +85,9 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
                         file:mr-4 file:py-2.5 file:px-4
                         file:rounded-xl file:border-0
                         file:text-sm file:font-semibold
-                        file:bg-primary-lighter file:text-primary-dark
-                        hover:file:bg-primary-light
-                        transition-all cursor-pointer"
+                        file:bg-light-secondary file:dark:bg-dark-secondary file:text-light-highlight file:dark:text-dark-highlight
+                        transition-all cursor-pointer
+                        hover:file:bg-light-hover hover:dark:file:bg-dark-hover"
                 />
 
                 {file && (
@@ -148,14 +105,6 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
                             <XMarkIcon className="h-4 w-4 text-light-tertiary dark:text-dark-tertiary" />
                         </button>
                     </div>
-                )}
-
-                {/* Render the new component for Faculty Matrix specific inputs */}
-                {isFacultyMatrixUpload && requiredParams && (
-                    <FacultyMatrixUploadInputs
-                        params={facultyMatrixParams}
-                        onParamChange={handleParamChange}
-                    />
                 )}
 
                 <div className="flex flex-col sm:flex-row gap-2">

@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Badge } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { StatCard } from "@/components/ui/StatCard";
 import {
     ArrowTrendingUpIcon,
@@ -11,35 +11,19 @@ import {
     ChartBarIcon,
     ClipboardDocumentListIcon,
     AcademicCapIcon,
-    UserGroupIcon,
     ViewColumnsIcon,
-    ChartPieIcon,
     PresentationChartLineIcon,
     CalendarIcon,
 } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
 import CountUp from "react-countup";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 import Loader from "@/components/common/Loader";
 import ErrorDisplay from "@/components/common/Error";
-import { AcademicYearSection } from "@/components/dashboard/AcademicYearSection";
 
 export default function Dashboard() {
     const router = useRouter();
     // Destructure data, isLoading, and isError from the TanStack Query hook
     const { data: stats, isLoading, isError, error } = useDashboardStats();
-
-    const [currentDate, setCurrentDate] = useState("");
-
-    useEffect(() => {
-        setCurrentDate(
-            new Date().toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-            })
-        );
-    }, []);
 
     if (isLoading) {
         return (
@@ -65,20 +49,28 @@ export default function Dashboard() {
 
     return (
         <div className="min-h-screen bg-light-muted-background dark:bg-dark-background">
+            {/* Max width and responsive padding for the main container */}
             <div className="max-w-[1920px] mx-auto px-4 sm:px-6 py-6 md:py-8">
+                {/* Responsive layout for main sections: column on smaller screens, row on large screens */}
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Main Content - Right Side */}
+                    {/* Ensures this div takes full width on large screens */}
                     <div className="lg:w-full space-y-8">
                         {/* Header Section */}
-                        <div className="relative bg-light-background dark:bg-dark-muted-background p-6 rounded-xl shadow-sm border border-light-secondary dark:border-dark-secondary overflow-hidden">
+                        <div
+                            className="relative bg-light-background dark:bg-dark-muted-background p-6 rounded-xl shadow-sm border border-light-secondary dark:border-dark-secondary overflow-hidden hover:shadow-lg hover:shadow-light-secondary hover:border-light-text/10 dark:hover:shadow-dark-secondary transition-shadow duration-300 cursor-pointer hover:bg-light-secondary dark:hover:bg-dark-secondary"
+                            onClick={() => router.push("/analytics")}
+                        >
                             {/* Optional: Subtle background pattern or gradient for modern bento feel */}
                             <div className="absolute inset-0 bg-gradient-to-br from-light-background/50 to-light-secondary/20 dark:from-dark-muted-background/50 dark:to-dark-secondary/20 opacity-30 pointer-events-none rounded-xl"></div>
                             <div className="absolute top-0 left-0 w-24 h-24 bg-primary-main rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-blob pointer-events-none"></div>
                             <div className="absolute bottom-0 right-0 w-32 h-32 bg-accent-light-main rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-blob animation-delay-2000 pointer-events-none"></div>
 
+                            {/* Responsive flex container for header content */}
                             <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                                 {/* Left Section: Title and Descriptions */}
                                 <div>
+                                    {/* Responsive text sizing */}
                                     <h1 className="text-3xl md:text-4xl font-extrabold text-light-text dark:text-dark-text flex items-center gap-3">
                                         Dashboard Overview
                                         <ChartBarIcon className="h-8 w-8 text-primary-main" />
@@ -104,15 +96,12 @@ export default function Dashboard() {
                                 </div>
 
                                 {/* Right Section: Response Count and Last Updated */}
+                                {/* Full width on small screens, auto width and right aligned on sm and up */}
                                 <div className="w-full sm:w-auto text-left sm:text-right space-y-3">
-                                    <div className="flex justify-start sm:justify-end">
-                                        <Badge
-                                            variant="default"
-                                            size="lg"
-                                            className="gap-2 px-4 py-2 text-lg font-semibold text-primary-foreground dark:bg-primary-dark-main dark:text-primary-dark-foreground shadow-lg"
-                                        >
-                                            {/* <ChartBarIcon className="h-6 w-6" /> */}
-                                            <span>
+                                    <div className="flex justify-start flex-row sm:justify-end">
+                                        <div className="flex items-center gap-2 mt-1">
+                                            {/* Responsive text sizing for the count number */}
+                                            <div className="text-7xl md:text-5xl font-bold text-primary-main">
                                                 <CountUp
                                                     end={
                                                         stats?.responseCount ||
@@ -122,17 +111,13 @@ export default function Dashboard() {
                                                     separator=","
                                                     enableScrollSpy={true}
                                                     scrollSpyOnce={true}
-                                                />{" "}
-                                                Total Responses
-                                            </span>
-                                        </Badge>
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-light-muted-text dark:text-dark-muted-text">
-                                            Data last updated:
-                                        </p>
-                                        <p className="text-base font-semibold text-light-text dark:text-dark-text">
-                                            {currentDate}
+                                        <p className="text-md text-light-muted-text dark:text-dark-muted-text">
+                                            Responses Collected
                                         </p>
                                     </div>
                                 </div>
@@ -140,112 +125,77 @@ export default function Dashboard() {
                         </div>
 
                         {/* Stats Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <StatCard
-                                title="Academic Years"
-                                value={stats?.academicYearCount || 0}
-                                icon={CalendarIcon}
-                                onClick={() => router.push("/academic-year")}
-                            />
-                            <StatCard
-                                title="Departments"
-                                value={stats?.departmentCount || 0}
-                                icon={BuildingOfficeIcon}
-                                onClick={() => router.push("/department")}
-                            />
-                            <StatCard
-                                title="Faculty"
-                                value={stats?.facultyCount || 0}
-                                icon={AcademicCapIcon}
-                                onClick={() => router.push("/faculty")}
-                            />
-                            <StatCard
-                                title="Semesters"
-                                value={stats?.semesterCount || 0}
-                                icon={ClipboardDocumentListIcon}
-                                onClick={() => router.push("/semester")}
-                            />
-
-                            <StatCard
-                                title="Divisions"
-                                value={stats?.divisionCount || 0}
-                                icon={ViewColumnsIcon}
-                                onClick={() => router.push("/division")}
-                            />
-                            <StatCard
-                                title="Subjects"
-                                value={stats?.subjectCount || 0}
-                                icon={BookOpenIcon}
-                                onClick={() => router.push("/subject")}
-                            />
-                        </div>
-
-                        {/* Analytics Section */}
-                        <div className="bg-light-background dark:bg-dark-muted-background p-5 rounded-xl shadow-sm border border-light-secondary dark:border-dark-secondary">
-                            <div className="mb-6">
+                        <div className="bg-light-background dark:bg-dark-muted-background p-6 rounded-xl shadow-sm border border-light-secondary dark:border-dark-secondary">
+                            <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-xl font-semibold text-light-text dark:text-dark-text flex items-center gap-2">
-                                    Analytics & Insights
-                                    <ChartPieIcon className="h-5 w-5 text-primary-main" />
+                                    Core System Metrics
+                                    <ArrowTrendingUpIcon className="h-5 w-5 text-positive-main" />
                                 </h2>
-                                <p className="text-sm text-light-muted-text dark:text-dark-muted-text mt-1">
-                                    Access comprehensive feedback analytics and
-                                    performance insights
-                                </p>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {/* General Analytics Card */}
-                                <div
+                                <Button
                                     onClick={() => router.push("/analytics")}
-                                    className="relative overflow-hidden cursor-pointer bg-light-background dark:bg-dark-muted-background hover:bg-light-muted-background dark:hover:bg-dark-noisy-background border border-light-secondary dark:border-dark-secondary hover:border-primary-main hover:shadow-lg transition-all duration-300 rounded-xl group p-6"
+                                    className="bg-primary-main hover:bg-primary-dark text-white"
                                 >
-                                    <div className="absolute top-0 left-0 w-2 h-full bg-primary-main transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
-                                    <div className="flex justify-between items-start">
-                                        <div className="space-y-2">
-                                            <h3 className="text-lg font-semibold text-light-text dark:text-dark-text group-hover:text-primary-main transition-colors">
-                                                General Analytics
-                                            </h3>
-                                            <p className="text-sm text-light-muted-text dark:text-dark-muted-text">
-                                                Semester trends, subject
-                                                analysis, and overall insights
-                                            </p>
-                                            <div className="text-xs text-primary-main font-medium">
-                                                View Dashboard →
-                                            </div>
-                                        </div>
-                                        <ChartBarIcon className="h-12 w-12 text-primary-main transition-all duration-300 group-hover:scale-110" />
-                                    </div>
-                                </div>
-
-                                {/* Faculty Analytics Card */}
-                                <div
+                                    <span className="flex items-center gap-2">
+                                        <PresentationChartLineIcon className="h-5 w-5" />
+                                        View Analytics
+                                    </span>
+                                </Button>
+                            </div>
+                            {/* Enhanced Grid for the 6 StatCards with better spacing and hover effects */}
+                            {/* Responsive grid columns: 1 on mobile, 2 on sm, 3 on lg */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <StatCard
+                                    title="Academic Years"
+                                    value={stats?.academicYearCount || 0}
+                                    icon={CalendarIcon}
                                     onClick={() =>
-                                        router.push("/faculty-analytics")
+                                        router.push("/academic-year")
                                     }
-                                    className="relative overflow-hidden cursor-pointer bg-light-background dark:bg-dark-muted-background hover:bg-light-muted-background dark:hover:bg-dark-noisy-background border border-light-secondary dark:border-dark-secondary hover:border-primary-main hover:shadow-lg transition-all duration-300 rounded-xl group p-6"
-                                >
-                                    <div className="absolute top-0 left-0 w-2 h-full bg-primary-main transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
-                                    <div className="flex justify-between items-start">
-                                        <div className="space-y-2">
-                                            <h3 className="text-lg font-semibold text-light-text dark:text-dark-text group-hover:text-primary-main transition-colors">
-                                                Faculty Analytics
-                                            </h3>
-                                            <p className="text-sm text-light-muted-text dark:text-dark-muted-text">
-                                                Individual faculty performance
-                                                and comparisons
-                                            </p>
-                                            <div className="text-xs text-primary-main font-medium">
-                                                View Performance →
-                                            </div>
-                                        </div>
-                                        <PresentationChartLineIcon className="h-12 w-12 text-primary-main transition-all duration-300 group-hover:scale-110" />
-                                    </div>
-                                </div>
+                                    subtitle="Total academic periods"
+                                    className="hover:scale-105 transition-transform duration-300"
+                                />
+                                <StatCard
+                                    title="Departments"
+                                    value={stats?.departmentCount || 0}
+                                    icon={BuildingOfficeIcon}
+                                    onClick={() => router.push("/department")}
+                                    subtitle="Organizational units"
+                                    className="hover:scale-105 transition-transform duration-300"
+                                />
+                                <StatCard
+                                    title="Faculty"
+                                    value={stats?.facultyCount || 0}
+                                    icon={AcademicCapIcon}
+                                    onClick={() => router.push("/faculty")}
+                                    subtitle="Registered faculty members"
+                                    className="hover:scale-105 transition-transform duration-300"
+                                />
+                                <StatCard
+                                    title="Semesters"
+                                    value={stats?.semesterCount || 0}
+                                    icon={ClipboardDocumentListIcon}
+                                    onClick={() => router.push("/semester")}
+                                    subtitle="Defined academic terms"
+                                    className="hover:scale-105 transition-transform duration-300"
+                                />
+                                <StatCard
+                                    title="Divisions"
+                                    value={stats?.divisionCount || 0}
+                                    icon={ViewColumnsIcon}
+                                    onClick={() => router.push("/division")}
+                                    subtitle="Sub-units within departments"
+                                    className="hover:scale-105 transition-transform duration-300"
+                                />
+                                <StatCard
+                                    title="Subjects"
+                                    value={stats?.subjectCount || 0}
+                                    icon={BookOpenIcon}
+                                    onClick={() => router.push("/subject")}
+                                    subtitle="Available course subjects"
+                                    className="hover:scale-105 transition-transform duration-300"
+                                />
                             </div>
                         </div>
-
-                        {/* Academic Year Management Section */}
-                        <AcademicYearSection />
                     </div>
                 </div>
             </div>

@@ -11,6 +11,9 @@ export {
     DialogTrigger,
 } from "./Dialog";
 export { StatCard } from "./StatCard";
+export { AcademicYearCard } from "./AcademicYearCard";
+export { DataTable } from "./DataTable";
+export type { DataTableColumn, DataTableProps } from "./DataTable";
 export { default as ThemeToggle } from "./ThemeToggle";
 export { Select } from "./Select";
 export { Label } from "./Label";
