@@ -96,6 +96,7 @@ export class AnalyticsDataProcessor {
                 facultyName?: string;
                 lectureResponses: number[];
                 labResponses: number[];
+                subjectAbbreviation?: string;
             }
         >();
 
@@ -112,6 +113,7 @@ export class AnalyticsDataProcessor {
                 subjectGroups.set(key, {
                     subjectId: snapshot.subjectId,
                     subjectName: snapshot.subjectName,
+                    subjectAbbreviation: snapshot.subjectAbbreviation || "", // Ensure abbreviation is included
                     facultyId: snapshot.facultyId,
                     facultyName: snapshot.facultyName,
                     lectureResponses: [],
@@ -155,6 +157,7 @@ export class AnalyticsDataProcessor {
             return {
                 subjectId: group.subjectId,
                 subjectName: group.subjectName,
+                subjectAbbreviation: group.subjectAbbreviation || "",
                 facultyId: group.facultyId,
                 facultyName: group.facultyName,
                 lectureAverageRating: lectureAvg

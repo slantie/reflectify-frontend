@@ -2,7 +2,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FileText, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { FileText, CheckCircle, Clock, AlertCircle, Edit } from "lucide-react";
 import { StatCard } from "@/components/ui/StatCard";
 import { FeedbackForm, FeedbackFormStatus } from "@/interfaces/feedbackForm";
 
@@ -19,10 +19,15 @@ const itemVariants = {
 // Status configuration for stats
 const getStatusConfig = (status: FeedbackFormStatus) => {
     switch (status) {
+        case FeedbackFormStatus.ALL:
+            return {
+                title: "All Forms",
+                icon: FileText,
+            };
         case FeedbackFormStatus.DRAFT:
             return {
                 title: "Draft Forms",
-                icon: FileText,
+                icon: Edit,
             };
         case FeedbackFormStatus.ACTIVE:
             return {
@@ -49,9 +54,10 @@ export const FeedbackFormStats = ({
     return (
         <motion.div
             variants={itemVariants}
-            className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            className="grid grid-cols-1 md:grid-cols-4 gap-4"
         >
             {[
+                FeedbackFormStatus.ALL,
                 FeedbackFormStatus.DRAFT,
                 FeedbackFormStatus.ACTIVE,
                 FeedbackFormStatus.CLOSED,
@@ -59,13 +65,16 @@ export const FeedbackFormStats = ({
                 const count = forms.filter(
                     (form) => form.status === status
                 ).length;
+                const allCount = forms.length;
                 const config = getStatusConfig(status);
 
                 return (
                     <StatCard
                         key={status}
                         title={config.title}
-                        value={count}
+                        value={
+                            status === FeedbackFormStatus.ALL ? allCount : count
+                        }
                         icon={config.icon}
                         onClick={() => onStatClick(status)}
                     />

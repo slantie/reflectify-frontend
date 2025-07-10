@@ -20,3 +20,4 @@ export { Label } from "./Label";
 export { Switch } from "./Switch";
 export { Pagination } from "./Pagination";
 export type { PaginationProps } from "./Pagination";
+export { Tabs, TabsList, TabsTrigger, TabsContent } from "./Tabs";

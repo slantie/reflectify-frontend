@@ -76,9 +76,13 @@ export const AcademicYearForm: React.FC<AcademicYearFormProps> = ({
 
     const { showConfirmDialog } = useConfirmDialog();
 
-    const handleInputChange = (field: keyof typeof formData, value: string) => {
+    // Modified handleInputChange to correctly handle boolean for isActive
+    const handleInputChange = (
+        field: keyof typeof formData,
+        value: string | boolean // Allow boolean for isActive
+    ) => {
         if (field === "isActive") {
-            const isActive = value === "true";
+            const isActive = value as boolean; // Cast value directly to boolean
 
             // If trying to activate, show confirmation first
             if (isActive && !formData.isActive) {
@@ -93,7 +97,7 @@ export const AcademicYearForm: React.FC<AcademicYearFormProps> = ({
                 setFormData((prev) => ({ ...prev, [field]: isActive }));
             }
         } else {
-            setFormData((prev) => ({ ...prev, [field]: value }));
+            setFormData((prev) => ({ ...prev, [field]: value as string })); // Cast value to string for other fields
         }
         // Clear error when user starts typing
         if (errors[field]) {
@@ -160,7 +164,7 @@ export const AcademicYearForm: React.FC<AcademicYearFormProps> = ({
                             onCheckedChange={(checked) =>
                                 handleInputChange(
                                     "isActive",
-                                    checked.toString()
+                                    checked // Pass the boolean directly
                                 )
                             }
                         />

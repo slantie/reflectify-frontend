@@ -8,7 +8,6 @@ import { StatCard } from "@/components/ui/StatCard";
 import {
     Users,
     Star,
-    TrendingUp,
     MessageSquare,
     BarChart3,
     Target,
@@ -33,22 +32,19 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
     stats,
     isLoading = false,
 }) => {
-    const formatPercentage = (value: number): string => {
-        return `${Math.round(value)}%`;
-    };
-
     const formatRating = (value: number | null): string => {
         return value ? value.toFixed(1) : "0.0";
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
             <StatCard
                 title="Total Responses"
                 value={stats?.totalResponses || 0}
                 icon={MessageSquare}
                 isLoading={isLoading}
                 subtitle="Feedback submissions"
+                onClick={() => {}}
             />
 
             <StatCard
@@ -57,14 +53,7 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
                 icon={Star}
                 isLoading={isLoading}
                 subtitle="Out of 10"
-            />
-
-            <StatCard
-                title="Response Rate"
-                value={stats ? formatPercentage(stats.responseRate) : "0%"}
-                icon={TrendingUp}
-                isLoading={isLoading}
-                subtitle="Participation rate"
+                onClick={() => {}}
             />
 
             <StatCard
@@ -73,6 +62,7 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
                 icon={BarChart3}
                 isLoading={isLoading}
                 subtitle="Being evaluated"
+                onClick={() => {}}
             />
 
             <StatCard
@@ -81,6 +71,7 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
                 icon={Users}
                 isLoading={isLoading}
                 subtitle="Total educators"
+                onClick={() => {}}
             />
 
             <StatCard
@@ -89,6 +80,7 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
                 icon={Target}
                 isLoading={isLoading}
                 subtitle="Academic units"
+                onClick={() => {}}
             />
         </div>
     );

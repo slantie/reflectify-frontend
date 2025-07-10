@@ -29,7 +29,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         return (
             <div className="bg-light-background dark:bg-dark-muted-background p-4 border border-light-secondary dark:border-dark-secondary rounded-xl shadow-lg">
                 <p className="font-semibold text-light-text dark:text-dark-text mb-3">
-                    {label}
+                    {label} {/* Display subjectAbbreviation as the label */}
                 </p>
                 {payload.map((entry: any, index: number) => (
                     <div
@@ -77,7 +77,7 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
     const chartData = useMemo(() => {
         return data
             .map((item) => ({
-                subject: item.subjectName,
+                subject: item.subjectAbbreviation,
                 lectureAverageRating: item.lectureAverageRating,
                 labAverageRating: item.labAverageRating,
                 overallAverageRating: item.overallAverageRating,
@@ -116,12 +116,14 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
         };
     }, [data]);
 
+    console.log("Chart Data:", chartData);
+
     if (isLoading) {
         return (
-            <Card className="bg-light-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary rounded-2xl shadow-sm">
+            <Card className=" border rounded-2xl shadow-sm">
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
+                        <div className="p-2 rounded-xl bg-light-secondary dark:bg-dark-secondary">
                             <BookOpen className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
@@ -145,11 +147,11 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
 
     if (!data.length) {
         return (
-            <Card className="bg-light-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary rounded-2xl shadow-sm">
+            <Card className=" border border-light-secondary dark:border-dark-secondary rounded-2xl shadow-sm">
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <BookOpen className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
+                        <div className="p-2 rounded-xl bg-light-secondary dark:bg-dark-secondary">
+                            <BookOpen className="h-5 w-5" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
                             Subject Ratings Comparison
@@ -175,10 +177,10 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
 
     return (
         <Card className="bg-light-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary rounded-2xl shadow-sm">
-            <CardHeader className="pb-3">
+            <CardHeader>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
+                        <div className="p-2 rounded-xl bg-light-secondary dark:bg-dark-secondary">
                             <BookOpen className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
@@ -187,69 +189,65 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                            <Monitor className="h-4 w-4 text-light-highlight dark:text-dark-highlight" />
+                            <Monitor className="h-5 w-5 text-light-text dark:text-dark-text" />
                             <Badge
                                 variant="outline"
-                                className="text-light-highlight dark:text-dark-highlight border-primary-main"
+                                className="text-sm text-light-text dark:text-dark-text"
                             >
                                 Lecture: {stats.avgLectureRating}
                             </Badge>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Laptop className="h-4 w-4 text-secondary-main" />
+                            <Laptop className="h-5 w-5 text-light-text dark:text-dark-text" />
                             <Badge
                                 variant="outline"
-                                className="text-secondary-main border-secondary-main"
+                                className="text-sm text-light-text dark:text-dark-text"
                             >
                                 Lab: {stats.avgLabRating}
                             </Badge>
                         </div>
                     </div>
                 </div>
-                <div className="text-sm text-light-muted-text dark:text-dark-muted-text">
-                    Comparing lecture and lab ratings across{" "}
-                    {stats.totalSubjects} subjects • {stats.totalResponses}{" "}
-                    total responses
+                <div className="text-md text-light-muted-text dark:text-dark-muted-text">
+                    Comparing ratings across {stats.totalSubjects} subjects •{" "}
+                    {stats.totalResponses} total responses
                 </div>
             </CardHeader>
             <CardContent>
                 <ResponsiveContainer width="100%" height={400}>
                     <BarChart
                         data={chartData}
-                        margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
+                        margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
                     >
-                        <CartesianGrid
-                            strokeDasharray="3 3"
-                            className="stroke-light-secondary dark:stroke-dark-secondary opacity-30"
-                        />
+                        {/* <CartesianGrid strokeDasharray="3 3" className="" /> */}
                         <XAxis
                             dataKey="subject"
-                            angle={-45}
                             textAnchor="end"
-                            height={100}
+                            height={10}
                             interval={0}
                             fontSize={12}
-                            className="fill-light-muted-text dark:fill-dark-muted-text"
+                            padding={{ left: 10, right: 10 }}
+                            className="fill-light-text dark:fill-dark-text"
                         />
                         <YAxis
                             domain={[0, 5]}
                             fontSize={12}
-                            className="fill-light-muted-text dark:fill-dark-muted-text"
+                            className="fill-light-text dark:fill-dark-text"
                         />
                         <Tooltip content={<CustomTooltip />} />
                         <Legend
-                            wrapperStyle={{ paddingTop: "20px" }}
-                            iconType="rect"
+                            wrapperStyle={{ paddingTop: "25px" }}
+                            iconType="circle"
                         />
                         <Bar
                             dataKey="lectureAverageRating"
-                            fill="hsl(var(--primary))"
+                            fill="#f97316"
                             name="Lecture Rating"
                             radius={[4, 4, 0, 0]}
                         />
                         <Bar
                             dataKey="labAverageRating"
-                            fill="hsl(var(--secondary))"
+                            fill="#9ca3af"
                             name="Lab Rating"
                             radius={[4, 4, 0, 0]}
                         />

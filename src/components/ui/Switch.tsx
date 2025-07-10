@@ -88,20 +88,32 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
             onText = "ON",
             offText = "OFF",
             className,
-            checked,
+            checked, // Controlled prop
             disabled,
-            onChange,
-            onCheckedChange,
+            onChange, // Native onChange for the input
+            onCheckedChange, // Custom prop for boolean change
             ...props
         },
         ref
     ) => {
         const sizeClasses = sizeVariants[size];
 
-        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            const newChecked = e.target.checked;
+        // This handles the native input's onChange event
+        const handleNativeInputChange = (
+            e: React.ChangeEvent<HTMLInputElement>
+        ) => {
+            // Call the original onChange if provided
             onChange?.(e);
-            onCheckedChange?.(newChecked);
+            // Call the custom onCheckedChange with the new checked state
+            onCheckedChange?.(e.target.checked);
+        };
+
+        // This handles clicks on the visual track, directly toggling the state
+        const handleTrackClick = () => {
+            if (!disabled && onCheckedChange !== undefined) {
+                // Toggle the checked state and call onCheckedChange
+                onCheckedChange(!checked);
+            }
         };
 
         const switchElement = (
@@ -111,13 +123,14 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                     type="checkbox"
                     checked={checked}
                     disabled={disabled}
-                    onChange={handleChange}
+                    onChange={handleNativeInputChange} // Use the new handler
                     className={cn("peer sr-only", className)}
                     {...props}
                 />
 
                 {/* Track */}
                 <div
+                    onClick={handleTrackClick} // Direct click handler for the track
                     className={cn(
                         // Base track styles
                         "relative inline-flex items-center rounded-full transition-all duration-200",
@@ -126,7 +139,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                         // Default state
                         "bg-gray-300 dark:bg-gray-600",
 
-                        // Checked state
+                        // Checked state (for track background)
                         "peer-checked:bg-primary-600",
 
                         // Focus state
@@ -151,11 +164,16 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
                             "absolute left-0.5 inline-block rounded-full bg-white shadow-sm transition-transform duration-200",
                             sizeClasses.thumb,
 
-                            // Checked position
-                            `peer-checked:${sizeClasses.translate}`,
+                            // Conditionally apply translate based on 'checked' prop
+                            // This replaces peer-checked for thumb movement as thumb is not a direct sibling of peer input
+                            checked ? sizeClasses.translate : "",
 
                             // Shadow and elevation
-                            "shadow-md ring-0"
+                            `shadow-md ring-0 ${
+                                checked
+                                    ? "bg-light-highlight dark:bg-dark-highlight"
+                                    : ""
+                            }`
                         )}
                     />
 
@@ -189,6 +207,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
         const labelElement = label && (
             <div className="flex flex-col">
                 <label
+                    htmlFor={props.id}
                     className={cn(
                         "cursor-pointer select-none font-medium",
                         sizeClasses.label,

@@ -5,17 +5,14 @@
 
 import React, { useMemo } from "react";
 import { Select } from "@/components/ui/Select";
-import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Label } from "@/components/ui/Label";
 import { Switch } from "@/components/ui/Switch";
 import {
     Filter,
     X,
-    RefreshCw,
     Calendar,
     Building,
-    BookOpen,
     Users,
     GraduationCap,
     Monitor,
@@ -37,8 +34,6 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
     filterDictionary,
     filters,
     onFiltersChange,
-    onRefresh,
-    isLoading = false,
 }) => {
     // Get dependent options based on selected filters
     const departments = useMemo(() => {
@@ -48,14 +43,6 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
         );
         return selectedYear?.departments || [];
     }, [filterDictionary, filters.academicYearId]);
-
-    const subjects = useMemo(() => {
-        if (!filters.departmentId || !departments.length) return [];
-        const selectedDept = departments.find(
-            (dept) => dept.id === filters.departmentId
-        );
-        return selectedDept?.subjects || [];
-    }, [departments, filters.departmentId]);
 
     const semesters = useMemo(() => {
         if (!filters.departmentId || !departments.length) return [];
@@ -80,11 +67,9 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
         // Clear dependent filters when parent changes
         if (key === "academicYearId") {
             newFilters.departmentId = undefined;
-            newFilters.subjectId = undefined;
             newFilters.semesterId = undefined;
             newFilters.divisionId = undefined;
         } else if (key === "departmentId") {
-            newFilters.subjectId = undefined;
             newFilters.semesterId = undefined;
             newFilters.divisionId = undefined;
         } else if (key === "semesterId") {
@@ -95,7 +80,16 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
     };
 
     const clearAllFilters = () => {
-        onFiltersChange({});
+        // Reset all filters to their initial state
+        const initialFilters: AnalyticsFilterParams = {
+            academicYearId: undefined,
+            departmentId: undefined,
+            semesterId: undefined,
+            divisionId: undefined,
+            lectureType: undefined,
+            includeDeleted: false,
+        };
+        onFiltersChange(initialFilters);
     };
 
     const getActiveFiltersCount = () => {
@@ -110,17 +104,13 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
             <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
-                            <Filter className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
+                        <div className="p-2 rounded-xl bg-light-secondary dark:bg-dark-secondary">
+                            <Filter className="h-6 w-6 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <div>
-                            <h3 className="text-lg font-semibold text-light-text dark:text-dark-text">
+                            <h1 className="text-xl font-semibold text-light-text dark:text-dark-text">
                                 Analytics Filters
-                            </h3>
-                            <p className="text-sm text-light-muted-text dark:text-dark-muted-text">
-                                Refine your analytics view with hierarchical
-                                filters
-                            </p>
+                            </h1>
                         </div>
                         {getActiveFiltersCount() > 0 && (
                             <Badge className="bg-light-highlight dark:bg-dark-highlight text-white font-medium">
@@ -129,31 +119,19 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
                         )}
                     </div>
                     <div className="flex items-center gap-3">
-                        <Button
-                            variant="outline"
+                        <button
                             onClick={clearAllFilters}
                             disabled={getActiveFiltersCount() === 0}
-                            className="text-sm border-light-secondary dark:border-dark-secondary hover:bg-light-muted-background dark:hover:bg-dark-noisy-background"
+                            className="flex items-center gap-2 bg-transparent border border-primary-main text-light-highlight dark:text-dark-highlight py-2 px-4 rounded-xl
+                            hover:bg-dark-highlight/10 focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
+                            transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <X className="h-4 w-4 mr-2" />
+                            <X className="h-5 w-5 mr-2" />
                             Clear All
-                        </Button>
-                        <Button
-                            variant="outline"
-                            onClick={onRefresh}
-                            disabled={isLoading}
-                            className="text-sm border-light-secondary dark:border-dark-secondary hover:bg-light-muted-background dark:hover:bg-dark-noisy-background"
-                        >
-                            <RefreshCw
-                                className={`h-4 w-4 mr-2 ${
-                                    isLoading ? "animate-spin" : ""
-                                }`}
-                            />
-                            Refresh
-                        </Button>
+                        </button>
                     </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                     {/* Academic Year */}
                     <div className="space-y-2">
                         <Label className="text-sm font-medium flex items-center gap-1">
@@ -234,33 +212,6 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
                         </Select>
                     </div>
 
-                    {/* Subject */}
-                    <div className="space-y-2">
-                        <Label className="text-sm font-medium flex items-center gap-1">
-                            <BookOpen className="h-4 w-4" />
-                            Subject
-                        </Label>
-                        <Select
-                            id="subject"
-                            name="subject"
-                            value={filters.subjectId || ""}
-                            onChange={(e) =>
-                                updateFilter(
-                                    "subjectId",
-                                    e.target.value || undefined
-                                )
-                            }
-                            disabled={!filters.departmentId}
-                        >
-                            <option value="">All Subjects</option>
-                            {subjects.map((subject) => (
-                                <option key={subject.id} value={subject.id}>
-                                    {subject.name} ({subject.code})
-                                </option>
-                            ))}
-                        </Select>
-                    </div>
-
                     {/* Division */}
                     <div className="space-y-2">
                         <Label className="text-sm font-medium flex items-center gap-1">
@@ -327,7 +278,7 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
                         />
                         <Label
                             htmlFor="include-deleted"
-                            className="text-sm font-medium text-light-text dark:text-dark-text"
+                            className="text-sm mb-2 font-medium text-light-text dark:text-dark-text"
                         >
                             Include deleted records
                         </Label>

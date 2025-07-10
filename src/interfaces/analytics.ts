@@ -118,7 +118,6 @@ export interface CompleteAnalyticsData {
 export interface AnalyticsFilterParams {
     academicYearId?: IdType;
     departmentId?: IdType;
-    subjectId?: IdType;
     semesterId?: IdType;
     divisionId?: IdType;
     lectureType?: LectureLabType;
@@ -152,6 +151,7 @@ export type LectureLabType = "LECTURE" | "LAB";
 export interface SubjectLectureLabRating {
     subjectId: IdType;
     subjectName: string;
+    subjectAbbreviation: string;
     facultyId?: IdType;
     facultyName?: string;
     lectureAverageRating: number | null;

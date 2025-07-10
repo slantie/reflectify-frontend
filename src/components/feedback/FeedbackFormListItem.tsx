@@ -12,12 +12,14 @@ import {
     Users,
     ChevronDown,
     ChevronUp,
-    Calendar1Icon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { FeedbackForm, FeedbackFormStatus } from "@/interfaces/feedbackForm";
 import { OverrideStudentsList } from "./OverrideStudentsList";
-import { AcademicCapIcon, BuildingOfficeIcon } from "@heroicons/react/24/outline";
+import {
+    AcademicCapIcon,
+    BuildingOfficeIcon,
+} from "@heroicons/react/24/outline";
 
 // Status badge configuration
 const getStatusConfig = (status: FeedbackFormStatus) => {
@@ -128,9 +130,7 @@ export const FeedbackFormListItem = ({
                         {form.division?.department && (
                             <div className="flex items-center gap-1">
                                 <BuildingOfficeIcon className="w-4 h-4" />
-                                <span>
-                                    {form.division.department.name}
-                                </span>
+                                <span>{form.division.department.name}</span>
                             </div>
                         )}
                         {form.division?.semester?.semesterNumber && (
@@ -144,9 +144,7 @@ export const FeedbackFormListItem = ({
                         {form.division && (
                             <div className="flex items-center gap-1">
                                 <Users className="w-4 h-4" />
-                                <span>
-                                    {form.division.divisionName}
-                                </span>
+                                <span>{form.division.divisionName}</span>
                             </div>
                         )}
                         {form.questions && form.questions.length > 0 && (
@@ -172,7 +170,7 @@ export const FeedbackFormListItem = ({
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => setShowOverrideStudents((prev) => !prev)}
-                        className="flex py-1 px-3 items-center gap-1 bg-transparent border rounded-xl border-light-secondary dark:border-dark-secondary text-light-text dark:text-dark-text transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed
+                        className="flex text-sm py-1 px-3 items-center gap-1 bg-transparent border rounded-xl border-light-secondary dark:border-dark-secondary text-light-text dark:text-dark-text transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed
                hover:bg-light-secondary dark:hover:bg-dark-secondary "
                     >
                         <Users className="w-4 h-4" />
@@ -191,7 +189,7 @@ export const FeedbackFormListItem = ({
 
                     <button
                         onClick={() => onView(form.id.toString())}
-                        className="flex py-1 px-3 items-center gap-1 bg-transparent border rounded-xl border-light-secondary dark:border-dark-secondary text-light-text dark:text-dark-text transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-light-secondary dark:hover:bg-dark-secondary
+                        className="flex text-sm py-1 px-3 items-center gap-1 bg-transparent border rounded-xl border-light-secondary dark:border-dark-secondary text-light-text dark:text-dark-text transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-light-secondary dark:hover:bg-dark-secondary
                 "
                     >
                         <Eye className="w-4 h-4" />
@@ -200,7 +198,7 @@ export const FeedbackFormListItem = ({
 
                     <button
                         onClick={() => onEdit(form.id.toString())}
-                        className="flex py-1 px-3 items-center gap-1 bg-transparent border rounded-xl border-light-secondary dark:border-dark-secondary text-light-text dark:text-dark-text transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-light-secondary dark:hover:bg-dark-secondary
+                        className="flex text-sm py-1 px-3 items-center gap-1 bg-transparent border rounded-xl border-light-secondary dark:border-dark-secondary text-light-text dark:text-dark-text transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-light-secondary dark:hover:bg-dark-secondary
                 "
                     >
                         <Edit className="w-4 h-4" />
@@ -209,7 +207,7 @@ export const FeedbackFormListItem = ({
 
                     <button
                         onClick={() => onDelete(form.id.toString())}
-                        className="flex py-1 px-3 items-center gap-1 bg-transparent border rounded-xl border-red-600
+                        className="flex text-sm py-1 px-3 items-center gap-1 bg-transparent border rounded-xl border-red-600
                text-red-600 dark:text-red-400 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed dark:border-red-500 hover:bg-negative-main/10 dark:hover:bg-negative-dark/10"
                     >
                         <Trash2 className="w-4 h-4" />

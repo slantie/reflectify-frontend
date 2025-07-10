@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { UserPlus, Users, Loader2, AlertCircle } from "lucide-react";
+import { Users, Loader2, AlertCircle } from "lucide-react";
 import { showToast } from "@/lib/toast";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -90,17 +90,16 @@ export const OverrideStudentsList = ({
             className="mt-4 p-4 bg-light-background dark:bg-dark-muted-background rounded-md"
         >
             <div className="flex items-center justify-between mb-4">
-                <h4 className="text-lg font-semibold text-light-text dark:text-dark-text flex items-center">
+                <div className="text-lg font-semibold text-light-text dark:text-dark-text flex items-center">
                     <Users className="mr-2 w-5 h-5" />
-                    Override Students
-                    <Badge variant="secondary" className="ml-2">
-                        {students.length}
+                    Students List
+                </div>
+                <div>
+                    <Badge variant="secondary" className="ml-2 text-sm">
+                        {students.length}{" "}
+                        {students.length === 1 ? "Student" : "Students"}
                     </Badge>
-                </h4>
-                <Button size="sm" className="flex items-center gap-1">
-                    <UserPlus className="w-4 h-4" />
-                    Add Student
-                </Button>
+                </div>
             </div>
 
             {students.length === 0 ? (

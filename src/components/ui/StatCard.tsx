@@ -13,7 +13,7 @@ interface StatCardProps {
     isLoading?: boolean;
     error?: string | null;
     subtitle?: string;
-    className?: string; // Additional classes for the Card wrapper
+    className?: string;
 }
 
 export const StatCard = ({

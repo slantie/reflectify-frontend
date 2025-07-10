@@ -8,7 +8,7 @@
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
 import {
     BarChart3,
     TrendingUp,
@@ -277,6 +277,15 @@ const AnalyticsPage: React.FC = () => {
                         <Download className="h-4 w-4 mr-2" />
                         Export
                     </Button>
+                    <button
+                        onClick={handleExport}
+                        disabled={!hasData}
+                        className="flex-1 bg-transparent border-2 border-primary-main text-light-highlight dark:text-dark-highlight py-2.5 px-4 rounded-xl
+                            hover:bg-primary-lighter focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
+                            transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Export
+                    </button>
                     <Button
                         variant="outline"
                         onClick={handleRefresh}
@@ -375,8 +384,8 @@ const AnalyticsPage: React.FC = () => {
                     </Card>
                 </div>
             )}
-            Main Content Tabs
-            {/* <Tabs
+            {/* Main Content Tabs */}
+            <Tabs
                 value={activeTab}
                 onValueChange={(value: any) => setActiveTab(value)}
                 className="space-y-6"
@@ -427,7 +436,7 @@ const AnalyticsPage: React.FC = () => {
                 <TabsContent value="performance" className="space-y-6">
                     {tabContent.performance}
                 </TabsContent>
-            </Tabs> */}
+            </Tabs>
             {/* Debug Info (for development) */}
             {process.env.NODE_ENV === "development" && (
                 <Card className="mt-8 border-dashed">

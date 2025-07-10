@@ -13,6 +13,7 @@ import { Faculty } from "./faculty";
  * Enum for feedback form status.
  */
 export enum FeedbackFormStatus {
+    ALL = "ALL",
     DRAFT = "DRAFT",
     ACTIVE = "ACTIVE",
     CLOSED = "CLOSED",

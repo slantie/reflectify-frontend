@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
 import {
     BarChart3,
     TrendingUp,
@@ -169,11 +169,13 @@ const AnalyticsPage: React.FC = () => {
                             </p>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Button
+
+                            <button
                                 onClick={handleRefresh}
-                                variant="outline"
-                                className="flex items-center gap-2"
                                 disabled={analyticsDataLoading}
+                                className="flex items-center gap-2 bg-transparent border border-primary-main text-light-highlight dark:text-dark-highlight py-2 px-4 rounded-xl
+                            hover:bg-dark-highlight/10 focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
+                            transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <RefreshCw
                                     className={`h-4 w-4 ${
@@ -183,16 +185,18 @@ const AnalyticsPage: React.FC = () => {
                                     }`}
                                 />
                                 Refresh
-                            </Button>
-                            <Button
+                            </button>
+
+                            <button
                                 onClick={handleExport}
-                                variant="outline"
-                                className="flex items-center gap-2"
                                 disabled={!rawData}
+                                className="flex items-center gap-2 bg-transparent border border-primary-main text-light-highlight dark:text-dark-highlight py-2 px-4 rounded-xl
+                            hover:bg-dark-highlight/10 focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
+                            transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                <Download className="h-4 w-4" />
+                                <Download className="h-5 w-5" />
                                 Export
-                            </Button>
+                            </button>
                         </div>
                     </div>
 
@@ -215,38 +219,38 @@ const AnalyticsPage: React.FC = () => {
 
                     {/* Main Content */}
                     <div className="bg-light-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary rounded-2xl shadow-sm">
-                        {/* <Tabs
+                        <Tabs
                             value={activeTab}
                             onValueChange={(value: string) =>
                                 setActiveTab(value as any)
                             }
                         >
                             <div className="p-6 border-b border-light-secondary dark:border-dark-secondary">
-                                <TabsList className="grid w-full grid-cols-4 bg-light-muted-background dark:bg-dark-background rounded-xl p-1">
+                                <TabsList className="grid w-full grid-cols-4 gap-4 rounded-xl p-1">
                                     <TabsTrigger
                                         value="overview"
-                                        className="flex items-center gap-2 data-[state=active]:bg-light-background dark:data-[state=active]:bg-dark-muted-background data-[state=active]:text-light-highlight dark:text-dark-highlight data-[state=active]:shadow-sm rounded-lg transition-all"
+                                        className="flex items-center gap-2"
                                     >
                                         <BarChart3 className="w-4 h-4" />
                                         Overview
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="subjects"
-                                        className="flex items-center gap-2 data-[state=active]:bg-light-background dark:data-[state=active]:bg-dark-muted-background data-[state=active]:text-light-highlight dark:text-dark-highlight data-[state=active]:shadow-sm rounded-lg transition-all"
+                                        className="flex items-center gap-2"
                                     >
                                         <TrendingUp className="w-4 h-4" />
                                         Subjects
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="trends"
-                                        className="flex items-center gap-2 data-[state=active]:bg-light-background dark:data-[state=active]:bg-dark-muted-background data-[state=active]:text-light-highlight dark:text-dark-highlight data-[state=active]:shadow-sm rounded-lg transition-all"
+                                        className="flex items-center gap-2"
                                     >
                                         <Eye className="w-4 h-4" />
                                         Trends
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="performance"
-                                        className="flex items-center gap-2 data-[state=active]:bg-light-background dark:data-[state=active]:bg-dark-muted-background data-[state=active]:text-light-highlight dark:text-dark-highlight data-[state=active]:shadow-sm rounded-lg transition-all"
+                                        className="flex items-center gap-2"
                                     >
                                         <Users className="w-4 h-4" />
                                         Performance
@@ -265,7 +269,7 @@ const AnalyticsPage: React.FC = () => {
                                                 processedData?.subjectRatings ||
                                                 []
                                             }
-                                        />
+                                                                                    />
                                         <DivisionComparisonChart
                                             data={
                                                 processedData?.divisionComparisons ||
@@ -317,7 +321,7 @@ const AnalyticsPage: React.FC = () => {
                                     </div>
                                 </TabsContent>
                             </div>
-                        </Tabs> */}
+                        </Tabs>
                     </div>
                 </motion.div>
             </div>
