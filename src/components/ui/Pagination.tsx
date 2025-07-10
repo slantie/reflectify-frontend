@@ -10,7 +10,6 @@ import {
     ChevronDoubleLeftIcon,
     ChevronDoubleRightIcon,
 } from "@heroicons/react/24/outline";
-import { Button } from "./Button";
 
 // Pagination props interface
 export interface PaginationProps {
@@ -41,7 +40,7 @@ export const Pagination: React.FC<PaginationProps> = ({
     showPageNumbers = true,
     showInfo = true,
     maxVisiblePages = 5,
-    size = "md",
+    size = "lg",
     className = "",
     compact = false,
 }) => {
@@ -86,17 +85,17 @@ export const Pagination: React.FC<PaginationProps> = ({
     // Size configurations
     const sizeConfig = {
         sm: {
-            button: "h-8 w-8 text-xs",
+            button: "h-8 w-8 text-xs border border-light-secondary dark:border-dark-secondary rounded-sm flex items-center justify-center hover:bg-light-secondary dark:hover:bg-dark-secondary",
             text: "text-xs",
             spacing: "gap-1",
         },
         md: {
-            button: "h-10 w-10 text-sm",
+            button: "h-10 w-10 text-sm border border-light-secondary dark:border-dark-secondary rounded-md flex items-center justify-center hover:bg-light-secondary dark:hover:bg-dark-secondary",
             text: "text-sm",
             spacing: "gap-2",
         },
         lg: {
-            button: "h-12 w-12 text-base",
+            button: "h-12 w-12 text-base border border-light-secondary dark:border-dark-secondary rounded-lg flex items-center justify-center hover:bg-light-secondary dark:hover:bg-dark-secondary",
             text: "text-base",
             spacing: "gap-3",
         },
@@ -129,22 +128,14 @@ export const Pagination: React.FC<PaginationProps> = ({
                 )}
 
                 <div className={`flex items-center ${config.spacing}`}>
-                    <Button
-                        variant="outline"
-                        size={
-                            size === "sm"
-                                ? "sm"
-                                : size === "lg"
-                                ? "lg"
-                                : "default"
-                        }
+                    <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
                         className={config.button}
                         title="Previous page"
                     >
                         <ChevronLeftIcon className="w-4 h-4" />
-                    </Button>
+                    </button>
 
                     <span
                         className={`px-2 text-light-text dark:text-dark-text ${config.text}`}
@@ -152,22 +143,14 @@ export const Pagination: React.FC<PaginationProps> = ({
                         {currentPage} / {totalPages}
                     </span>
 
-                    <Button
-                        variant="outline"
-                        size={
-                            size === "sm"
-                                ? "sm"
-                                : size === "lg"
-                                ? "lg"
-                                : "default"
-                        }
+                    <button
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
                         className={config.button}
                         title="Next page"
                     >
                         <ChevronRightIcon className="w-4 h-4" />
-                    </Button>
+                    </button>
                 </div>
             </div>
         );
@@ -190,41 +173,25 @@ export const Pagination: React.FC<PaginationProps> = ({
             >
                 {/* First page */}
                 {showFirstLast && currentPage > 1 && (
-                    <Button
-                        variant="outline"
-                        size={
-                            size === "sm"
-                                ? "sm"
-                                : size === "lg"
-                                ? "lg"
-                                : "default"
-                        }
+                    <button
                         onClick={() => handlePageChange(1)}
                         className={config.button}
                         title="First page"
                     >
                         <ChevronDoubleLeftIcon className="w-4 h-4" />
-                    </Button>
+                    </button>
                 )}
 
                 {/* Previous page */}
                 {showPrevNext && (
-                    <Button
-                        variant="outline"
-                        size={
-                            size === "sm"
-                                ? "sm"
-                                : size === "lg"
-                                ? "lg"
-                                : "default"
-                        }
+                    <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
                         className={config.button}
                         title="Previous page"
                     >
                         <ChevronLeftIcon className="w-4 h-4" />
-                    </Button>
+                    </button>
                 )}
 
                 {/* Page numbers */}
@@ -233,20 +200,16 @@ export const Pagination: React.FC<PaginationProps> = ({
                         {/* Show ellipsis if there are hidden pages at the beginning */}
                         {visiblePages[0] > 1 && (
                             <>
-                                <Button
-                                    variant="outline"
-                                    size={
-                                        size === "sm"
-                                            ? "sm"
-                                            : size === "lg"
-                                            ? "lg"
-                                            : "default"
-                                    }
+                                <button
                                     onClick={() => handlePageChange(1)}
-                                    className={config.button}
+                                    className={`${config.button} ${
+                                        currentPage === 1
+                                            ? "text-light-highlight dark:text-dark-highlight"
+                                            : ""
+                                    }`}
                                 >
                                     1
-                                </Button>
+                                </button>
                                 {visiblePages[0] > 2 && (
                                     <span
                                         className={`px-2 text-light-muted-text dark:text-dark-muted-text ${config.text}`}
@@ -259,24 +222,18 @@ export const Pagination: React.FC<PaginationProps> = ({
 
                         {/* Visible page numbers */}
                         {visiblePages.map((page) => (
-                            <Button
+                            <button
                                 key={page}
-                                variant={
-                                    page === currentPage ? "default" : "outline"
-                                }
-                                size={
-                                    size === "sm"
-                                        ? "sm"
-                                        : size === "lg"
-                                        ? "lg"
-                                        : "default"
-                                }
                                 onClick={() => handlePageChange(page)}
-                                className={config.button}
+                                className={`${config.button} ${
+                                    currentPage === page
+                                        ? "text-light-highlight dark:text-dark-highlight"
+                                        : ""
+                                }`}
                                 title={`Go to page ${page}`}
                             >
                                 {page}
-                            </Button>
+                            </button>
                         ))}
 
                         {/* Show ellipsis if there are hidden pages at the end */}
@@ -290,20 +247,16 @@ export const Pagination: React.FC<PaginationProps> = ({
                                         ...
                                     </span>
                                 )}
-                                <Button
-                                    variant="outline"
-                                    size={
-                                        size === "sm"
-                                            ? "sm"
-                                            : size === "lg"
-                                            ? "lg"
-                                            : "default"
-                                    }
+                                <button
                                     onClick={() => handlePageChange(totalPages)}
-                                    className={config.button}
+                                    className={`${config.button} ${
+                                        currentPage === totalPages
+                                            ? "text-light-highlight dark:text-dark-highlight"
+                                            : ""
+                                    }`}
                                 >
                                     {totalPages}
-                                </Button>
+                                </button>
                             </>
                         )}
                     </>
@@ -311,41 +264,25 @@ export const Pagination: React.FC<PaginationProps> = ({
 
                 {/* Next page */}
                 {showPrevNext && (
-                    <Button
-                        variant="outline"
-                        size={
-                            size === "sm"
-                                ? "sm"
-                                : size === "lg"
-                                ? "lg"
-                                : "default"
-                        }
+                    <button
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
                         className={config.button}
                         title="Next page"
                     >
                         <ChevronRightIcon className="w-4 h-4" />
-                    </Button>
+                    </button>
                 )}
 
                 {/* Last page */}
                 {showFirstLast && currentPage < totalPages && (
-                    <Button
-                        variant="outline"
-                        size={
-                            size === "sm"
-                                ? "sm"
-                                : size === "lg"
-                                ? "lg"
-                                : "default"
-                        }
+                    <button
                         onClick={() => handlePageChange(totalPages)}
                         className={config.button}
                         title="Last page"
                     >
                         <ChevronDoubleRightIcon className="w-4 h-4" />
-                    </Button>
+                    </button>
                 )}
             </div>
         </div>

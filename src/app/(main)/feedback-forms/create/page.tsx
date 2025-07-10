@@ -21,10 +21,11 @@ import { Loader } from "@/components/common/Loader";
 
 // Import services
 import feedbackFormService from "@/services/feedbackFormService";
-import academicStructureService, {
-    Semester,
-    Division,
-} from "@/services/academicStructure.service";
+import academicStructureService from "@/services/academicStructure.service";
+import type {
+    AcademicSemester,
+    AcademicDivision,
+} from "@/interfaces/academicStructure";
 import { useAllAcademicYears } from "@/hooks/useAcademicYears";
 
 // Import interfaces
@@ -288,7 +289,10 @@ export default function CreateFeedbackForm() {
         });
     };
 
-    const handleSemesterSelect = (semId: string, divisions: Division[]) => {
+    const handleSemesterSelect = (
+        semId: string,
+        divisions: AcademicDivision[]
+    ) => {
         const currentSelection = selection.semesterSelections[semId];
         const allDivisionIds = divisions.map((d) => d.id);
 
@@ -308,7 +312,7 @@ export default function CreateFeedbackForm() {
     const handleDivisionSelect = (
         semId: string,
         divId: string,
-        allDivisions: Division[]
+        allDivisions: AcademicDivision[]
     ) => {
         const currentSemSelection = selection.semesterSelections[semId] || {
             selected: false,
@@ -389,7 +393,7 @@ export default function CreateFeedbackForm() {
         }
     };
 
-    const renderSemesterContent = (sem: Semester, semId: string) => (
+    const renderSemesterContent = (sem: AcademicSemester, semId: string) => (
         <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {sem.divisions.map((div) => (
@@ -413,7 +417,7 @@ export default function CreateFeedbackForm() {
                             <div>
                                 {" "}
                                 <p className="font-medium text-light-text dark:text-dark-text">
-                                    Division {div.divisionName}
+                                    AcademicDivision {div.divisionName}
                                 </p>
                                 <p className="text-sm text-light-muted-text dark:text-dark-muted-text">
                                     Semester {sem.semesterNumber}

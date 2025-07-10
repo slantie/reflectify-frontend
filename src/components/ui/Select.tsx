@@ -34,7 +34,7 @@ export const Select: React.FC<SelectProps> = ({
                     className="block w-full px-3 py-2 border border-light-secondary dark:border-dark-secondary rounded-xl shadow-sm
                                bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text
                                focus:outline-none focus:ring-2 focus:ring-primary-main focus:border-primary-main
-                               sm:text-sm transition-colors appearance-none pr-10" /* appearance-none hides native arrow, pr-10 adds space for custom arrow */
+                               sm:text-sm transition-colors appearance-none pr-10" 
                     {...props}
                 >
                     {children}

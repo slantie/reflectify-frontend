@@ -34,7 +34,15 @@ export default function FeedbackFormManagement() {
     const [statusFilter, setStatusFilter] = useState<
         FeedbackFormStatus | "ALL"
     >("ALL");
+    const [academicYearFilter, setAcademicYearFilter] = useState("ALL");
+    const [departmentFilter, setDepartmentFilter] = useState("ALL");
+    const [divisionFilter, setDivisionFilter] = useState("ALL");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [isRefreshing, setIsRefreshing] = useState(false);
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10); // Fixed items per page
 
     // Fetch feedback forms using the existing hook
     const {
@@ -47,17 +55,85 @@ export default function FeedbackFormManagement() {
 
     // Filter and search logic
     const filteredForms = useCallback(() => {
-        return feedbackForms.filter((form) => {
-            const matchesSearch = form.title
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase());
+        const filtered = feedbackForms.filter((form) => {
+            const matchesSearch =
+                form.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                form.division?.divisionName
+                    ?.toLowerCase()
+                    .includes(searchTerm.toLowerCase()) ||
+                form.division?.department?.name
+                    ?.toLowerCase()
+                    .includes(searchTerm.toLowerCase()) ||
+                form.division?.semester?.academicYear?.yearString
+                    ?.toLowerCase()
+                    .includes(searchTerm.toLowerCase());
 
             const matchesStatus =
                 statusFilter === "ALL" || form.status === statusFilter;
 
-            return matchesSearch && matchesStatus;
+            const matchesAcademicYear =
+                academicYearFilter === "ALL" ||
+                form.division?.semester?.academicYear?.yearString ===
+                    academicYearFilter;
+
+            const matchesDepartment =
+                departmentFilter === "ALL" ||
+                form.division?.department?.name === departmentFilter;
+
+            const matchesDivision =
+                divisionFilter === "ALL" ||
+                form.division?.divisionName === divisionFilter;
+
+            return (
+                matchesSearch &&
+                matchesStatus &&
+                matchesAcademicYear &&
+                matchesDepartment &&
+                matchesDivision
+            );
         });
-    }, [feedbackForms, searchTerm, statusFilter]);
+
+        // Apply sorting
+        filtered.sort((a, b) => {
+            const titleA = a.title.toLowerCase();
+            const titleB = b.title.toLowerCase();
+
+            if (sortOrder === "asc") {
+                return titleA.localeCompare(titleB);
+            } else {
+                return titleB.localeCompare(titleA);
+            }
+        });
+
+        return filtered;
+    }, [
+        feedbackForms,
+        searchTerm,
+        statusFilter,
+        academicYearFilter,
+        departmentFilter,
+        divisionFilter,
+        sortOrder,
+    ]);
+
+    // Calculate pagination
+    const totalFilteredForms = filteredForms().length;
+    const totalPages = Math.ceil(totalFilteredForms / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedForms = filteredForms().slice(startIndex, endIndex);
+
+    // Handle page change
+    const handlePageChange = useCallback((page: number) => {
+        setCurrentPage(page);
+        // Scroll to top when changing pages
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }, []);
+
+    // Reset to first page when filters change
+    const resetToFirstPage = useCallback(() => {
+        setCurrentPage(1);
+    }, []);
 
     // Handle actions
     const handleView = useCallback(
@@ -109,9 +185,67 @@ export default function FeedbackFormManagement() {
     }, [refetch]);
 
     // Handle stat click to filter by status
-    const handleStatClick = useCallback((status: FeedbackFormStatus) => {
-        setStatusFilter(status);
-    }, []);
+    const handleStatClick = useCallback(
+        (status: FeedbackFormStatus) => {
+            setStatusFilter(status);
+            // Reset hierarchical filters when changing status filter
+            setAcademicYearFilter("ALL");
+            setDepartmentFilter("ALL");
+            setDivisionFilter("ALL");
+            setSortOrder("asc");
+            resetToFirstPage();
+        },
+        [resetToFirstPage]
+    );
+
+    // Enhanced filter handlers that reset pagination
+    const handleSearchChange = useCallback(
+        (value: string) => {
+            setSearchTerm(value);
+            resetToFirstPage();
+        },
+        [resetToFirstPage]
+    );
+
+    const handleStatusFilterChange = useCallback(
+        (status: FeedbackFormStatus | "ALL") => {
+            setStatusFilter(status);
+            resetToFirstPage();
+        },
+        [resetToFirstPage]
+    );
+
+    const handleAcademicYearFilterChange = useCallback(
+        (year: string) => {
+            setAcademicYearFilter(year);
+            resetToFirstPage();
+        },
+        [resetToFirstPage]
+    );
+
+    const handleDepartmentFilterChange = useCallback(
+        (department: string) => {
+            setDepartmentFilter(department);
+            resetToFirstPage();
+        },
+        [resetToFirstPage]
+    );
+
+    const handleDivisionFilterChange = useCallback(
+        (division: string) => {
+            setDivisionFilter(division);
+            resetToFirstPage();
+        },
+        [resetToFirstPage]
+    );
+
+    const handleSortOrderChange = useCallback(
+        (order: "asc" | "desc") => {
+            setSortOrder(order);
+            resetToFirstPage();
+        },
+        [resetToFirstPage]
+    );
 
     // Loading state
     if (isLoading) {
@@ -150,15 +284,13 @@ export default function FeedbackFormManagement() {
         );
     }
 
-    const formsToDisplay = filteredForms();
-
     return (
         <div className="min-h-screen bg-light-muted-background dark:bg-dark-background">
-            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 py-6 md:py-8">
+            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 py-6 md:py-6">
                 <motion.div
                     initial="hidden"
                     animate="visible"
-                    className="space-y-8"
+                    className="space-y-4"
                 >
                     {/* Header Section */}
                     <FeedbackFormHeader
@@ -177,17 +309,32 @@ export default function FeedbackFormManagement() {
                     <FeedbackFormSearchFilter
                         searchTerm={searchTerm}
                         statusFilter={statusFilter}
-                        onSearchChange={setSearchTerm}
-                        onStatusFilterChange={setStatusFilter}
+                        academicYearFilter={academicYearFilter}
+                        departmentFilter={departmentFilter}
+                        divisionFilter={divisionFilter}
+                        sortOrder={sortOrder}
+                        forms={feedbackForms}
+                        onSearchChange={handleSearchChange}
+                        onStatusFilterChange={handleStatusFilterChange}
+                        onAcademicYearFilterChange={
+                            handleAcademicYearFilterChange
+                        }
+                        onDepartmentFilterChange={handleDepartmentFilterChange}
+                        onDivisionFilterChange={handleDivisionFilterChange}
+                        onSortOrderChange={handleSortOrderChange}
                     />
 
                     {/* Forms List */}
                     <FeedbackFormList
-                        forms={formsToDisplay}
-                        totalForms={feedbackForms.length}
+                        forms={paginatedForms}
+                        totalForms={totalFilteredForms}
                         onView={handleView}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={handlePageChange}
                     />
                 </motion.div>
             </div>

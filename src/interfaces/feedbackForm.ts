@@ -6,7 +6,6 @@
 import { IdType } from "./common";
 import { Department } from "./department";
 import { Semester } from "./semester";
-import { Division } from "./division";
 import { Subject } from "./subject";
 import { Faculty } from "./faculty";
 
@@ -55,7 +54,19 @@ export interface FeedbackForm {
     questions: FeedbackQuestion[];
     department?: Department;
     semester?: Semester;
-    division?: Division;
+    division?: {
+        id: IdType;
+        divisionName: string;
+        department: Department;
+        semester: {
+            id: IdType;
+            semesterNumber: number;
+            academicYear: {
+                id: IdType;
+                yearString: string;
+            };
+        };
+    };
     subject?: Subject;
     faculty?: Faculty;
     createdAt: string;
@@ -63,6 +74,8 @@ export interface FeedbackForm {
     isActive: boolean;
     subjectAllocation?: {
         departmentId?: string;
+        faculty?: Faculty;
+        subject?: Subject;
     };
 }
 

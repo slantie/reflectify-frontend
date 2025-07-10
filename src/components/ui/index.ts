@@ -18,3 +18,5 @@ export { default as ThemeToggle } from "./ThemeToggle";
 export { Select } from "./Select";
 export { Label } from "./Label";
 export { Switch } from "./Switch";
+export { Pagination } from "./Pagination";
+export type { PaginationProps } from "./Pagination";
