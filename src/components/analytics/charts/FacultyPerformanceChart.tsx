@@ -59,11 +59,11 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 const getRatingColor = (rating: number) => {
-    if (rating >= 4.5) return "#10b981"; // green
-    if (rating >= 4.0) return "#3b82f6"; // blue
-    if (rating >= 3.5) return "#f59e0b"; // yellow
-    if (rating >= 3.0) return "#f97316"; // orange
-    return "#ef4444"; // red
+    if (rating >= 9.0) return "#10b981"; // green (excellent: 9.0-10.0)
+    if (rating >= 8.0) return "#3b82f6"; // blue (very good: 8.0-8.9)
+    if (rating >= 7.0) return "#f59e0b"; // yellow (good: 7.0-7.9)
+    if (rating >= 6.0) return "#f97316"; // orange (satisfactory: 6.0-6.9)
+    return "#ef4444"; // red (needs improvement: below 6.0)
 };
 
 const PerformanceCard: React.FC<{
@@ -125,12 +125,12 @@ export const FacultyPerformanceChart: React.FC<
             rank: sortedByRating.length,
         };
 
-        // Find faculty who need improvement (rating < 3.5)
+        // Find faculty who need improvement (rating < 7.0 on 0-10 scale)
         const needsImprovement = data.filter(
-            (f) => f.averageRating < 3.5
+            (f) => f.averageRating < 7.0
         ).length;
         const excellentPerformers = data.filter(
-            (f) => f.averageRating >= 4.5
+            (f) => f.averageRating >= 9.0
         ).length;
 
         return {
@@ -246,7 +246,11 @@ export const FacultyPerformanceChart: React.FC<
                             fontSize={11}
                             stroke="#6b7280"
                         />
-                        <YAxis domain={[0, 5]} fontSize={12} stroke="#6b7280" />
+                        <YAxis
+                            domain={[0, 10]}
+                            fontSize={12}
+                            stroke="#6b7280"
+                        />
                         <Tooltip content={<CustomTooltip />} />
                         <Legend wrapperStyle={{ paddingTop: "20px" }} />
                         <Bar

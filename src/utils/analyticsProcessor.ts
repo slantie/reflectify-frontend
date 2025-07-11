@@ -13,17 +13,22 @@ import {
 } from "@/interfaces/analytics";
 
 export const parseResponseValue = (responseValue: any): number | null => {
-    if (typeof responseValue === "number") return responseValue;
-    if (typeof responseValue === "string") {
+    let value: number | null = null;
+
+    if (typeof responseValue === "number") {
+        value = responseValue;
+    } else if (typeof responseValue === "string") {
         const parsed = parseFloat(responseValue);
-        return !isNaN(parsed) ? parsed : null;
+        value = !isNaN(parsed) ? parsed : null;
+    } else if (typeof responseValue === "object" && responseValue?.score) {
+        value =
+            typeof responseValue.score === "number"
+                ? responseValue.score
+                : null;
     }
-    if (typeof responseValue === "object" && responseValue?.score) {
-        return typeof responseValue.score === "number"
-            ? responseValue.score
-            : null;
-    }
-    return null;
+
+    // Convert from 0-5 scale to 0-10 scale, but keep zero as zero
+    return value !== null ? (value === 0 ? 0 : value) : null;
 };
 
 export const determineLectureType = (
@@ -52,6 +57,9 @@ export class AnalyticsDataProcessor {
             .map((s) => parseResponseValue(s.responseValue))
             .filter((val): val is number => val !== null);
 
+        // Filter out zero ratings for average calculation
+        const nonZeroResponses = numericResponses;
+
         const uniqueSubjects = new Set(validSnapshots.map((s) => s.subjectId))
             .size;
         const uniqueFaculties = new Set(validSnapshots.map((s) => s.facultyId))
@@ -66,13 +74,13 @@ export class AnalyticsDataProcessor {
         return {
             totalResponses: validSnapshots.length,
             averageRating:
-                numericResponses.length > 0
+                nonZeroResponses.length > 0
                     ? Number(
                           (
-                              numericResponses.reduce(
+                              nonZeroResponses.reduce(
                                   (sum, val) => sum + val,
                                   0
-                              ) / numericResponses.length
+                              ) / nonZeroResponses.length
                           ).toFixed(2)
                       )
                     : null,
@@ -113,7 +121,7 @@ export class AnalyticsDataProcessor {
                 subjectGroups.set(key, {
                     subjectId: snapshot.subjectId,
                     subjectName: snapshot.subjectName,
-                    subjectAbbreviation: snapshot.subjectAbbreviation || "", // Ensure abbreviation is included
+                    subjectAbbreviation: snapshot.subjectAbbreviation || "",
                     facultyId: snapshot.facultyId,
                     facultyName: snapshot.facultyName,
                     lectureResponses: [],
@@ -130,28 +138,35 @@ export class AnalyticsDataProcessor {
         });
 
         return Array.from(subjectGroups.values()).map((group) => {
+            const nonZeroLectureResponses = group.lectureResponses.filter(
+                (val) => val > 0
+            );
+            const nonZeroLabResponses = group.labResponses.filter(
+                (val) => val > 0
+            );
+
             const lectureAvg =
-                group.lectureResponses.length > 0
-                    ? group.lectureResponses.reduce(
+                nonZeroLectureResponses.length > 0
+                    ? nonZeroLectureResponses.reduce(
                           (sum, val) => sum + val,
                           0
-                      ) / group.lectureResponses.length
+                      ) / nonZeroLectureResponses.length
                     : null;
 
             const labAvg =
-                group.labResponses.length > 0
-                    ? group.labResponses.reduce((sum, val) => sum + val, 0) /
-                      group.labResponses.length
+                nonZeroLabResponses.length > 0
+                    ? nonZeroLabResponses.reduce((sum, val) => sum + val, 0) /
+                      nonZeroLabResponses.length
                     : null;
 
-            const allResponses = [
-                ...group.lectureResponses,
-                ...group.labResponses,
+            const allNonZeroResponses = [
+                ...nonZeroLectureResponses,
+                ...nonZeroLabResponses,
             ];
             const overallAvg =
-                allResponses.length > 0
-                    ? allResponses.reduce((sum, val) => sum + val, 0) /
-                      allResponses.length
+                allNonZeroResponses.length > 0
+                    ? allNonZeroResponses.reduce((sum, val) => sum + val, 0) /
+                      allNonZeroResponses.length
                     : null;
 
             return {
@@ -167,9 +182,9 @@ export class AnalyticsDataProcessor {
                 overallAverageRating: overallAvg
                     ? Number(overallAvg.toFixed(2))
                     : null,
-                totalLectureResponses: group.lectureResponses.length,
-                totalLabResponses: group.labResponses.length,
-                totalOverallResponses: allResponses.length,
+                totalLectureResponses: nonZeroLectureResponses.length,
+                totalLabResponses: nonZeroLabResponses.length,
+                totalOverallResponses: allNonZeroResponses.length,
             };
         });
     }
@@ -278,9 +293,9 @@ export class AnalyticsDataProcessor {
             ),
             totalResponses: group.responses.length,
             engagementScore: Math.min(
-                5,
-                Math.round(group.responses.length / 10)
-            ), // Engagement based on response count
+                10,
+                Math.round(group.responses.length / 5)
+            ), // Engagement based on response count (scaled to 0-10)
         }));
     }
 
@@ -347,23 +362,30 @@ export class AnalyticsDataProcessor {
             }
         });
 
+        const nonZeroLectureResponses = lectureResponses.filter(
+            (val) => val > 0
+        );
+        const nonZeroLabResponses = labResponses.filter((val) => val > 0);
+
         const lectureAvg =
-            lectureResponses.length > 0
-                ? lectureResponses.reduce((sum, val) => sum + val, 0) /
-                  lectureResponses.length
-                : 0;
+            nonZeroLectureResponses.length > 0
+                ? nonZeroLectureResponses.reduce((sum, val) => sum + val, 0) /
+                  nonZeroLectureResponses.length
+                : null;
 
         const labAvg =
-            labResponses.length > 0
-                ? labResponses.reduce((sum, val) => sum + val, 0) /
-                  labResponses.length
-                : 0;
+            nonZeroLabResponses.length > 0
+                ? nonZeroLabResponses.reduce((sum, val) => sum + val, 0) /
+                  nonZeroLabResponses.length
+                : null;
 
         return {
-            lectureAverageRating: Number(lectureAvg.toFixed(2)),
-            labAverageRating: Number(labAvg.toFixed(2)),
-            totalLectureResponses: lectureResponses.length,
-            totalLabResponses: labResponses.length,
+            lectureAverageRating: lectureAvg
+                ? Number(lectureAvg.toFixed(2))
+                : 0,
+            labAverageRating: labAvg ? Number(labAvg.toFixed(2)) : 0,
+            totalLectureResponses: nonZeroLectureResponses.length,
+            totalLabResponses: nonZeroLabResponses.length,
         };
     }
 

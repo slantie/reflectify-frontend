@@ -266,7 +266,11 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
                             stroke="#6b7280"
                             tickFormatter={(value) => `Sem ${value}`}
                         />
-                        <YAxis domain={[0, 5]} fontSize={12} stroke="#6b7280" />
+                        <YAxis
+                            domain={[0, 10]}
+                            fontSize={12}
+                            stroke="#6b7280"
+                        />
                         <Tooltip content={<CustomTooltip />} />
                         <Legend wrapperStyle={{ paddingTop: "20px" }} />
 
@@ -326,9 +330,9 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
                                         <Badge
                                             variant="outline"
                                             className={
-                                                subject.avgRating >= 4
+                                                subject.avgRating >= 8
                                                     ? "text-green-600"
-                                                    : subject.avgRating >= 3.5
+                                                    : subject.avgRating >= 7.0
                                                     ? "text-blue-600"
                                                     : "text-orange-600"
                                             }

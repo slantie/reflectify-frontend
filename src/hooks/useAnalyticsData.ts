@@ -75,7 +75,7 @@ export const useProcessedAnalytics = (filters: AnalyticsFilterParams = {}) => {
             };
         }
         const snapshots = rawData.feedbackSnapshots;
-        return {
+        const processedResult = {
             overallStats: AnalyticsDataProcessor.processOverallStats(snapshots),
             subjectRatings:
                 AnalyticsDataProcessor.processSubjectRatings(snapshots),
@@ -91,6 +91,8 @@ export const useProcessedAnalytics = (filters: AnalyticsFilterParams = {}) => {
                 AnalyticsDataProcessor.getFilteringOptions(snapshots),
             rawSnapshots: snapshots,
         };
+
+        return processedResult;
     }, [rawData]);
     return { data: processedData, rawData, isLoading, error, refetch };
 };

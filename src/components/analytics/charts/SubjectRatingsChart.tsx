@@ -38,10 +38,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                     >
                         <div className="flex items-center gap-2">
                             <div
-                                className={`w-3 h-3 rounded-full ${
-                                    entry.color === "#3b82f6"
-                                        ? "bg-light-highlight dark:bg-dark-highlight"
-                                        : "bg-secondary-main"
+                                className={`w-2 h-2 rounded-full ${
+                                    entry.color === "#f97316"
+                                        ? "bg-[#f97316]"
+                                        : "bg-[#9ba2ae]"
                                 }`}
                             />
                             <span className="text-sm text-light-muted-text dark:text-dark-muted-text">
@@ -60,7 +60,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                     <div className="mt-3 pt-2 border-t border-light-secondary dark:border-dark-secondary">
                         <span className="text-xs text-light-muted-text dark:text-dark-muted-text">
                             Total Responses:{" "}
-                            {payload[0].payload.totalOverallResponses}
+                            <span className="font-semibold text-light-text dark:text-dark-text">
+                                {payload[0].payload.totalOverallResponses}
+                            </span>
                         </span>
                     </div>
                 )}
@@ -75,16 +77,106 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
     isLoading = false,
 }) => {
     const chartData = useMemo(() => {
-        return data
-            .map((item) => ({
-                subject: item.subjectAbbreviation,
-                lectureAverageRating: item.lectureAverageRating,
-                labAverageRating: item.labAverageRating,
-                overallAverageRating: item.overallAverageRating,
-                totalLectureResponses: item.totalLectureResponses,
-                totalLabResponses: item.totalLabResponses,
-                totalOverallResponses: item.totalOverallResponses,
-                facultyName: item.facultyName,
+        // Group data by subjectAbbreviation to aggregate multiple faculty entries for same subject
+        const subjectGroups = new Map<
+            string,
+            {
+                subjectAbbreviation: string;
+                lectureRatings: number[];
+                labRatings: number[];
+                overallRatings: number[];
+                totalLectureResponses: number;
+                totalLabResponses: number;
+                totalOverallResponses: number;
+                facultyNames: string[];
+            }
+        >();
+
+        data.forEach((item) => {
+            const key = item.subjectAbbreviation || item.subjectName;
+
+            if (!subjectGroups.has(key)) {
+                subjectGroups.set(key, {
+                    subjectAbbreviation:
+                        item.subjectAbbreviation || item.subjectName,
+                    lectureRatings: [],
+                    labRatings: [],
+                    overallRatings: [],
+                    totalLectureResponses: 0,
+                    totalLabResponses: 0,
+                    totalOverallResponses: 0,
+                    facultyNames: [],
+                });
+            }
+
+            const group = subjectGroups.get(key)!;
+
+            // Collect ratings (only non-null and > 0)
+            if (item.lectureAverageRating && item.lectureAverageRating > 0) {
+                group.lectureRatings.push(item.lectureAverageRating);
+            }
+            if (item.labAverageRating && item.labAverageRating > 0) {
+                group.labRatings.push(item.labAverageRating);
+            }
+            if (item.overallAverageRating && item.overallAverageRating > 0) {
+                group.overallRatings.push(item.overallAverageRating);
+            }
+
+            // Sum responses
+            group.totalLectureResponses += item.totalLectureResponses;
+            group.totalLabResponses += item.totalLabResponses;
+            group.totalOverallResponses += item.totalOverallResponses;
+
+            // Collect faculty names
+            if (
+                item.facultyName &&
+                !group.facultyNames.includes(item.facultyName)
+            ) {
+                group.facultyNames.push(item.facultyName);
+            }
+        });
+
+        // Convert to chart data format
+        return Array.from(subjectGroups.values())
+            .map((group) => ({
+                subject: group.subjectAbbreviation,
+                lectureAverageRating:
+                    group.lectureRatings.length > 0
+                        ? Number(
+                              (
+                                  group.lectureRatings.reduce(
+                                      (sum, r) => sum + r,
+                                      0
+                                  ) / group.lectureRatings.length
+                              ).toFixed(2)
+                          )
+                        : null,
+                labAverageRating:
+                    group.labRatings.length > 0
+                        ? Number(
+                              (
+                                  group.labRatings.reduce(
+                                      (sum, r) => sum + r,
+                                      0
+                                  ) / group.labRatings.length
+                              ).toFixed(2)
+                          )
+                        : null,
+                overallAverageRating:
+                    group.overallRatings.length > 0
+                        ? Number(
+                              (
+                                  group.overallRatings.reduce(
+                                      (sum, r) => sum + r,
+                                      0
+                                  ) / group.overallRatings.length
+                              ).toFixed(2)
+                          )
+                        : null,
+                totalLectureResponses: group.totalLectureResponses,
+                totalLabResponses: group.totalLabResponses,
+                totalOverallResponses: group.totalOverallResponses,
+                facultyName: group.facultyNames.join(", "), // Multiple faculties
             }))
             .sort(
                 (a, b) =>
@@ -94,29 +186,129 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
     }, [data]);
 
     const stats = useMemo(() => {
-        const totalSubjects = data.length;
+        // Group by subjectAbbreviation to get unique subjects
+        const subjectGroups = new Map<
+            string,
+            {
+                lectureRatings: number[];
+                labRatings: number[];
+                totalLectureResponses: number;
+                totalLabResponses: number;
+                totalOverallResponses: number;
+            }
+        >();
+
+        // Group data by subject abbreviation
+        data.forEach((item) => {
+            const key = item.subjectAbbreviation || item.subjectName;
+
+            if (!subjectGroups.has(key)) {
+                subjectGroups.set(key, {
+                    lectureRatings: [],
+                    labRatings: [],
+                    totalLectureResponses: 0,
+                    totalLabResponses: 0,
+                    totalOverallResponses: 0,
+                });
+            }
+
+            const group = subjectGroups.get(key)!;
+
+            // Add lecture rating if it exists and is > 0
+            if (item.lectureAverageRating && item.lectureAverageRating > 0) {
+                group.lectureRatings.push(item.lectureAverageRating);
+            }
+
+            // Add lab rating if it exists and is > 0
+            if (item.labAverageRating && item.labAverageRating > 0) {
+                group.labRatings.push(item.labAverageRating);
+            }
+
+            // Sum up responses
+            group.totalLectureResponses += item.totalLectureResponses;
+            group.totalLabResponses += item.totalLabResponses;
+            group.totalOverallResponses += item.totalOverallResponses;
+        });
+
+        // Calculate aggregated stats
+        const uniqueSubjects = subjectGroups.size;
+        let totalLectureRatings = 0;
+        let totalLabRatings = 0;
+        let lectureRatingCount = 0;
+        let labRatingCount = 0;
+        let totalResponses = 0;
+
+        subjectGroups.forEach((group) => {
+            // Calculate average for this subject's lecture ratings
+            if (group.lectureRatings.length > 0) {
+                const subjectLectureAvg =
+                    group.lectureRatings.reduce(
+                        (sum, rating) => sum + rating,
+                        0
+                    ) / group.lectureRatings.length;
+                totalLectureRatings += subjectLectureAvg;
+                lectureRatingCount++;
+            }
+
+            // Calculate average for this subject's lab ratings
+            if (group.labRatings.length > 0) {
+                const subjectLabAvg =
+                    group.labRatings.reduce((sum, rating) => sum + rating, 0) /
+                    group.labRatings.length;
+                totalLabRatings += subjectLabAvg;
+                labRatingCount++;
+            }
+
+            totalResponses += group.totalOverallResponses;
+        });
+
         const avgLectureRating =
-            data.reduce(
-                (sum, item) => sum + (item.lectureAverageRating || 0),
-                0
-            ) / totalSubjects;
+            lectureRatingCount > 0
+                ? totalLectureRatings / lectureRatingCount
+                : 0;
         const avgLabRating =
-            data.reduce((sum, item) => sum + (item.labAverageRating || 0), 0) /
-            totalSubjects;
-        const totalResponses = data.reduce(
-            (sum, item) => sum + item.totalOverallResponses,
-            0
-        );
+            labRatingCount > 0 ? totalLabRatings / labRatingCount : 0;
+
+        console.log("Aggregated Stats by Subject:", {
+            uniqueSubjects,
+            subjectsWithLectureRatings: lectureRatingCount,
+            subjectsWithLabRatings: labRatingCount,
+            avgLectureRating: Number(avgLectureRating.toFixed(2)),
+            avgLabRating: Number(avgLabRating.toFixed(2)),
+            totalResponses,
+            subjectBreakdown: Array.from(subjectGroups.entries()).map(
+                ([subject, group]) => ({
+                    subject,
+                    lectureAvg:
+                        group.lectureRatings.length > 0
+                            ? (
+                                  group.lectureRatings.reduce(
+                                      (sum, r) => sum + r,
+                                      0
+                                  ) / group.lectureRatings.length
+                              ).toFixed(2)
+                            : "N/A",
+                    labAvg:
+                        group.labRatings.length > 0
+                            ? (
+                                  group.labRatings.reduce(
+                                      (sum, r) => sum + r,
+                                      0
+                                  ) / group.labRatings.length
+                              ).toFixed(2)
+                            : "N/A",
+                    responses: group.totalOverallResponses,
+                })
+            ),
+        });
 
         return {
-            totalSubjects,
+            totalSubjects: uniqueSubjects,
             avgLectureRating: Number(avgLectureRating.toFixed(2)),
             avgLabRating: Number(avgLabRating.toFixed(2)),
             totalResponses,
         };
     }, [data]);
-
-    console.log("Chart Data:", chartData);
 
     if (isLoading) {
         return (
@@ -214,30 +406,48 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                 </div>
             </CardHeader>
             <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
+                <ResponsiveContainer width="100%" height={425}>
                     <BarChart
                         data={chartData}
                         margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
+                        className="fill-light-text dark:fill-dark-text"
                     >
-                        {/* <CartesianGrid strokeDasharray="3 3" className="" /> */}
+                        <CartesianGrid
+                            strokeDasharray="4 4"
+                            stroke="#AAAAAA"
+                            strokeOpacity={0.2}
+                        />
                         <XAxis
                             dataKey="subject"
-                            textAnchor="end"
+                            textAnchor="middle"
                             height={10}
                             interval={0}
                             fontSize={12}
+                            stroke="#AAAAAA"
                             padding={{ left: 10, right: 10 }}
-                            className="fill-light-text dark:fill-dark-text"
                         />
                         <YAxis
-                            domain={[0, 5]}
+                            domain={[0, 10]}
                             fontSize={12}
-                            className="fill-light-text dark:fill-dark-text"
+                            stroke="#AAAAAA"
                         />
-                        <Tooltip content={<CustomTooltip />} />
+                        <Tooltip
+                            content={<CustomTooltip />}
+                            cursor={{
+                                fill: "#f97316",
+                                opacity: 0.15,
+                                radius: 5,
+                            }}
+                        />
                         <Legend
-                            wrapperStyle={{ paddingTop: "25px" }}
+                            wrapperStyle={{ paddingTop: "20px" }}
                             iconType="circle"
+                            iconSize={8}
+                            formatter={(value) => (
+                                <span className="text-md gap-2 text-light-text dark:text-dark-text">
+                                    {value}
+                                </span>
+                            )}
                         />
                         <Bar
                             dataKey="lectureAverageRating"
@@ -255,28 +465,36 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                 </ResponsiveContainer>
 
                 {/* Summary Statistics */}
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-light-secondary dark:border-dark-secondary">
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4 pt-4 border-t border-light-secondary dark:border-dark-secondary">
                     <div className="text-center">
                         <div className="text-2xl font-bold text-light-text dark:text-dark-text">
                             {stats.totalSubjects}
                         </div>
-                        <div className="text-sm text-light-muted-text dark:text-dark-muted-text">
-                            Subjects Evaluated
+                        <div className="text-md text-light-muted-text dark:text-dark-muted-text">
+                            Subjects
                         </div>
                     </div>
                     <div className="text-center">
-                        <div className="text-2xl font-bold text-light-highlight dark:text-dark-highlight">
+                        <div className="text-2xl font-bold text-light-text dark:text-dark-text">
+                            {stats.totalResponses}
+                        </div>
+                        <div className="text-md text-light-muted-text dark:text-dark-muted-text">
+                            Responses
+                        </div>
+                    </div>
+                    <div className="text-center">
+                        <div className="text-2xl font-bold text-[#f97316]">
                             {stats.avgLectureRating}
                         </div>
-                        <div className="text-sm text-light-muted-text dark:text-dark-muted-text">
+                        <div className="text-md text-light-muted-text dark:text-dark-muted-text">
                             Avg Lecture Rating
                         </div>
                     </div>
                     <div className="text-center">
-                        <div className="text-2xl font-bold text-secondary-main">
+                        <div className="text-2xl font-bold text-[#9ca3af]">
                             {stats.avgLabRating}
                         </div>
-                        <div className="text-sm text-light-muted-text dark:text-dark-muted-text">
+                        <div className="text-md text-light-muted-text dark:text-dark-muted-text">
                             Avg Lab Rating
                         </div>
                     </div>

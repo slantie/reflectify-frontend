@@ -99,7 +99,7 @@ export const DepartmentComparisonChart: React.FC<
         yaxis: {
             ...getAxisConfig(isDark),
             title: {
-                text: "Normalized Scale (0-5)",
+                text: "Normalized Scale (0-10)",
                 style: {
                     color: isDark ? "#98989F" : "#67676C",
                     fontSize: "12px",
@@ -107,7 +107,7 @@ export const DepartmentComparisonChart: React.FC<
                 },
             },
             min: 0,
-            max: 5,
+            max: 10,
             tickAmount: 5,
         },
         tooltip: {

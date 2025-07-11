@@ -169,7 +169,6 @@ const AnalyticsPage: React.FC = () => {
                             </p>
                         </div>
                         <div className="flex items-center gap-3">
-
                             <button
                                 onClick={handleRefresh}
                                 disabled={analyticsDataLoading}
@@ -263,19 +262,20 @@ const AnalyticsPage: React.FC = () => {
                                     value="overview"
                                     className="space-y-6 mt-0"
                                 >
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 gap-6">
                                         <SubjectRatingsChart
                                             data={
                                                 processedData?.subjectRatings ||
                                                 []
                                             }
-                                                                                    />
-                                        <DivisionComparisonChart
+                                            isLoading={analyticsDataLoading}
+                                        />
+                                        {/* <DivisionComparisonChart
                                             data={
                                                 processedData?.divisionComparisons ||
                                                 []
                                             }
-                                        />
+                                        /> */}
                                     </div>
                                 </TabsContent>
 
@@ -287,6 +287,7 @@ const AnalyticsPage: React.FC = () => {
                                         data={
                                             processedData?.subjectRatings || []
                                         }
+                                        isLoading={analyticsDataLoading}
                                     />
                                 </TabsContent>
 

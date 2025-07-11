@@ -278,7 +278,7 @@ export const DivisionComparisonChart: React.FC<
                             <YAxis
                                 dataKey="y"
                                 name="Average Rating"
-                                domain={[0, 5]}
+                                domain={[0, 10]}
                                 fontSize={12}
                                 stroke="#6b7280"
                                 label={{
@@ -318,7 +318,7 @@ export const DivisionComparisonChart: React.FC<
                                 stroke="#6b7280"
                             />
                             <YAxis
-                                domain={[0, 5]}
+                                domain={[0, 10]}
                                 fontSize={12}
                                 stroke="#6b7280"
                             />
