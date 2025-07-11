@@ -3,20 +3,20 @@
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Button } from "../ui/Button"; // Assuming your Button component is here
-import ThemeToggle from "../ui/ThemeToggle"; // Assuming ThemeToggle is here
-import { motion } from "framer-motion"; // Import motion for animations
-import { Menu, X, Trash2 } from "lucide-react"; // Import Lucide icons for hamburger/close/trash
-import Image from "next/image"; // Re-import Image for Next.js
-import logo from "../../../public/Logo.svg"; // Re-import logo for Next.js
-import { useDeleteAllData } from "@/hooks/useDashboardStats";
-import { showToast } from "@/lib/toast";
+import { Button } from "../ui/Button";
+import ThemeToggle from "../ui/ThemeToggle";
+import { motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
+import Image from "next/image";
+import logo from "../../../public/Logo.svg";
+// import { useDeleteAllData } from "@/hooks/useDashboardStats";
+// import { showToast } from "@/lib/toast";
 
 const HeaderRoute = (route: string, label: string) => {
     return (
         <Link
             href={route}
-            className="text-light-text dark:text-dark-text hover:text-light-highlight dark:hover:text-dark-highlight transition-colors duration-200 font-medium"
+            className="text-secondary-dark dark:text-dark-tertiary hover:text-primary-dark dark:hover:text-primary-light transition-colors duration-200 font-medium text-sm md:text-base lg:text-lg"
         >
             {label}
         </Link>
@@ -27,15 +27,14 @@ export function Header() {
     const { user, logout, loading } = useAuth();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    // Close mobile menu when navigating or on auth state change
     useEffect(() => {
         setIsMobileMenuOpen(false);
-    }, [user]); // Depend on user to close menu on login/logout
+    }, [user]);
 
     const handleLogout = async () => {
         try {
             await logout();
-            setIsMobileMenuOpen(false); // Close menu after logout
+            setIsMobileMenuOpen(false);
         } catch (error) {
             console.error("Logout failed in Header:", error);
         }
@@ -45,41 +44,37 @@ export function Header() {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    // Delete all data mutation (development only)
-    const deleteAllDataMutation = useDeleteAllData();
+    // const deleteAllDataMutation = useDeleteAllData();
 
-    const handleDeleteAllData = async () => {
-        // Only show in development
-        if (process.env.NODE_ENV !== "development") {
-            return;
-        }
+    // const handleDeleteAllData = async () => {
+    //     if (process.env.NODE_ENV !== "development") {
+    //         return;
+    //     }
 
-        // Double confirmation for safety
-        const firstConfirm = window.confirm(
-            "⚠️ WARNING: This will delete ALL data from the database!\n\nThis action cannot be undone. Are you sure you want to continue?"
-        );
+    //     const firstConfirm = window.confirm(
+    //         "⚠️ WARNING: This will delete ALL data from the database!\n\nThis action cannot be undone. Are you sure you want to continue?"
+    //     );
 
-        if (!firstConfirm) return;
+    //     if (!firstConfirm) return;
 
-        const secondConfirm = window.confirm(
-            "🚨 FINAL WARNING: You are about to permanently delete ALL database records!\n\nType confirmation or click OK to proceed."
-        );
+    //     const secondConfirm = window.confirm(
+    //         "🚨 FINAL WARNING: You are about to permanently delete ALL database records!\n\nType confirmation or click OK to proceed."
+    //     );
 
-        if (!secondConfirm) return;
+    //     if (!secondConfirm) return;
 
-        try {
-            await deleteAllDataMutation.mutateAsync();
-            showToast.success("Database deleted successfully!");
-        } catch (error: any) {
-            console.error("Failed to delete database:", error);
-            showToast.error(
-                "Failed to delete database: " +
-                    (error.message || "Unknown error")
-            );
-        }
-    };
+    //     try {
+    //         await deleteAllDataMutation.mutateAsync();
+    //         showToast.success("Database deleted successfully!");
+    //     } catch (error: any) {
+    //         console.error("Failed to delete database:", error);
+    //         showToast.error(
+    //             "Failed to delete database: " +
+    //                 (error.message || "Unknown error")
+    //         );
+    //     }
+    // };
 
-    // Define Framer Motion variants for consistency with Footer
     const headerVariants = {
         initial: { opacity: 0, y: -20 },
         animate: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -87,7 +82,7 @@ export function Header() {
 
     const logoVariants = {
         animate: {
-            opacity: [0.8, 1, 0.8], // Subtle pulse effect
+            opacity: [0.8, 1, 0.8],
         },
         transition: {
             duration: 3,
@@ -96,7 +91,6 @@ export function Header() {
         },
     };
 
-    // Render a minimal header or null while authentication status is being checked
     if (loading) {
         return (
             <motion.header
@@ -125,27 +119,25 @@ export function Header() {
                 variants={headerVariants}
                 className="bg-white dark:bg-dark-background border-b border-secondary-lighter dark:border-dark-secondary relative z-50"
             >
-                <nav className="mx-auto max-w-[1920px] px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-4 flex items-center justify-between">
+                <nav className="mx-auto max-w-[1920px] px-6 py-4 flex items-center justify-between">
                     {/* Logo / Site Title */}
                     <motion.div
-                        className="text-2xl sm:text-3xl font-bold whitespace-nowrap"
+                        className="text-2xl font-bold whitespace-nowrap"
                         variants={logoVariants}
                         initial="animate"
                     >
                         <div className="flex items-center gap-2">
-                            {" "}
-                            {/* Adjusted gap for logo and text */}
                             <Link href="/" className="flex items-center gap-2">
                                 <Image
                                     src={logo}
                                     alt="Reflectify Logo"
-                                    width={40}
-                                    height={40}
-                                    className="object-contain"
+                                    width={32} // Smaller on mobile
+                                    height={32} // Smaller on mobile
+                                    className="object-contain lg:w-10 lg:h-10 md:w-8 md:h-8" // Larger on larger screens
                                     priority
                                 />
-                                <span className="text-2xl md:text-3xl font-bold">
-                                    <span className="bg-gradient-to-r from-primary-dark to-primary-main bg-clip-text text-transparent">
+                                <span className="lg:text-3xl md:text-xl font-bold">
+                                    <span className="text-[#f98a17]">
                                         Reflectify
                                     </span>
                                 </span>
@@ -154,86 +146,77 @@ export function Header() {
                     </motion.div>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center gap-6">
-                        {/* Conditional rendering for About Us and Contact - only if not authenticated */}
+                    <div className="hidden md:flex items-center gap-4 lg:gap-6">
                         {!user && (
                             <>
                                 <Link
                                     href="/about-us"
-                                    className="text-secondary-dark dark:text-dark-tertiary hover:text-primary-dark dark:hover:text-primary-light transition-colors duration-200 font-medium"
+                                    className="text-secondary-dark dark:text-dark-tertiary hover:text-primary-dark dark:hover:text-primary-light transition-colors duration-200 font-medium text-sm lg:text-base"
                                 >
                                     About Us
                                 </Link>
                                 <Link
                                     href="/contact"
-                                    className="text-secondary-dark dark:text-dark-tertiary hover:text-primary-dark dark:hover:text-primary-light transition-colors duration-200 font-medium"
+                                    className="text-secondary-dark dark:text-dark-tertiary hover:text-primary-dark dark:hover:text-primary-light transition-colors duration-200 font-medium text-sm lg:text-base"
                                 >
                                     Contact
                                 </Link>
-
-                                <div className="hidden md:flex items-center gap-4">
-                                    <ThemeToggle />
-                                </div>
+                                <ThemeToggle />
                             </>
                         )}
 
                         {user ? (
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-3 lg:gap-4">
                                 {HeaderRoute("/dashboard", "Dashboard")}
 
                                 {user.isSuper &&
-                                    HeaderRoute("/upload", "Upload Data")}
+                                    HeaderRoute("/upload", "Upload")}
                                 {user.isSuper &&
                                     HeaderRoute(
                                         "/faculty-matrix",
                                         "Faculty Matrix"
                                     )}
                                 {user.isSuper &&
-                                    HeaderRoute(
-                                        "/feedback-forms",
-                                        "Feedback Forms"
-                                    )}
+                                    HeaderRoute("/feedback-forms", "Feedback")}
                                 {user.isSuper &&
                                     HeaderRoute("/analytics", "Analytics")}
-                                {user.isSuper &&
+                                {/* {user.isSuper &&
                                     HeaderRoute(
                                         "/faculty-analytics",
                                         "Faculty Analytics"
-                                    )}
+                                    )} */}
 
-                                <div className="hidden md:flex items-center gap-4">
-                                    <ThemeToggle />
-                                    {/* Delete Database Button (Development Only) */}
-                                    {process.env.NODE_ENV === "development" &&
-                                        user?.isSuper && (
-                                            <Button
-                                                onClick={handleDeleteAllData}
-                                                variant="destructive"
-                                                size="sm"
-                                                className="px-3 py-1.5 text-xs flex items-center gap-1 bg-red-600 hover:bg-red-700"
-                                                disabled={
-                                                    deleteAllDataMutation.isPending
-                                                }
-                                            >
-                                                <Trash2 className="h-3 w-3" />
-                                                {deleteAllDataMutation.isPending
-                                                    ? "Deleting..."
-                                                    : "Delete DB"}
-                                            </Button>
-                                        )}
-                                </div>
+                                <ThemeToggle />
 
-                                <Link
+                                {/* {process.env.NODE_ENV === "development" &&
+                                    user?.isSuper && (
+                                        <Button
+                                            onClick={handleDeleteAllData}
+                                            variant="destructive"
+                                            size="sm"
+                                            className="px-2 py-1 text-xs md:px-3 md:py-1.5 md:text-sm flex items-center gap-1 bg-red-600 hover:bg-red-700"
+                                            disabled={
+                                                deleteAllDataMutation.isPending
+                                            }
+                                        >
+                                            <Trash2 className="h-3 w-3" />
+                                            {deleteAllDataMutation.isPending
+                                                ? "Deleting..."
+                                                : "Delete DB"}
+                                        </Button>
+                                    )} */}
+
+                                {/* <Link
                                     href="/profile"
-                                    className="px-4 py-2 bg-primary-dark text-white rounded-md hover:bg-primary-darker transition-colors duration-200 text-sm font-semibold"
+                                    className="px-3 py-1.5 text-sm lg:px-4 lg:py-2 bg-primary-dark text-white rounded-md hover:bg-primary-darker transition-colors duration-200 font-semibold"
                                 >
                                     Profile
-                                </Link>
+                                </Link> */}
 
                                 <Button
                                     onClick={handleLogout}
                                     variant="destructive"
-                                    className="px-4 py-2 text-sm"
+                                    className="text-md"
                                 >
                                     Logout
                                 </Button>
@@ -242,7 +225,7 @@ export function Header() {
                             <div className="flex items-center gap-4">
                                 <Link
                                     href="/login"
-                                    className="px-4 py-2 bg-primary-dark text-white rounded-md hover:bg-primary-darker transition-colors duration-200 text-sm font-semibold"
+                                    className="px-3 py-1.5 text-sm lg:px-4 lg:py-2 bg-primary-dark text-white rounded-md hover:bg-primary-darker transition-colors duration-200 font-semibold"
                                 >
                                     Login
                                 </Link>
@@ -251,19 +234,19 @@ export function Header() {
                     </div>
 
                     {/* Mobile Menu Button (Hamburger) */}
-                    <div className="md:hidden flex items-center gap-4">
+                    <div className="md:hidden flex items-center gap-3">
                         <ThemeToggle />
                         <Button
                             onClick={toggleMobileMenu}
-                            className="p-2 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-dark rounded-md"
+                            className="px-2.5 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-dark rounded-md"
                             aria-label="Toggle mobile menu"
                             aria-expanded={isMobileMenuOpen}
                             aria-controls="mobile-menu"
                         >
                             {isMobileMenuOpen ? (
-                                <X className="w-6 h-6" />
+                                <X className="w-5 h-5" /> // Smaller icon for mobile
                             ) : (
-                                <Menu className="w-6 h-6" />
+                                <Menu className="w-5 h-5" /> // Smaller icon for mobile
                             )}
                         </Button>
                     </div>
@@ -274,8 +257,18 @@ export function Header() {
             {isMobileMenuOpen && (
                 <div
                     className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm md:hidden"
+                    aria-hidden="true"
                     onClick={toggleMobileMenu}
                 />
+            )}
+
+            {/* Block scroll when menu is open */}
+            {isMobileMenuOpen && (
+                <style jsx global>{`
+                    body {
+                        overflow: hidden;
+                    }
+                `}</style>
             )}
 
             {/* Mobile Menu (Outside Header) */}
@@ -292,22 +285,21 @@ export function Header() {
                     },
                 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="md:hidden fixed top-[72px] left-0 w-full bg-white dark:bg-dark-background shadow-lg border-t border-secondary-lighter dark:border-dark-secondary overflow-hidden z-40"
+                className="md:hidden fixed top-[64px] sm:top-[72px] left-0 w-full bg-white dark:bg-dark-background shadow-lg border-t border-secondary-lighter dark:border-dark-secondary overflow-hidden z-40"
             >
                 <div className="flex flex-col p-4 space-y-3">
-                    {/* Conditional rendering for About Us and Contact in mobile - only if not authenticated */}
                     {!user && (
                         <>
                             <Link
                                 href="/about-us"
-                                className="block text-secondary-dark dark:text-dark-tertiary hover:text-primary-dark dark:hover:text-primary-light py-2 font-medium"
+                                className="block text-secondary-dark dark:text-dark-tertiary hover:text-primary-dark dark:hover:text-primary-light py-2 font-medium text-base"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
                                 About Us
                             </Link>
                             <Link
                                 href="/contact"
-                                className="block text-secondary-dark dark:text-dark-tertiary hover:text-primary-dark dark:hover:text-primary-light py-2 font-medium"
+                                className="block text-secondary-dark dark:text-dark-tertiary hover:text-primary-dark dark:hover:text-primary-light py-2 font-medium text-base"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
                                 Contact
@@ -317,12 +309,12 @@ export function Header() {
 
                     {user ? (
                         <>
-                            <span className="block text-secondary-dark dark:text-dark-tertiary py-2 font-medium">
+                            <span className="block text-secondary-dark dark:text-dark-tertiary py-2 font-medium text-base">
                                 Hello, {user.name}
                             </span>
                             <Link
                                 href="/dashboard"
-                                className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium"
+                                className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium text-base"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
                                 Dashboard
@@ -330,16 +322,16 @@ export function Header() {
                             {user.isSuper && (
                                 <Link
                                     href="/upload"
-                                    className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium"
+                                    className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium text-base"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
-                                    Upload Data
+                                    Upload
                                 </Link>
                             )}
                             {user.isSuper && (
                                 <Link
                                     href="/faculty-matrix"
-                                    className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium"
+                                    className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium text-base"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
                                     Faculty Matrix
@@ -348,33 +340,32 @@ export function Header() {
                             {user.isSuper && (
                                 <Link
                                     href="/feedback-forms"
-                                    className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium"
+                                    className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium text-base"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
-                                    Feedback Forms
+                                    Feedback
                                 </Link>
                             )}
                             {user.isSuper && (
                                 <Link
                                     href="/analytics"
-                                    className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium"
+                                    className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium text-base"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
                                     Analytics
                                 </Link>
                             )}
-                            {user.isSuper && (
+                            {/* {user.isSuper && (
                                 <Link
                                     href="/faculty-analytics"
-                                    className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium"
+                                    className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium text-base"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
                                     Faculty Analytics
                                 </Link>
-                            )}
+                            )} */}
 
-                            {/* Delete Database Button (Development Only - Mobile) */}
-                            {process.env.NODE_ENV === "development" &&
+                            {/* {process.env.NODE_ENV === "development" &&
                                 user?.isSuper && (
                                     <Button
                                         onClick={() => {
@@ -392,17 +383,15 @@ export function Header() {
                                             ? "Deleting Database..."
                                             : "Delete Database (DEV)"}
                                     </Button>
-                                )}
+                                )} */}
 
-                            {/* Changed "Logout" button to "Profile" link in mobile */}
-                            <Link
+                            {/* <Link
                                 href="/profile"
                                 className="block px-4 py-2 bg-primary-dark text-white rounded-md text-center hover:bg-primary-darker transition-colors duration-200 mt-2 text-base font-semibold"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
                                 Profile
-                            </Link>
-                            {/* Keep Logout button alongside Profile in mobile */}
+                            </Link> */}
                             <Button
                                 onClick={handleLogout}
                                 variant="destructive"

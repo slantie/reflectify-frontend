@@ -21,47 +21,76 @@ import { Badge } from "@/components/ui/Badge";
 import { TrendingUp, Calendar, Target } from "lucide-react";
 import { SemesterTrend } from "@/interfaces/analytics";
 
+// Assuming SemesterTrend interface is defined elsewhere, e.g., in analytics.ts
+// It should look something like this:
+// interface SemesterTrend {
+//     semester: number;
+//     subject: string;
+//     averageRating: number;
+//     responseCount: number;
+// }
+
 interface SemesterTrendsChartProps {
     data: SemesterTrend[];
     isLoading?: boolean;
     chartType?: "line" | "area";
 }
 
+// Custom Tooltip component for Recharts
 const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
+        // Find the main payload for the overall average rating line/area
+        const mainTrend = payload.find(
+            (p: any) => p.dataKey === "averageRating"
+        );
+        const semesterDetails = mainTrend?.payload?.details || []; // Access the 'details' array for individual subjects
+
         return (
             <div className="bg-light-background dark:bg-dark-muted-background p-4 border border-light-secondary dark:border-dark-secondary rounded-xl shadow-lg">
                 <p className="font-semibold text-light-text dark:text-dark-text mb-3">
                     Semester {label}
                 </p>
-                {payload.map((entry: any, index: number) => (
-                    <div key={index} className="mb-3">
-                        <div className="flex items-center gap-2 mb-1">
-                            <div
-                                className={`w-3 h-3 rounded-full ${
-                                    entry.stroke === "#3b82f6"
-                                        ? "bg-light-highlight dark:bg-dark-highlight"
-                                        : "bg-secondary-main"
-                                }`}
-                            />
-                            <span className="text-sm font-semibold text-light-text dark:text-dark-text">
-                                {entry.payload.subject}
+                {/* Display overall average rating for the semester */}
+                {mainTrend && (
+                    <div className="flex items-center justify-between gap-4 mb-2">
+                        <div className="flex items-center gap-2">
+                            <div className="w-2.5 h-2.5 rounded-full bg-primary-main" />
+                            <span className="text-sm text-light-muted-text dark:text-dark-muted-text">
+                                Overall Avg Rating:
                             </span>
                         </div>
-                        <div className="ml-5 text-sm text-light-muted-text dark:text-dark-muted-text">
-                            Rating:{" "}
-                            <span className="font-semibold text-light-text dark:text-dark-text">
-                                {entry.value.toFixed(2)}
-                            </span>
-                        </div>
-                        <div className="ml-5 text-sm text-light-muted-text dark:text-dark-muted-text">
-                            Responses:{" "}
-                            <span className="font-semibold text-light-text dark:text-dark-text">
-                                {entry.payload.responseCount}
-                            </span>
-                        </div>
+                        <span className="font-bold text-lg text-primary-main">
+                            {mainTrend.value
+                                ? mainTrend.value.toFixed(2)
+                                : "N/A"}
+                        </span>
                     </div>
-                ))}
+                )}
+
+                {/* Display individual subject ratings if available for this semester */}
+                {semesterDetails.length > 0 && (
+                    <div className="mt-3 pt-2 border-t border-light-secondary dark:border-dark-secondary">
+                        <p className="text-sm font-semibold text-light-text dark:text-dark-text mb-2">
+                            Subject Breakdown:
+                        </p>
+                        {semesterDetails.map(
+                            (detail: SemesterTrend, index: number) => (
+                                <div
+                                    key={index}
+                                    className="flex flex-col mb-1 last:mb-0"
+                                >
+                                    <span className="text-xs font-medium text-light-text dark:text-dark-text truncate">
+                                        {detail.subjectAbbreviation}:{" "}
+                                        <span className="font-bold text-primary-main">
+                                            {detail.averageRating.toFixed(2)}
+                                        </span>{" "}
+                                        ({detail.responseCount} responses)
+                                    </span>
+                                </div>
+                            )
+                        )}
+                    </div>
+                )}
             </div>
         );
     }
@@ -73,8 +102,9 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
     isLoading = false,
     chartType = "line",
 }) => {
-    const processedData = useMemo(() => {
-        // Group data by semester
+    // Process data to get overall semester trends and detailed subject trends
+    const { processedData, subjectTrends, stats } = useMemo(() => {
+        // Group data by semester to calculate overall average rating and total responses per semester
         const semesterGroups = data.reduce((acc, item) => {
             if (!acc[item.semester]) {
                 acc[item.semester] = [];
@@ -83,12 +113,12 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
             return acc;
         }, {} as Record<number, SemesterTrend[]>);
 
-        // Create chart data structure
+        // Create main chart data structure for semester averages
         const semesters = Object.keys(semesterGroups)
             .map(Number)
             .sort((a, b) => a - b);
 
-        return semesters.map((semester) => {
+        const processedChartData = semesters.map((semester) => {
             const semesterData = semesterGroups[semester];
             const avgRating =
                 semesterData.reduce(
@@ -105,16 +135,14 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
                 averageRating: Number(avgRating.toFixed(2)),
                 totalResponses,
                 subjects: semesterData.length,
-                details: semesterData,
+                details: semesterData, // Keep original data for detailed tooltip
             };
         });
-    }, [data]);
 
-    const subjectTrends = useMemo(() => {
-        // Get unique subjects and their trends across semesters
-        const subjects = [...new Set(data.map((item) => item.subject))];
+        // Get unique subjects and their overall trends/stats
+        const uniqueSubjects = [...new Set(data.map((item) => item.subject))];
 
-        return subjects.map((subject) => {
+        const calculatedSubjectTrends = uniqueSubjects.map((subject) => {
             const subjectData = data.filter((item) => item.subject === subject);
             const trend = subjectData
                 .map((item) => ({
@@ -124,36 +152,30 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
                 }))
                 .sort((a, b) => a.semester - b.semester);
 
+            const avgRating =
+                subjectData.reduce((sum, item) => sum + item.averageRating, 0) /
+                subjectData.length;
+            const totalResponses = subjectData.reduce(
+                (sum, item) => sum + item.responseCount,
+                0
+            );
+
             return {
                 subject,
                 trend,
-                avgRating: Number(
-                    (
-                        subjectData.reduce(
-                            (sum, item) => sum + item.averageRating,
-                            0
-                        ) / subjectData.length
-                    ).toFixed(2)
-                ),
-                totalResponses: subjectData.reduce(
-                    (sum, item) => sum + item.responseCount,
-                    0
-                ),
+                avgRating: Number(avgRating.toFixed(2)),
+                totalResponses,
             };
         });
-    }, [data]);
 
-    const stats = useMemo(() => {
-        if (!data.length) return null;
-
-        const avgRating =
+        // Calculate overall statistics
+        const overallAvgRating =
             data.reduce((sum, item) => sum + item.averageRating, 0) /
             data.length;
-        const totalResponses = data.reduce(
+        const overallTotalResponses = data.reduce(
             (sum, item) => sum + item.responseCount,
             0
         );
-        const uniqueSubjects = new Set(data.map((item) => item.subject)).size;
         const semesterRange =
             data.length > 0
                 ? {
@@ -162,20 +184,30 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
                   }
                 : null;
 
+        const calculatedStats =
+            data.length > 0
+                ? {
+                      avgRating: Number(overallAvgRating.toFixed(2)),
+                      totalResponses: overallTotalResponses,
+                      uniqueSubjects: uniqueSubjects.length,
+                      semesterRange,
+                  }
+                : null;
+
         return {
-            avgRating: Number(avgRating.toFixed(2)),
-            totalResponses,
-            uniqueSubjects,
-            semesterRange,
+            processedData: processedChartData,
+            subjectTrends: calculatedSubjectTrends,
+            stats: calculatedStats,
         };
     }, [data]);
 
+    // --- Loading State ---
     if (isLoading) {
         return (
-            <Card className="bg-light-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary rounded-2xl shadow-sm">
+            <Card className="border rounded-2xl shadow-sm bg-light-background dark:bg-dark-muted-background">
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
+                        <div className="p-2 rounded-xl bg-light-secondary dark:bg-dark-secondary">
                             <TrendingUp className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
@@ -197,12 +229,13 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
         );
     }
 
+    // --- No Data State ---
     if (!data.length) {
         return (
-            <Card className="bg-light-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary rounded-2xl shadow-sm">
+            <Card className="border border-light-secondary dark:border-dark-secondary rounded-2xl shadow-sm bg-light-background dark:bg-dark-muted-background">
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-primary-lighter dark:bg-primary-darker">
+                        <div className="p-2 rounded-xl bg-light-secondary dark:bg-dark-secondary">
                             <TrendingUp className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
@@ -212,10 +245,12 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
                 </CardHeader>
                 <CardContent>
                     <div className="h-96 flex items-center justify-center">
-                        <div className="text-center text-gray-500">
-                            <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                            <p>No trend data available</p>
-                            <p className="text-sm">
+                        <div className="text-center">
+                            <Calendar className="h-12 w-12 mx-auto mb-4 text-light-muted-text dark:text-dark-muted-text opacity-50" />
+                            <p className="text-light-text dark:text-dark-text font-medium mb-2">
+                                No trend data available
+                            </p>
+                            <p className="text-sm text-light-muted-text dark:text-dark-muted-text">
                                 Try adjusting your filters
                             </p>
                         </div>
@@ -228,25 +263,38 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
     const ChartComponent = chartType === "area" ? AreaChart : LineChart;
 
     return (
-        <Card>
-            <CardHeader>
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <TrendingUp className="h-5 w-5" />
-                        <CardTitle>Semester Performance Trends</CardTitle>
+        <Card className="bg-light-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary rounded-2xl shadow-sm">
+            <CardHeader className="">
+                <div className="flex flex-wrap items-center justify-between gap-4 mb-3">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-xl bg-light-secondary dark:bg-dark-secondary">
+                            <TrendingUp className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
+                        </div>
+                        <CardTitle className="text-light-text dark:text-dark-text">
+                            Semester Performance Trends
+                        </CardTitle>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <Badge variant="outline" className="text-green-600">
-                            <Target className="h-3 w-3 mr-1" />
-                            Avg: {stats?.avgRating}
-                        </Badge>
-                        <Badge variant="outline">
-                            {stats?.uniqueSubjects} Subjects
-                        </Badge>
+                    <div className="flex flex-wrap items-center gap-4 justify-center md:justify-start">
+                        {stats?.avgRating && (
+                            <Badge
+                                variant="outline"
+                                className="text-sm text-light-text dark:text-dark-text"
+                            >
+                                Avg Overall: {stats.avgRating}
+                            </Badge>
+                        )}
+                        {stats?.uniqueSubjects && (
+                            <Badge
+                                variant="outline"
+                                className="text-sm text-light-text dark:text-dark-text"
+                            >
+                                Subjects: {stats.uniqueSubjects}
+                            </Badge>
+                        )}
                     </div>
                 </div>
                 {stats?.semesterRange && (
-                    <div className="text-sm text-gray-500">
+                    <div className="text-md text-light-muted-text dark:text-dark-muted-text md:text-sm sm:text-xs text-center md:text-left">
                         Tracking performance from Semester{" "}
                         {stats.semesterRange.min} to {stats.semesterRange.max} •{" "}
                         {stats.totalResponses} total responses
@@ -258,29 +306,60 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
                     <ChartComponent
                         data={processedData}
                         margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                        className="fill-light-text dark:fill-dark-text"
                     >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                        <CartesianGrid
+                            strokeDasharray="4 4"
+                            stroke="#AAAAAA"
+                            strokeOpacity={0.2}
+                        />
                         <XAxis
                             dataKey="semester"
                             fontSize={12}
-                            stroke="#6b7280"
+                            stroke="#AAAAAA"
                             tickFormatter={(value) => `Sem ${value}`}
+                            padding={{ left: 10, right: 10 }}
                         />
                         <YAxis
                             domain={[0, 10]}
                             fontSize={12}
-                            stroke="#6b7280"
+                            stroke="#AAAAAA"
+                            label={{
+                                value: "Rating (0-10)",
+                                angle: -90,
+                                position: "insideLeft",
+                                offset: -10,
+                                style: {
+                                    fontSize: 12,
+                                    fill: "#AAAAAA",
+                                },
+                            }}
                         />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                        <Tooltip
+                            content={<CustomTooltip />}
+                            cursor={{
+                                fill: "currentColor", // Tailwind current color, adjust for specific highlight
+                                opacity: 0.05,
+                            }}
+                        />
+                        <Legend
+                            wrapperStyle={{ paddingTop: "20px" }}
+                            iconType="circle"
+                            iconSize={8}
+                            formatter={(value) => (
+                                <span className="text-md gap-2 text-light-text dark:text-dark-text">
+                                    {value}
+                                </span>
+                            )}
+                        />
 
                         {chartType === "area" ? (
                             <Area
                                 type="monotone"
                                 dataKey="averageRating"
-                                stroke="#3b82f6"
-                                fill="#3b82f6"
-                                fillOpacity={0.1}
+                                stroke="#3b82f6" // Primary color for the line/area
+                                fill="url(#colorAverageRating)" // Refer to gradient fill below
+                                fillOpacity={1}
                                 strokeWidth={2}
                                 name="Average Rating"
                                 dot={{ fill: "#3b82f6", strokeWidth: 2, r: 4 }}
@@ -294,7 +373,7 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
                             <Line
                                 type="monotone"
                                 dataKey="averageRating"
-                                stroke="#3b82f6"
+                                stroke="#3b82f6" // Primary color for the line
                                 strokeWidth={2}
                                 name="Average Rating"
                                 dot={{ fill: "#3b82f6", strokeWidth: 2, r: 4 }}
@@ -305,42 +384,65 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
                                 }}
                             />
                         )}
+                        {/* Define a gradient for the area chart fill */}
+                        {chartType === "area" && (
+                            <defs>
+                                <linearGradient
+                                    id="colorAverageRating"
+                                    x1="0"
+                                    y1="0"
+                                    x2="0"
+                                    y2="1"
+                                >
+                                    <stop
+                                        offset="5%"
+                                        stopColor="#3b82f6"
+                                        stopOpacity={0.2}
+                                    />
+                                    <stop
+                                        offset="95%"
+                                        stopColor="#3b82f6"
+                                        stopOpacity={0}
+                                    />
+                                </linearGradient>
+                            </defs>
+                        )}
                     </ChartComponent>
                 </ResponsiveContainer>
 
                 {/* Subject Performance Breakdown */}
                 {subjectTrends.length > 0 && (
-                    <div className="mt-6 pt-6 border-t">
-                        <h4 className="text-lg font-medium mb-4">
+                    <>
+                        <h4 className="text-lg font-medium text-light-text dark:text-dark-text mt-6 pt-6 border-t border-light-secondary dark:border-dark-secondary mb-4">
                             Subject Performance Breakdown
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {subjectTrends.slice(0, 6).map((subject) => (
                                 <div
                                     key={subject.subject}
-                                    className="p-4 border rounded-lg"
+                                    className="p-4 border border-light-secondary dark:border-dark-secondary rounded-lg bg-light-secondary dark:bg-dark-tertiary"
                                 >
                                     <div className="flex items-center justify-between mb-2">
                                         <h5
-                                            className="font-medium text-sm truncate"
+                                            className="font-semibold text-light-text dark:text-dark-text text-md truncate"
                                             title={subject.subject}
                                         >
                                             {subject.subject}
                                         </h5>
                                         <Badge
                                             variant="outline"
-                                            className={
+                                            className={`text-sm ${
                                                 subject.avgRating >= 8
-                                                    ? "text-green-600"
+                                                    ? "text-green-600 border-green-600/50"
                                                     : subject.avgRating >= 7.0
-                                                    ? "text-blue-600"
-                                                    : "text-orange-600"
-                                            }
+                                                    ? "text-blue-600 border-blue-600/50"
+                                                    : "text-orange-600 border-orange-600/50"
+                                            }`}
                                         >
                                             {subject.avgRating}
                                         </Badge>
                                     </div>
-                                    <div className="text-xs text-gray-500">
+                                    <div className="text-xs text-light-muted-text dark:text-dark-muted-text">
                                         {subject.totalResponses} responses
                                         across {subject.trend.length} semesters
                                     </div>
@@ -349,14 +451,19 @@ export const SemesterTrendsChart: React.FC<SemesterTrendsChartProps> = ({
                         </div>
                         {subjectTrends.length > 6 && (
                             <div className="text-center mt-4">
-                                <Badge variant="secondary">
+                                <Badge
+                                    variant="outline"
+                                    className="text-sm text-light-muted-text dark:text-dark-muted-text"
+                                >
                                     +{subjectTrends.length - 6} more subjects
                                 </Badge>
                             </div>
                         )}
-                    </div>
+                    </>
                 )}
             </CardContent>
         </Card>
     );
 };
+
+export default SemesterTrendsChart;

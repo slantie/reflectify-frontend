@@ -196,6 +196,7 @@ export class AnalyticsDataProcessor {
             string,
             {
                 subject: string;
+                subjectAbbreviation: string;
                 semester: number;
                 academicYearId: string;
                 academicYear: string;
@@ -212,6 +213,7 @@ export class AnalyticsDataProcessor {
             if (!trendGroups.has(key)) {
                 trendGroups.set(key, {
                     subject: snapshot.subjectName,
+                    subjectAbbreviation: snapshot.subjectAbbreviation || "",
                     semester: snapshot.semesterNumber,
                     academicYearId: snapshot.academicYearId,
                     academicYear: snapshot.academicYearString,
@@ -225,6 +227,7 @@ export class AnalyticsDataProcessor {
         return Array.from(trendGroups.values())
             .map((group) => ({
                 subject: group.subject,
+                subjectAbbreviation: group.subjectAbbreviation,
                 semester: group.semester,
                 academicYearId: group.academicYearId,
                 academicYear: group.academicYear,

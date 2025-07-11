@@ -5,13 +5,7 @@
 
 import React from "react";
 import { StatCard } from "@/components/ui/StatCard";
-import {
-    Users,
-    Star,
-    MessageSquare,
-    BarChart3,
-    Target,
-} from "lucide-react";
+import { Users, Star, MessageSquare, BarChart3, Target } from "lucide-react";
 
 interface OverallStats {
     totalResponses: number;
@@ -43,7 +37,7 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
                 value={stats?.totalResponses || 0}
                 icon={MessageSquare}
                 isLoading={isLoading}
-                subtitle="Feedback submissions"
+                // subtitle="Feedback submissions"
                 onClick={() => {}}
             />
 
@@ -52,7 +46,7 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
                 value={formatRating(stats?.averageRating || null)}
                 icon={Star}
                 isLoading={isLoading}
-                subtitle="Out of 10"
+                // subtitle="Out of 10"
                 onClick={() => {}}
             />
 
@@ -61,7 +55,7 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
                 value={stats?.uniqueSubjects || 0}
                 icon={BarChart3}
                 isLoading={isLoading}
-                subtitle="Being evaluated"
+                // subtitle="Being evaluated"
                 onClick={() => {}}
             />
 
@@ -70,7 +64,7 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
                 value={stats?.uniqueFaculties || 0}
                 icon={Users}
                 isLoading={isLoading}
-                subtitle="Total educators"
+                // subtitle="Total educators"
                 onClick={() => {}}
             />
 
@@ -79,7 +73,7 @@ export const AnalyticsOverview: React.FC<AnalyticsOverviewProps> = ({
                 value={stats?.uniqueDepartments || 0}
                 icon={Target}
                 isLoading={isLoading}
-                subtitle="Academic units"
+                // subtitle="Academic units"
                 onClick={() => {}}
             />
         </div>

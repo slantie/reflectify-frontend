@@ -12,7 +12,6 @@ import {
     ClipboardDocumentListIcon,
     AcademicCapIcon,
     ViewColumnsIcon,
-    PresentationChartLineIcon,
     CalendarIcon,
 } from "@heroicons/react/24/outline";
 import CountUp from "react-countup";
@@ -58,7 +57,7 @@ export default function Dashboard() {
                     <div className="lg:w-full space-y-8">
                         {/* Header Section */}
                         <div
-                            className="relative bg-light-background dark:bg-dark-muted-background p-6 rounded-xl shadow-sm border border-light-secondary dark:border-dark-secondary overflow-hidden hover:shadow-lg hover:shadow-light-secondary hover:border-light-text/10 dark:hover:shadow-dark-secondary transition-shadow duration-300 cursor-pointer hover:bg-light-secondary dark:hover:bg-dark-secondary"
+                            className="relative bg-light-background dark:bg-dark-muted-background p-6 rounded-xl shadow-sm border border-light-secondary dark:border-dark-secondary overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer dark:hover:bg-dark-noisy-background"
                             onClick={() => router.push("/analytics")}
                         >
                             {/* Optional: Subtle background pattern or gradient for modern bento feel */}
@@ -129,14 +128,13 @@ export default function Dashboard() {
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-xl font-semibold text-light-text dark:text-dark-text flex items-center gap-2">
                                     Core System Metrics
-                                    <ArrowTrendingUpIcon className="h-5 w-5 text-positive-main" />
                                 </h2>
                                 <Button
                                     onClick={() => router.push("/analytics")}
                                     className="bg-primary-main hover:bg-primary-dark text-white"
                                 >
                                     <span className="flex items-center gap-2">
-                                        <PresentationChartLineIcon className="h-5 w-5" />
+                                        {/* <PresentationChartLineIcon className="h-5 w-5" /> */}
                                         View Analytics
                                     </span>
                                 </Button>

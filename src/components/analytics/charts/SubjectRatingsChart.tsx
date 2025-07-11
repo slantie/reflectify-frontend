@@ -81,6 +81,8 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
         const subjectGroups = new Map<
             string,
             {
+                subject: string;
+                subjectName: string; // Add this
                 subjectAbbreviation: string;
                 lectureRatings: number[];
                 labRatings: number[];
@@ -97,6 +99,8 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
 
             if (!subjectGroups.has(key)) {
                 subjectGroups.set(key, {
+                    subject: item.subjectName, // Full subject name
+                    subjectName: item.subjectName, // Add this
                     subjectAbbreviation:
                         item.subjectAbbreviation || item.subjectName,
                     lectureRatings: [],
@@ -139,7 +143,8 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
         // Convert to chart data format
         return Array.from(subjectGroups.values())
             .map((group) => ({
-                subject: group.subjectAbbreviation,
+                subject: group.subjectAbbreviation, // For display (abbreviation)
+                subjectName: group.subjectName, // Add full name for export
                 lectureAverageRating:
                     group.lectureRatings.length > 0
                         ? Number(
@@ -269,39 +274,6 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
         const avgLabRating =
             labRatingCount > 0 ? totalLabRatings / labRatingCount : 0;
 
-        console.log("Aggregated Stats by Subject:", {
-            uniqueSubjects,
-            subjectsWithLectureRatings: lectureRatingCount,
-            subjectsWithLabRatings: labRatingCount,
-            avgLectureRating: Number(avgLectureRating.toFixed(2)),
-            avgLabRating: Number(avgLabRating.toFixed(2)),
-            totalResponses,
-            subjectBreakdown: Array.from(subjectGroups.entries()).map(
-                ([subject, group]) => ({
-                    subject,
-                    lectureAvg:
-                        group.lectureRatings.length > 0
-                            ? (
-                                  group.lectureRatings.reduce(
-                                      (sum, r) => sum + r,
-                                      0
-                                  ) / group.lectureRatings.length
-                              ).toFixed(2)
-                            : "N/A",
-                    labAvg:
-                        group.labRatings.length > 0
-                            ? (
-                                  group.labRatings.reduce(
-                                      (sum, r) => sum + r,
-                                      0
-                                  ) / group.labRatings.length
-                              ).toFixed(2)
-                            : "N/A",
-                    responses: group.totalOverallResponses,
-                })
-            ),
-        });
-
         return {
             totalSubjects: uniqueSubjects,
             avgLectureRating: Number(avgLectureRating.toFixed(2)),
@@ -309,6 +281,66 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
             totalResponses,
         };
     }, [data]);
+
+    const exportToCsv = () => {
+        if (!chartData || chartData.length === 0) {
+            alert("No data to export.");
+            return;
+        }
+
+        const headers = [
+            "Subject Name",
+            "Subject Abbreviation",
+            "Lecture Average Rating",
+            "Lab Average Rating",
+            "Overall Average Rating",
+            "Total Lecture Responses",
+            "Total Lab Responses",
+            "Total Overall Responses",
+            "Faculty Names",
+        ];
+
+        const csvContent = [
+            headers.join(","),
+            ...chartData.map((row) =>
+                [
+                    `"${row.subjectName}"`,
+                    `"${row.subject}"`,
+                    row.lectureAverageRating !== null
+                        ? row.lectureAverageRating
+                        : "N/A",
+                    row.labAverageRating !== null
+                        ? row.labAverageRating
+                        : "N/A",
+                    row.overallAverageRating !== null
+                        ? row.overallAverageRating
+                        : "N/A",
+                    row.totalLectureResponses,
+                    row.totalLabResponses,
+                    row.totalOverallResponses,
+                    `"${row.facultyName}"`,
+                ].join(",")
+            ),
+        ].join("\n");
+
+        const blob = new Blob([csvContent], {
+            type: "text/csv;charset=utf-8;",
+        });
+        const link = document.createElement("a");
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "subject_ratings_data.csv");
+            link.style.visibility = "hidden";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            alert(
+                "Your browser does not support downloading files directly. Please copy the data manually."
+            );
+        }
+    };
 
     if (isLoading) {
         return (
@@ -381,23 +413,39 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                            <Monitor className="h-5 w-5 text-light-text dark:text-dark-text" />
+                            <Monitor className="h-6 w-6 text-light-text dark:text-dark-text" />
                             <Badge
                                 variant="outline"
-                                className="text-sm text-light-text dark:text-dark-text"
+                                className="text-sm text-light-text dark:text-dark-text py-2 px-4"
                             >
                                 Lecture: {stats.avgLectureRating}
                             </Badge>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Laptop className="h-5 w-5 text-light-text dark:text-dark-text" />
+                            <Laptop className="h-6 w-6 text-light-text dark:text-dark-text" />
                             <Badge
                                 variant="outline"
-                                className="text-sm text-light-text dark:text-dark-text"
+                                className="text-sm text-light-text dark:text-dark-text py-2 px-4"
                             >
                                 Lab: {stats.avgLabRating}
                             </Badge>
                         </div>
+                        {/* <Button
+                            className="text-sm text-light-text dark:text-dark-text"
+                            type="button"
+                            onClick={exportToCsv}
+                        >
+                            Export Data
+                        </Button> */}
+                        <button
+                            onClick={exportToCsv}
+                            className="flex text-sm items-center gap-2 bg-transparent border border-primary-main text-light-highlight dark:text-dark-highlight py-2 px-4 rounded-xl
+                            hover:bg-dark-highlight/10 focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
+                            transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {/* <X className="h-5 w-5 mr-2" /> */}
+                            Export Chart
+                        </button>
                     </div>
                 </div>
                 <div className="text-md text-light-muted-text dark:text-dark-muted-text">
@@ -430,6 +478,15 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                             domain={[0, 10]}
                             fontSize={12}
                             stroke="#AAAAAA"
+                            label={{
+                                value: "Average Rating (0-10)",
+                                angle: -90,
+                                offset: -10,
+                                style: {
+                                    fontSize: 14,
+                                    fill: "#AAAAAA",
+                                },
+                            }}
                         />
                         <Tooltip
                             content={<CustomTooltip />}

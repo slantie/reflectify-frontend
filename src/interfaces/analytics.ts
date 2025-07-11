@@ -179,6 +179,7 @@ export interface HighImpactFeedbackArea {
  */
 export interface SemesterTrend {
     subject: string;
+    subjectAbbreviation: string;
     semester: number;
     averageRating: number;
     responseCount: number;

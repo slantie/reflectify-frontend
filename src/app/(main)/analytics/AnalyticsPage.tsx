@@ -191,6 +191,7 @@ const AnalyticsPage: React.FC = () => {
                     )}
                 </div>
             ),
+            divisions: <div className="space-y-6"></div>,
             trends: (
                 <div className="space-y-6">
                     <SemesterTrendsChart
@@ -429,6 +430,10 @@ const AnalyticsPage: React.FC = () => {
                     {tabContent.subjects}
                 </TabsContent>
 
+                <TabsContent value="performance" className="space-y-6">
+                    {tabContent.performance}
+                </TabsContent>
+
                 <TabsContent value="trends" className="space-y-6">
                     {tabContent.trends}
                 </TabsContent>
@@ -437,49 +442,6 @@ const AnalyticsPage: React.FC = () => {
                     {tabContent.performance}
                 </TabsContent>
             </Tabs>
-            {/* Debug Info (for development) */}
-            {process.env.NODE_ENV === "development" && (
-                <Card className="mt-8 border-dashed">
-                    <CardHeader>
-                        <CardTitle className="text-sm text-gray-500">
-                            Debug Information
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-xs text-gray-500 space-y-2">
-                        <div>
-                            Filters Applied:{" "}
-                            {
-                                Object.keys(filters).filter(
-                                    (key) =>
-                                        filters[
-                                            key as keyof AnalyticsFilterParams
-                                        ]
-                                ).length
-                            }
-                        </div>
-                        <div>
-                            Raw Snapshots:{" "}
-                            {rawData?.feedbackSnapshots?.length || 0}
-                        </div>
-                        <div>
-                            Processed Subject Ratings:{" "}
-                            {processedData?.subjectRatings?.length || 0}
-                        </div>
-                        <div>
-                            Semester Trends:{" "}
-                            {processedData?.semesterTrends?.length || 0}
-                        </div>
-                        <div>
-                            Faculty Performance:{" "}
-                            {processedData?.facultyPerformance?.length || 0}
-                        </div>
-                        <div>
-                            Division Comparisons:{" "}
-                            {processedData?.divisionComparisons?.length || 0}
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
         </div>
     );
 };

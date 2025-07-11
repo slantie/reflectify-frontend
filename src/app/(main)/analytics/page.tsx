@@ -10,14 +10,7 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
-import {
-    BarChart3,
-    TrendingUp,
-    Users,
-    Eye,
-    RefreshCw,
-    Download,
-} from "lucide-react";
+import { BarChart3, Users, Eye, RefreshCw, Download, Book } from "lucide-react";
 
 // Import our new components
 import {
@@ -234,13 +227,6 @@ const AnalyticsPage: React.FC = () => {
                                         Overview
                                     </TabsTrigger>
                                     <TabsTrigger
-                                        value="subjects"
-                                        className="flex items-center gap-2"
-                                    >
-                                        <TrendingUp className="w-4 h-4" />
-                                        Subjects
-                                    </TabsTrigger>
-                                    <TabsTrigger
                                         value="trends"
                                         className="flex items-center gap-2"
                                     >
@@ -248,11 +234,25 @@ const AnalyticsPage: React.FC = () => {
                                         Trends
                                     </TabsTrigger>
                                     <TabsTrigger
+                                        value="subjects"
+                                        className="flex items-center gap-2"
+                                    >
+                                        <Book className="w-4 h-4" />
+                                        Subjects
+                                    </TabsTrigger>
+                                    {/* <TabsTrigger
+                                        value="divisions"
+                                        className="flex items-center gap-2"
+                                    >
+                                        <Eye className="w-4 h-4" />
+                                        Division Comparision
+                                    </TabsTrigger> */}
+                                    <TabsTrigger
                                         value="performance"
                                         className="flex items-center gap-2"
                                     >
                                         <Users className="w-4 h-4" />
-                                        Performance
+                                        Faculty
                                     </TabsTrigger>
                                 </TabsList>
                             </div>
@@ -290,6 +290,19 @@ const AnalyticsPage: React.FC = () => {
                                         isLoading={analyticsDataLoading}
                                     />
                                 </TabsContent>
+
+                                {/* <TabsContent
+                                    value="divisions"
+                                    className="space-y-6 mt-0"
+                                >
+                                    <DivisionComparisonChart
+                                        data={
+                                            processedData?.divisionComparisons ||
+                                            []
+                                        }
+                                        isLoading={analyticsDataLoading}
+                                    />
+                                </TabsContent> */}
 
                                 <TabsContent
                                     value="trends"
