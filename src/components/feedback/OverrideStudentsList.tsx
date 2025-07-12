@@ -1,22 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Users, Loader2, AlertCircle } from "lucide-react";
+import { Users, Loader2, AlertCircle, ArrowRight } from "lucide-react";
 import { showToast } from "@/lib/toast";
-import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { OverrideStudent } from "@/interfaces/overrideStudent";
 import overrideStudentsService from "@/services/overrideStudentsService";
+import { DataTable, DataTableColumn } from "@/components/ui/DataTable"; // Import DataTable and DataTableColumn
 
 interface OverrideStudentsListProps {
+    formTitle: string;
     formId: string;
     isExpanded: boolean;
+    pageSize?: number;
 }
 
 export const OverrideStudentsList = ({
+    formTitle,
     formId,
     isExpanded,
+    pageSize = 5,
 }: OverrideStudentsListProps) => {
     const [students, setStudents] = useState<OverrideStudent[]>([]);
     const [loading, setLoading] = useState(true);
@@ -46,6 +50,49 @@ export const OverrideStudentsList = ({
         fetchStudents();
     }, [formId, isExpanded]);
 
+    // Define columns for the DataTable
+    const columns: DataTableColumn<OverrideStudent>[] = useMemo(
+        () => [
+            {
+                key: "name",
+                header: "Name",
+                sortable: true,
+                accessor: (student) => student.name,
+            },
+            {
+                key: "email",
+                header: "Email",
+                sortable: true,
+                accessor: (student) => student.email,
+            },
+            {
+                key: "enrollmentNumber",
+                header: "Enrollment",
+                sortable: true,
+                accessor: (student) => student.enrollmentNumber || "-",
+            },
+            {
+                key: "department",
+                header: "Department",
+                sortable: true,
+                accessor: (student) => student.department || "-",
+            },
+            {
+                key: "semester",
+                header: "Semester",
+                sortable: true,
+                accessor: (student) => student.semester || "-",
+            },
+            {
+                key: "batch",
+                header: "Batch",
+                sortable: true,
+                accessor: (student) => student.batch || "-",
+            },
+        ],
+        []
+    );
+
     if (!isExpanded) return null;
 
     if (loading) {
@@ -59,7 +106,7 @@ export const OverrideStudentsList = ({
                 <div className="flex items-center justify-center py-4">
                     <Loader2 className="w-6 h-6 animate-spin text-light-highlight dark:text-dark-highlight" />
                     <span className="ml-2 text-light-text dark:text-dark-text">
-                        Loading override students...
+                        Loading students...
                     </span>
                 </div>
             </motion.div>
@@ -87,89 +134,58 @@ export const OverrideStudentsList = ({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-4 p-4 bg-light-background dark:bg-dark-muted-background rounded-md"
+            className="mt-4 p-4 bg-light-background dark:bg-dark-muted-background rounded-lg"
         >
             <div className="flex items-center justify-between mb-4">
                 <div className="text-lg font-semibold text-light-text dark:text-dark-text flex items-center">
                     <Users className="mr-2 w-5 h-5" />
-                    Students List
+                    Students List - {formTitle.split(" - ")[0]} Feedback Form
                 </div>
-                <div>
+                <div className="flex items-center">
                     <Badge variant="secondary" className="ml-2 text-sm">
                         {students.length}{" "}
                         {students.length === 1 ? "Student" : "Students"}
+                    </Badge>
+                    <Badge
+                        variant="secondary"
+                        className="ml-2 text-sm cursor-pointer"
+                        onClick={() => {
+                            window.location.href = `/feedback-forms/edit/${formId}`;
+                        }}
+                        rightIcon={<ArrowRight className="w-4 h-4" />}
+                    >
+                        View All Students
                     </Badge>
                 </div>
             </div>
 
             {students.length === 0 ? (
-                <div className="text-center py-8 text-light-muted-text dark:text-dark-muted-text">
+                <div className="text-center py-8 text-light-muted-text dark:text-dark-muted-text rounded-lg">
                     <Users className="w-12 h-12 mx-auto opacity-40 mb-2" />
-                    <p>
-                        No override students have been added to this form yet.
-                    </p>
-                    <p className="text-sm">
-                        Override students are manually added students who can
-                        access this form.
+                    <p>No students have been added to this form yet.</p>
+                    <p className="text-md">
+                        Add students from the form{" "}
+                        <button
+                            className="text-light-highlight dark:text-dark-highlight"
+                            onClick={() => {
+                                window.location.href = `/feedback-forms/edit/${formId}`;
+                            }}
+                        >
+                            edit
+                        </button>{" "}
+                        page.
                     </p>
                 </div>
             ) : (
-                <div className="overflow-x-auto">
-                    <table className="w-full text-sm text-left">
-                        <thead className="text-xs uppercase bg-light-muted-background dark:bg-dark-muted-background">
-                            <tr>
-                                <th className="px-4 py-3">Name</th>
-                                <th className="px-4 py-3">Email</th>
-                                <th className="px-4 py-3">Enrollment</th>
-                                <th className="px-4 py-3">Department</th>
-                                <th className="px-4 py-3">Semester</th>
-                                <th className="px-4 py-3">Batch</th>
-                                <th className="px-4 py-3">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {students.map((student) => (
-                                <tr
-                                    key={student.id}
-                                    className="border-b border-light-border dark:border-dark-border hover:bg-light-muted-background dark:hover:bg-dark-muted-background"
-                                >
-                                    <td className="px-4 py-3 font-medium">
-                                        {student.name}
-                                    </td>
-                                    <td className="px-4 py-3">
-                                        {student.email}
-                                    </td>
-                                    <td className="px-4 py-3">
-                                        {student.enrollmentNumber || "-"}
-                                    </td>
-                                    <td className="px-4 py-3">
-                                        {student.department || "-"}
-                                    </td>
-                                    <td className="px-4 py-3">
-                                        {student.semester || "-"}
-                                    </td>
-                                    <td className="px-4 py-3">
-                                        {student.batch || "-"}
-                                    </td>
-                                    <td className="px-4 py-3">
-                                        <div className="flex items-center gap-2">
-                                            <Button variant="ghost" size="sm">
-                                                Edit
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="text-red-500 hover:text-red-700"
-                                            >
-                                                Delete
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                <DataTable
+                    data={students}
+                    columns={columns}
+                    pageSize={pageSize} // You can adjust the page size as needed
+                    showPagination={true}
+                    showSearch={true} // Set to true if you want the search bar
+                    emptyMessage="No matching students found."
+                    className="bg-light-background dark:bg-dark-muted-background rounded-lg border border-light-muted-background shadow-md"
+                />
             )}
         </motion.div>
     );

@@ -189,7 +189,7 @@ export function DataTable<T extends Record<string, any>>({
     // If no data and preview mode, show preview message
     if (previewMode && (!data || data.length === 0)) {
         return (
-            <div className="h-[770px] flex items-center justify-center bg-light-background dark:bg-dark-muted-background rounded-2xl border border-light-secondary dark:border-dark-secondary">
+            <div className="h-[700px] flex items-center justify-center bg-light-background dark:bg-dark-muted-background rounded-2xl border border-light-secondary dark:border-dark-secondary">
                 <p className="text-light-muted-text dark:text-dark-muted-text text-lg">
                     {emptyMessage ||
                         "Select a file and click preview to see the content"}
@@ -209,7 +209,7 @@ export function DataTable<T extends Record<string, any>>({
         >
             {/* Preview Header - only in preview mode with card */}
             {previewMode && showCard && previewTitle && (
-                <div className="p-4 border-b border-light-secondary dark:border-dark-secondary">
+                <div className="p-4 border-b border-light-secondary dark:border-dark-secondary rounded-lg">
                     <div className="flex items-center gap-3">
                         <PreviewIcon className="h-8 w-8 text-light-highlight dark:text-dark-highlight" />
                         <h2 className="text-2xl font-semibold text-light-text dark:text-dark-text">
@@ -389,7 +389,7 @@ export function DataTable<T extends Record<string, any>>({
 
             {/* Pagination */}
             {showPagination && processedData.length > 0 && (
-                <div className="flex items-center justify-between px-4 py-3 border-t border-light-secondary dark:border-dark-secondary bg-light-muted-background dark:bg-dark-muted-background">
+                <div className="flex items-center justify-between px-4 py-3 border-t border-light-secondary dark:border-dark-secondary bg-light-muted-background dark:bg-dark-muted-background rounded-b-lg">
                     <div className="text-sm text-light-muted-text dark:text-dark-muted-text">
                         Showing {startIndex + 1} to{" "}
                         {Math.min(startIndex + pageSize, processedData.length)}{" "}

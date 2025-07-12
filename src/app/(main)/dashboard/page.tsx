@@ -71,7 +71,7 @@ export default function Dashboard() {
                                 <div>
                                     {/* Responsive text sizing */}
                                     <h1 className="text-3xl md:text-4xl font-extrabold text-light-text dark:text-dark-text flex items-center gap-3">
-                                        Dashboard Overview
+                                        Feedback Dashboard
                                         <ChartBarIcon className="h-8 w-8 text-primary-main" />
                                     </h1>
                                     <p className="text-base text-light-muted-text dark:text-dark-muted-text flex items-center gap-2 mt-2">

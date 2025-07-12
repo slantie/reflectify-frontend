@@ -240,13 +240,6 @@ const AnalyticsPage: React.FC = () => {
                                         <Book className="w-4 h-4" />
                                         Subjects
                                     </TabsTrigger>
-                                    {/* <TabsTrigger
-                                        value="divisions"
-                                        className="flex items-center gap-2"
-                                    >
-                                        <Eye className="w-4 h-4" />
-                                        Division Comparision
-                                    </TabsTrigger> */}
                                     <TabsTrigger
                                         value="performance"
                                         className="flex items-center gap-2"

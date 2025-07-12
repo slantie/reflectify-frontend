@@ -10,11 +10,16 @@ import { IdType } from "./common";
  */
 export interface QuestionCategory {
     id: IdType;
-    name: string;
+    categoryName: string;
     description?: string;
     createdAt: string;
     updatedAt: string;
     isActive: boolean;
+}
+
+export interface SimpleQuestionCategory {
+    id: IdType;
+    name: string;
 }
 
 /**

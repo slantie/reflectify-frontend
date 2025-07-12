@@ -16,9 +16,9 @@ import { showToast } from "@/lib/toast";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Loader } from "@/components/common/Loader";
-import overrideStudentsService, {
-    UploadOverrideStudentsResponse,
-} from "@/services/overrideStudentsService";
+import overrideStudentsService from "@/services/overrideStudentsService";
+import { OverrideStudentUploadResult as UploadOverrideStudentsResponse } from "@/interfaces/overrideStudent";
+import { X } from "lucide-react";
 
 interface OverrideStudentsModalProps {
     isOpen: boolean;
@@ -100,14 +100,6 @@ export default function OverrideStudentsModal({
                 file
             );
 
-            showToast.success(
-                `Successfully processed ${result.rowsAffected} students${
-                    result.skippedRows > 0
-                        ? `, skipped ${result.skippedRows} rows`
-                        : ""
-                }`
-            );
-
             onUploadSuccess(result);
             onClose();
             setFile(null);
@@ -175,7 +167,7 @@ Jane Smith,jane@example.com,12346,B,+1234567891,Information Technology,6`;
                         {/* Header */}
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
-                                <UserGroupIcon className="w-6 h-6 text-primary" />
+                                <UserGroupIcon className="w-8 h-8 text-light-text dark:text-dark-text" />
                                 <h2 className="text-xl font-semibold text-light-text dark:text-dark-text">
                                     Upload Override Students
                                 </h2>
@@ -185,23 +177,22 @@ Jane Smith,jane@example.com,12346,B,+1234567891,Information Technology,6`;
                                 className="p-2 rounded-lg hover:bg-light-secondary dark:hover:bg-dark-secondary transition-colors"
                                 aria-label="Close modal"
                             >
-                                <XMarkIcon className="w-5 h-5 text-light-muted-text dark:text-dark-muted-text" />
+                                <XMarkIcon className="w-6 h-6 text-light-muted-text dark:text-dark-muted-text" />
                             </button>
                         </div>
 
                         {/* Info Banner */}
                         <div className="mb-6 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-                            <div className="flex gap-3">
-                                <ExclamationTriangleIcon className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                            <div className="flex gap-3 items-center">
+                                <ExclamationTriangleIcon className="w-8 h-8 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
                                 <div>
                                     <p className="text-sm text-blue-800 dark:text-blue-300 font-medium">
-                                        Override Students Information
+                                        Students Information
                                     </p>
                                     <p className="text-sm text-blue-700 dark:text-blue-400 mt-1">
-                                        When you upload override students, this
+                                        This
                                         form will be sent only to the uploaded
-                                        students instead of the regular academic
-                                        structure-based students.
+                                        students data.
                                     </p>
                                 </div>
                             </div>
@@ -252,13 +243,14 @@ Jane Smith,jane@example.com,12346,B,+1234567891,Information Technology,6`;
                                                 MB
                                             </p>
                                         </div>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
+                                        <button
                                             onClick={() => setFile(null)}
+                                            className="flex py-2 px-3 items-center gap-1 bg-transparent border rounded-xl border-red-600 text-sm
+               text-red-600 dark:text-red-400 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed dark:border-red-500 hover:shadow-lg dark:hover:shadow-red-700/20"
                                         >
+                                            <X className="w-4 h-4" />
                                             Remove File
-                                        </Button>
+                                        </button>
                                     </div>
                                 ) : (
                                     <div className="flex flex-col items-center gap-3">
@@ -291,10 +283,9 @@ Jane Smith,jane@example.com,12346,B,+1234567891,Information Technology,6`;
                                     </p>
                                 </div>
                                 <Button
-                                    variant="outline"
-                                    size="sm"
                                     onClick={downloadTemplate}
-                                    className="flex items-center gap-2"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-light-text dark:text-dark-text bg-light-secondary dark:bg-dark-secondary rounded-lg hover:bg-light-hover hover:dark:bg-dark-hover transition-colors"
+                                    title="Download reference file"
                                 >
                                     <DocumentArrowDownIcon className="w-4 h-4" />
                                     Download Template
@@ -341,17 +332,22 @@ Jane Smith,jane@example.com,12346,B,+1234567891,Information Technology,6`;
 
                         {/* Actions */}
                         <div className="flex gap-3 justify-end">
-                            <Button
-                                variant="outline"
+                            <button
                                 onClick={handleClose}
                                 disabled={isUploading}
+                                className="bg-transparent border-2 border-primary-main text-light-highlight dark:text-dark-highlight py-2.5 px-4 rounded-xl
+                            hover:bg-primary-lighter focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
+                            transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 Cancel
-                            </Button>
-                            <Button
+                            </button>
+                            <button
+                                type="button"
                                 onClick={handleUpload}
                                 disabled={!file || isUploading}
-                                className="flex items-center gap-2"
+                                className="flex items-center gap-2 bg-light-highlight dark:bg-dark-highlight text-white py-2.5 px-4 rounded-xl
+                                                                                        hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
+                                                                                        transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isUploading ? (
                                     <>
@@ -364,7 +360,7 @@ Jane Smith,jane@example.com,12346,B,+1234567891,Information Technology,6`;
                                         Upload Students
                                     </>
                                 )}
-                            </Button>
+                            </button>
                         </div>
                     </Card>
                 </motion.div>

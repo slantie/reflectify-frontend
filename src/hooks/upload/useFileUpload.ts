@@ -171,10 +171,8 @@ export const useFileUpload = (): UseFileUploadResult => {
                     return;
                 }
                 const jsonData: UploadData[] = [];
-                // Process all rows instead of limiting to first 10
                 worksheet.eachRow((row, rowNumber) => {
                     if (rowNumber > 1) {
-                        // Skip header row
                         const rowData: UploadData = {};
                         headers.forEach((headerName, index) => {
                             const cell = row.getCell(index + 1);

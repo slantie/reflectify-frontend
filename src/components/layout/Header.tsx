@@ -173,18 +173,11 @@ export function Header() {
                                     HeaderRoute("/upload", "Upload")}
                                 {user.isSuper &&
                                     HeaderRoute(
-                                        "/faculty-matrix",
-                                        "Faculty Matrix"
+                                        "/feedback-forms",
+                                        "Feedback Forms"
                                     )}
                                 {user.isSuper &&
-                                    HeaderRoute("/feedback-forms", "Feedback")}
-                                {user.isSuper &&
                                     HeaderRoute("/analytics", "Analytics")}
-                                {/* {user.isSuper &&
-                                    HeaderRoute(
-                                        "/faculty-analytics",
-                                        "Faculty Analytics"
-                                    )} */}
 
                                 <ThemeToggle />
 
@@ -309,12 +302,12 @@ export function Header() {
 
                     {user ? (
                         <>
-                            <span className="block text-secondary-dark dark:text-dark-tertiary py-2 font-medium text-base">
-                                Hello, {user.name}
+                            <span className="block text-light-text dark:text-dark-text py-2 font-medium text-base">
+                                Hello, <span className="text-light-highlight dark:text-dark-highlight font-semibold">{user.name}</span>
                             </span>
                             <Link
                                 href="/dashboard"
-                                className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium text-base"
+                                className="block text-light-text dark:text-dark-text py-2 font-medium text-base"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
                                 Dashboard
@@ -322,7 +315,7 @@ export function Header() {
                             {user.isSuper && (
                                 <Link
                                     href="/upload"
-                                    className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium text-base"
+                                    className="block text-light-text dark:text-dark-text py-2 font-medium text-base"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
                                     Upload
@@ -330,17 +323,8 @@ export function Header() {
                             )}
                             {user.isSuper && (
                                 <Link
-                                    href="/faculty-matrix"
-                                    className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium text-base"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                >
-                                    Faculty Matrix
-                                </Link>
-                            )}
-                            {user.isSuper && (
-                                <Link
                                     href="/feedback-forms"
-                                    className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium text-base"
+                                    className="block text-light-text dark:text-dark-text py-2 font-medium text-base"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
                                     Feedback
@@ -349,7 +333,7 @@ export function Header() {
                             {user.isSuper && (
                                 <Link
                                     href="/analytics"
-                                    className="block text-primary-dark dark:text-primary-light hover:underline py-2 font-medium text-base"
+                                    className="block text-light-text dark:text-dark-text py-2 font-medium text-base"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
                                     Analytics

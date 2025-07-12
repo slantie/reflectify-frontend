@@ -42,12 +42,6 @@ const getStatusConfig = (status: FeedbackFormStatus) => {
                 icon: <FileText className="w-3 h-3" />,
                 label: "Closed",
             };
-        case FeedbackFormStatus.ARCHIVED:
-            return {
-                variant: "destructive" as const,
-                icon: <FileText className="w-3 h-3" />,
-                label: "Archived",
-            };
         default:
             return {
                 variant: "secondary" as const,
@@ -95,9 +89,9 @@ export const FeedbackFormListItem = ({
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div className="flex-1 space-y-2">
                     <div className="flex items-center gap-3">
-                        <h3 className="font-semibold text-light-text dark:text-dark-text">
+                        <span className="font-semibold text-light-text dark:text-dark-text">
                             {form.title}
-                        </h3>
+                        </span>
                         <Badge
                             variant={statusConfig.variant}
                             className="flex flex-row items-center gap-1"
@@ -156,14 +150,6 @@ export const FeedbackFormListItem = ({
                                 </span>
                             </div>
                         )}
-                        {form.description && (
-                            <div className="flex items-center gap-1">
-                                <FileText className="w-4 h-4" />
-                                <span className="truncate max-w-[200px]">
-                                    {form.description}
-                                </span>
-                            </div>
-                        )}
                     </div>
                 </div>
 
@@ -219,6 +205,7 @@ export const FeedbackFormListItem = ({
             <AnimatePresence>
                 {showOverrideStudents && (
                     <OverrideStudentsList
+                        formTitle={form.title}
                         formId={form.id.toString()}
                         isExpanded={showOverrideStudents}
                     />

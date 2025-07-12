@@ -52,6 +52,8 @@ export interface BadgeProps
     onRemove?: () => void;
     /** Icon element to display */
     icon?: React.ReactNode;
+    /** Right icon element to display */
+    rightIcon?: React.ReactNode;
     /** Disable the badge */
     disabled?: boolean;
     /** Custom close icon */
@@ -66,6 +68,7 @@ function Badge({
     removable = false,
     onRemove,
     icon,
+    rightIcon,
     disabled = false,
     closeIcon,
     ...props
@@ -102,6 +105,13 @@ function Badge({
 
             {/* Content */}
             {children && <span className="truncate">{children}</span>}
+
+            {/* Right icon */}
+            {rightIcon && (
+                <span className={cn(iconClasses.icon, "flex-shrink-0")}>
+                    {rightIcon}
+                </span>
+            )}
 
             {/* Remove button */}
             {removable && !disabled && (

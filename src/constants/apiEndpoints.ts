@@ -5,7 +5,7 @@
 
 // Environment and base URLs
 export const NODE_ENV = process.env.NODE_ENV || "production";
-export const BACKEND_DEV_URL = "http://localhost:4000";
+export const BACKEND_DEV_URL = "http://192.168.29.136:4000";
 export const BACKEND_PROD_URL = "https://backend.reflectify.live";
 export const BASE_URL =
     NODE_ENV === "development" ? BACKEND_DEV_URL : BACKEND_PROD_URL;
@@ -132,8 +132,8 @@ export const FEEDBACK_FORM_ENDPOINTS = {
     GENERATE: `${API_V1_URL}/feedback-forms/generate`,
     ADD_QUESTION: (id: string | number) =>
         `${API_V1_URL}/feedback-forms/${id}/questions`,
-    UPDATE_STATUS: (id: string | number) =>
-        `${API_V1_URL}/feedback-forms/${id}/status`,
+    UPDATE_FORM_DATA: (id: string | number) =>
+        `${API_V1_URL}/feedback-forms/${id}/details`,
     BULK_UPDATE_STATUS: `${API_V1_URL}/feedback-forms/bulk-status`,
     ACCESS_BY_TOKEN: (token: string) =>
         `${API_V1_URL}/feedback-forms/access/${token}`,

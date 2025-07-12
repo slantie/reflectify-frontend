@@ -74,9 +74,11 @@ const feedbackFormService = {
         formId: IdType,
         statusData: UpdateFormStatusData
     ): Promise<FeedbackForm> => {
+        console.log("Updating form status with data:", statusData);
         const response = await axiosInstance.patch<
             ApiResponse<{ form: FeedbackForm }>
-        >(FEEDBACK_FORM_ENDPOINTS.UPDATE_STATUS(formId), statusData);
+        >(FEEDBACK_FORM_ENDPOINTS.UPDATE_FORM_DATA(formId), statusData);
+        console.log("Backend Response:", response.data.data.form);
         return response.data.data.form;
     },
 

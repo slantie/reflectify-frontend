@@ -8,6 +8,7 @@ import {
     ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import { showToast } from "@/lib/toast";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 // Import components
 import { Button } from "@/components/ui/Button";
@@ -300,8 +301,8 @@ export default function StudentFeedbackPage({
                                         transition-all hover:bg-primary/10
                                         ${
                                             value === rating
-                                                ? "bg-primary/20 border-2 border-primary"
-                                                : "bg-light-background dark:bg-dark-background border-2 border-transparent"
+                                                ? "bg-primary-main/80 dark:bg-primary-darker"
+                                                : "bg-light-background dark:bg-dark-background"
                                         }
                                     `}
                                 >
@@ -321,12 +322,7 @@ export default function StudentFeedbackPage({
                                     />
                                     <span
                                         className={`
-                                            text-lg font-semibold mb-1
-                                            ${
-                                                value === rating
-                                                    ? "text-primary"
-                                                    : "text-light-text dark:text-dark-text"
-                                            }
+                                            text-lg font-semibold mb-1 text-light-text dark:text-dark-text
                                         `}
                                     >
                                         {rating}
@@ -540,28 +536,34 @@ export default function StudentFeedbackPage({
     if (hasBatchQuestions && !selectedBatch) {
         return (
             <div className="min-h-screen bg-light-muted-background dark:bg-dark-background flex items-center justify-center">
-                <Card className="p-8 max-w-md w-full">
-                    <h2 className="text-2xl font-bold text-light-text dark:text-dark-text mb-6 text-center">
+                <div className="absolute top-4 right-4">
+                    <ThemeToggle />
+                </div>
+                <Card className="p-10 bg-light-background dark:bg-dark-muted-background shadow-lg rounded-2xl transition-all">
+                    <h2 className="text-2xl font-bold text-light-text dark:text-dark-text mb-8 text-center">
                         Select Your Batch
                     </h2>
+
                     <div
-                        className={`grid ${
-                            availableBatches.length > 3
-                                ? "grid-cols-2 sm:grid-cols-3"
-                                : `grid-cols-${availableBatches.length}`
-                        } gap-4`}
+                        className={`grid gap-4 ${
+                            availableBatches.length <= 2
+                                ? `grid-cols-${availableBatches.length}`
+                                : `grid-cols sm:grid-cols-3`
+                        }`}
                     >
                         {availableBatches.map((batch) => (
-                            <Button
+                            <button
                                 key={batch}
                                 onClick={() =>
                                     setSelectedBatch(batch as string)
                                 }
-                                className="p-4 text-lg font-semibold"
-                                variant="outline"
+                                className="text-base flex items-center justify-center py-3 px-5 rounded-xl font-medium transition-all
+                           bg-light-highlight dark:bg-dark-highlight text-white hover:bg-primary-dark
+                           focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
+                           disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-xl"
                             >
                                 Batch {batch}
-                            </Button>
+                            </button>
                         ))}
                     </div>
                 </Card>
@@ -587,99 +589,110 @@ export default function StudentFeedbackPage({
         : [];
 
     return (
-        <div className="min-h-screen bg-light-muted-background dark:bg-dark-background">
+        <div className="min-h-screen bg-light-muted-background dark:bg-dark-background px-4 sm:px-6 lg:px-8 py-6 md:py-8">
             {/* {showSuccessModal && <SuccessModal />} */}
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-8">
+            <div className="absolute top-4 right-4">
+                <ThemeToggle />
+            </div>
+            <div className="max-w-7xl mx-auto">
+                {" "}
+                {/* Removed redundant px/py here, handled by parent */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="space-y-8"
+                    className="space-y-6 md:space-y-8" // Adjusted vertical spacing for medium screens
                 >
                     {/* Header */}
                     <Card className="p-6 text-center">
-                        <h1 className="text-3xl font-bold text-light-text dark:text-dark-text mb-2">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-light-text dark:text-dark-text mb-2">
                             {form.title}
                         </h1>
                         {form.description && (
-                            <p className="text-light-muted-text dark:text-dark-muted-text mb-2">
+                            <p className="text-sm sm:text-base text-light-muted-text dark:text-dark-muted-text mb-2">
                                 {form.description}
                             </p>
                         )}
-                        <p className="text-light-muted-text dark:text-dark-muted-text mb-2">
+                        <p className="text-sm sm:text-base text-light-muted-text dark:text-dark-muted-text mb-2">
                             Your feedback helps us improve the quality of
                             education
                         </p>
-                        <div className="flex justify-center items-center space-x-4 text-sm text-light-muted-text dark:text-dark-muted-text">
+                        <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 text-xs sm:text-sm text-light-muted-text dark:text-dark-muted-text">
                             <span>All responses are anonymous</span>
                             <span>•</span>
-                            <span>Required fields are marked with *</span>
+                            <span>
+                                Required fields are marked with{" "}
+                                <span className="text-red-500 text-xs sm:text-sm">
+                                    *
+                                </span>
+                            </span>
                             {selectedBatch && (
                                 <>
                                     <span>•</span>
                                     <span className="font-semibold text-primary">
                                         Batch {selectedBatch}
                                     </span>
-                                    <span>•</span>
-                                    <span
-                                        className="text-primary-500 underline cursor-pointer hover:text-primary-700"
-                                        onClick={() => setSelectedBatch(null)}
-                                    >
-                                        Change
-                                    </span>
                                 </>
                             )}
+                        </div>
+                        <div>
+                            <span
+                                className="text-light-highlight dark:text-dark-highlight cursor-pointer"
+                                onClick={() => setSelectedBatch(null)}
+                            >
+                                Not Your Batch? Click here to Change Batch
+                            </span>
                         </div>
                     </Card>
 
                     {/* Feedback Form */}
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="space-y-6 md:space-y-8"
+                    >
                         {" "}
+                        {/* Adjusted vertical spacing for medium screens */}
                         {/* General/Lecture Questions */}
                         {generalQuestions.length > 0 && (
                             <div className="space-y-6">
                                 <div className="border-b border-light-secondary dark:border-dark-secondary pb-2">
-                                    <h2 className="text-2xl font-bold text-light-text dark:text-dark-text">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-light-text dark:text-dark-text">
                                         Lecture Feedback
                                     </h2>
                                 </div>
                                 {generalQuestions.map((question, index) => (
-                                    <Card key={question.id} className="p-6">
+                                    <Card
+                                        key={question.id}
+                                        className="p-4 sm:p-6"
+                                    >
+                                        {" "}
+                                        {/* Adjusted card padding */}
                                         <div className="space-y-4">
-                                            <div className="flex items-start justify-between">
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-2 mb-2">
-                                                        <span className="text-sm font-semibold text-primary">
+                                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
+                                                {" "}
+                                                {/* Responsive flex */}
+                                                <div className="flex-1 w-full sm:w-auto">
+                                                    {" "}
+                                                    {/* Ensure it takes full width on small screens */}
+                                                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                                                        {" "}
+                                                        {/* flex-wrap for small screens */}
+                                                        <span className="text-mdfont-semibold text-light-text dark:text-dark-text">
                                                             Question {index + 1}
                                                         </span>
                                                         {question.isRequired && (
-                                                            <span className="text-red-500 text-sm">
+                                                            <span className="text-red-500 text-xs sm:text-sm">
                                                                 *
                                                             </span>
                                                         )}
-                                                        <span
-                                                            className={`px-2 py-1 rounded text-xs font-medium ${
-                                                                {
-                                                                    RATING: "text-blue-600 bg-blue-50 border-blue-200",
-                                                                    TEXT: "text-green-600 bg-green-50 border-green-200",
-                                                                    MULTIPLE_CHOICE:
-                                                                        "text-purple-600 bg-purple-50 border-purple-200",
-                                                                    BOOLEAN:
-                                                                        "text-orange-600 bg-orange-50 border-orange-200",
-                                                                }[
-                                                                    question.type.toUpperCase()
-                                                                ] ||
-                                                                "text-gray-600 bg-gray-50 border-gray-200"
-                                                            }`}
-                                                        >
-                                                            {question.type.toUpperCase()}
-                                                        </span>
                                                     </div>
-                                                    <h3 className="text-lg font-medium text-light-text dark:text-dark-text mb-2">
+                                                    <h3 className="text-base sm:text-lg font-medium text-light-text dark:text-dark-text mb-2">
                                                         {question.text}
                                                     </h3>
                                                     {(question.faculty ||
                                                         question.subject) && (
-                                                        <div className="flex gap-4 text-sm text-light-muted-text dark:text-dark-muted-text mb-4">
+                                                        <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-light-muted-text dark:text-dark-muted-text mb-4">
+                                                            {" "}
+                                                            {/* flex-wrap for small screens */}
                                                             {question.faculty && (
                                                                 <span>
                                                                     Faculty:{" "}
@@ -715,52 +728,50 @@ export default function StudentFeedbackPage({
                         {/* Batch/Lab Questions */}
                         {batchQuestions.length > 0 && (
                             <div className="space-y-6">
-                                <div className="border-b border-light-secondary dark:border-dark-secondary pb-2 mt-8">
-                                    <h2 className="text-2xl font-bold text-light-text dark:text-dark-text">
+                                <div className="border-b border-light-secondary dark:border-dark-secondary pb-2 mt-6 md:mt-8">
+                                    {" "}
+                                    {/* Adjusted top margin */}
+                                    <h2 className="text-xl sm:text-2xl font-bold text-light-text dark:text-dark-text">
                                         Lab Feedback
                                     </h2>
                                 </div>
                                 {batchQuestions.map((question, index) => (
-                                    <Card key={question.id} className="p-6">
+                                    <Card
+                                        key={question.id}
+                                        className="p-4 sm:p-6"
+                                    >
+                                        {" "}
+                                        {/* Adjusted card padding */}
                                         <div className="space-y-4">
-                                            <div className="flex items-start justify-between">
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-2 mb-2">
-                                                        <span className="text-sm font-semibold text-primary">
+                                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
+                                                {" "}
+                                                {/* Responsive flex */}
+                                                <div className="flex-1 w-full sm:w-auto">
+                                                    {" "}
+                                                    {/* Ensure it takes full width on small screens */}
+                                                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                                                        {" "}
+                                                        {/* flex-wrap for small screens */}
+                                                        <span className="text-md font-semibold text-light-text dark:text-dark-text">
                                                             Question{" "}
                                                             {generalQuestions.length +
                                                                 index +
                                                                 1}
                                                         </span>
                                                         {question.isRequired && (
-                                                            <span className="text-red-500 text-sm">
+                                                            <span className="text-red-500 text-xs sm:text-sm">
                                                                 *
                                                             </span>
                                                         )}
-                                                        <span
-                                                            className={`px-2 py-1 rounded text-xs font-medium ${
-                                                                {
-                                                                    RATING: "text-blue-600 bg-blue-50 border-blue-200",
-                                                                    TEXT: "text-green-600 bg-green-50 border-green-200",
-                                                                    MULTIPLE_CHOICE:
-                                                                        "text-purple-600 bg-purple-50 border-purple-200",
-                                                                    BOOLEAN:
-                                                                        "text-orange-600 bg-orange-50 border-orange-200",
-                                                                }[
-                                                                    question.type.toUpperCase()
-                                                                ] ||
-                                                                "text-gray-600 bg-gray-50 border-gray-200"
-                                                            }`}
-                                                        >
-                                                            {question.type.toUpperCase()}
-                                                        </span>
                                                     </div>
-                                                    <h3 className="text-lg font-medium text-light-text dark:text-dark-text mb-2">
+                                                    <h3 className="text-base sm:text-lg font-medium text-light-text dark:text-dark-text mb-2">
                                                         {question.text}
                                                     </h3>
                                                     {(question.faculty ||
                                                         question.subject) && (
-                                                        <div className="flex gap-4 text-sm text-light-muted-text dark:text-dark-muted-text mb-4">
+                                                        <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-light-muted-text dark:text-dark-muted-text mb-4">
+                                                            {" "}
+                                                            {/* flex-wrap for small screens */}
                                                             {question.faculty && (
                                                                 <span>
                                                                     Faculty:{" "}
@@ -804,8 +815,10 @@ export default function StudentFeedbackPage({
                             </div>
                         )}
                         {/* Submit Button */}
-                        <Card className="p-6 text-center">
-                            <Button
+                        <Card className="p-4 sm:p-6 flex flex-col items-center justify-center text-center">
+                            {" "}
+                            {/* Adjusted card padding */}
+                            <button
                                 type="submit"
                                 disabled={
                                     submitting ||
@@ -813,7 +826,9 @@ export default function StudentFeedbackPage({
                                         batchQuestions.length ===
                                         0
                                 }
-                                className="w-full max-w-xs mx-auto"
+                                className="text-center w-48 text-sm flex items-center justify-center gap-2 bg-light-highlight dark:bg-dark-highlight text-white py-2.5 px-4 rounded-xl
+                                                                                        hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
+                                                                                        transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {submitting ? (
                                     <>
@@ -823,9 +838,9 @@ export default function StudentFeedbackPage({
                                 ) : (
                                     "Submit Feedback"
                                 )}
-                            </Button>
-                            <p className="text-sm text-light-muted-text dark:text-dark-muted-text mt-2">
-                                Please ensure all required fields are Closed
+                            </button>
+                            <p className="text-xs sm:text-sm text-light-muted-text dark:text-dark-muted-text mt-2">
+                                Please ensure all required fields are filled out
                                 before submitting.
                             </p>
                         </Card>

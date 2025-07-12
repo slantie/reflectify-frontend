@@ -2,6 +2,7 @@
 import React from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid"; // Using a solid icon for better visibility
 
+
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
     label?: string;
     id: string;
@@ -31,10 +32,10 @@ export const Select: React.FC<SelectProps> = ({
                 <select
                     id={id}
                     name={name}
-                    className="block w-full px-3 py-2 border border-light-secondary dark:border-dark-secondary rounded-xl shadow-sm
+                    className="block w-full px-3 py-2 border border-light-secondary dark:border-dark-secondary rounded-lg shadow-sm
                                bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text
                                focus:outline-none focus:ring-2 focus:ring-primary-main focus:border-primary-main
-                               sm:text-sm transition-colors appearance-none pr-10" 
+                               sm:text-sm transition-colors appearance-none pr-10"
                     {...props}
                 >
                     {children}

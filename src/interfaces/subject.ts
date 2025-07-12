@@ -12,6 +12,7 @@ export interface Subject {
     id: IdType;
     name: string;
     code: string;
+    abbreviation?: string;
     description?: string;
     credits: number;
     semesterId: IdType;

@@ -17,7 +17,6 @@ export enum FeedbackFormStatus {
     DRAFT = "DRAFT",
     ACTIVE = "ACTIVE",
     CLOSED = "CLOSED",
-    ARCHIVED = "ARCHIVED",
 }
 
 /**
@@ -124,6 +123,8 @@ export interface UpdateFormData {
  * Data for updating a single form's status and dates.
  */
 export interface UpdateFormStatusData {
+    title: string;
+    description?: string;
     status: FeedbackFormStatus;
     startDate?: string;
     endDate?: string;

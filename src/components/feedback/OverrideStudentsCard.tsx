@@ -3,34 +3,37 @@
 
 import { useState, useEffect, useCallback } from "react";
 import {
-    UserGroupIcon,
     CloudArrowUpIcon,
     TrashIcon,
-    EyeIcon,
     ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import { showToast } from "@/lib/toast";
 import { OverrideStudentUploadResult as UploadOverrideStudentsResponse } from "@/interfaces/overrideStudent";
 
-import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Loader } from "@/components/common/Loader";
 import OverrideStudentsModal from "@/components/modals/OverrideStudentsModal";
+import { OverrideStudentsList } from "./OverrideStudentsList";
 import overrideStudentsService from "@/services/overrideStudentsService";
 
 interface OverrideStudentsCardProps {
     formId: string;
     formStatus: string;
+    formTitle?: string; // Add optional formTitle prop
 }
 
 export default function OverrideStudentsCard({
     formId,
     formStatus,
+    formTitle = "Feedback Form", // Default title if not provided
 }: OverrideStudentsCardProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [studentCount, setStudentCount] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isClearing, setIsClearing] = useState(false);
+    const [showStudentsList, setShowStudentsList] = useState(true);
+    const [awaitingSecondConfirmation, setAwaitingSecondConfirmation] =
+        useState(false);
 
     const fetchStudentCount = useCallback(async () => {
         try {
@@ -38,9 +41,11 @@ export default function OverrideStudentsCard({
             const count =
                 await overrideStudentsService.getOverrideStudentsCount(formId);
             setStudentCount(count);
+            setShowStudentsList(count > 0);
         } catch (error) {
-            console.error("Failed to fetch override students count:", error);
+            console.error("Failed to fetch students count:", error);
             setStudentCount(0);
+            // setShowStudentsList(false);
         } finally {
             setIsLoading(false);
         }
@@ -59,26 +64,32 @@ export default function OverrideStudentsCard({
             }`
         );
         fetchStudentCount(); // Refresh count
+        setShowStudentsList(true);
     };
 
     const handleClearStudents = async () => {
-        if (
-            !confirm(
-                "Are you sure you want to clear all override students? This action cannot be undone."
-            )
-        ) {
+        if (!awaitingSecondConfirmation) {
+            // First click: ask for confirmation
+            setAwaitingSecondConfirmation(true);
+            // Optionally, set a timeout to reset this state if no second click occurs
+            setTimeout(() => {
+                setAwaitingSecondConfirmation(false);
+            }, 5000); // Reset after 3 seconds if not confirmed
             return;
         }
 
+        // Second click: proceed with deletion
         setIsClearing(true);
+        setAwaitingSecondConfirmation(false); // Reset immediately as we are proceeding
         try {
             const deletedCount =
                 await overrideStudentsService.clearAllOverrideStudents(formId);
-            showToast.success(`Cleared ${deletedCount} override students`);
+            showToast.success(`Cleared ${deletedCount} students`);
             setStudentCount(0);
+            setShowStudentsList(false); // Hide students list when cleared
         } catch (error) {
-            console.error("Failed to clear override students:", error);
-            showToast.error("Failed to clear override students");
+            console.error("Failed to clear students:", error);
+            showToast.error("Failed to clear students");
         } finally {
             setIsClearing(false);
         }
@@ -87,117 +98,82 @@ export default function OverrideStudentsCard({
     const canModifyStudents = formStatus === "DRAFT";
 
     return (
-        <>
-            <Card className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                        <UserGroupIcon className="w-5 h-5 text-primary" />
-                        <h3 className="text-lg font-semibold text-light-text dark:text-dark-text">
-                            Override Students
+        <div>
+            <Card className="p-6 bg-light-background dark:bg-dark-muted-background">
+                <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center">
+                        {/* <UserGroupIcon className="w-6 h-6 text-light-text dark:text-dark-text" /> */}
+                        <h3 className="text-2xl font-semibold text-light-text dark:text-dark-text">
+                            Students
+                            {/* {" "} */}
+                            {/* {studentCount! > 0 && <span>({studentCount})</span>} */}
                         </h3>
                     </div>
                     {isLoading && <Loader size="sm" />}
-                </div>
-
-                {/* Information Banner */}
-                <div className="mb-4 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-                    <div className="flex gap-2">
-                        <ExclamationTriangleIcon className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-                        <div>
-                            <p className="text-xs text-blue-800 dark:text-blue-300 font-medium">
-                                Custom Student List
-                            </p>
-                            <p className="text-xs text-blue-700 dark:text-blue-400 mt-1">
+                    <div className="flex justify-between items-start">
+                        <div className="flex flex-row gap-2">
+                            {studentCount! > 0 && canModifyStudents && (
+                                <button
+                                    onClick={handleClearStudents} // Use the new handler
+                                    className={`flex py-2 px-3 items-center bg-transparent border rounded-xl text-sm transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed gap-2
+                                                ${
+                                                    awaitingSecondConfirmation
+                                                        ? "border-red-600 text-red-600 dark:border-red-500 dark:text-red-400 hover:shadow-lg dark:hover:shadow-red-700/20"
+                                                        : "border-red-600 text-red-600 dark:border-red-500 dark:text-red-400 hover:shadow-lg dark:hover:shadow-red-700/20"
+                                                }`}
+                                    disabled={isClearing}
+                                >
+                                    {isClearing ? (
+                                        <Loader size="sm" />
+                                    ) : (
+                                        <TrashIcon className="w-6 h-6" />
+                                    )}
+                                    {isClearing
+                                        ? "Deleting..."
+                                        : awaitingSecondConfirmation
+                                        ? "Are you sure?"
+                                        : "Delete All Students"}
+                                </button>
+                            )}
+                            <button
+                                type="button"
+                                onClick={() => setIsModalOpen(true)}
+                                disabled={!canModifyStudents}
+                                // size="sm"
+                                className="text-sm flex items-center gap-2 bg-light-highlight dark:bg-dark-highlight text-white py-2.5 px-4 rounded-xl
+                                                                                        hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
+                                                                                        transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <CloudArrowUpIcon className="w-6 h-6" />
                                 {studentCount && studentCount > 0
-                                    ? "This form will be sent to the uploaded students instead of the regular academic structure."
-                                    : "Upload a custom list of students to override the default academic structure-based distribution."}
-                            </p>
+                                    ? "Update Student Data"
+                                    : "Upload Student Data"}
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Content */}
                 <div className="space-y-4">
-                    {/* Current Count */}
-                    <div className="flex items-center justify-between">
-                        <span className="text-light-muted-text dark:text-dark-muted-text">
-                            Students:
-                        </span>
-                        <span className="text-light-text dark:text-dark-text font-medium">
-                            {isLoading ? (
-                                <Loader size="sm" />
-                            ) : (
-                                `${studentCount || 0} uploaded`
-                            )}
-                        </span>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="space-y-2">
-                        {/* Upload Button */}
-                        <Button
-                            onClick={() => setIsModalOpen(true)}
-                            disabled={!canModifyStudents}
-                            size="sm"
-                            className="w-full flex items-center justify-center gap-2"
-                        >
-                            <CloudArrowUpIcon className="w-4 h-4" />
-                            {studentCount && studentCount > 0
-                                ? "Replace Students"
-                                : "Upload Students"}
-                        </Button>
-
-                        {/* View Students Button */}
-                        {studentCount && studentCount > 0 && (
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                className="w-full flex items-center justify-center gap-2"
-                                onClick={() => {
-                                    // TODO: Implement view students modal or page
-                                    showToast.info(
-                                        "View students functionality coming soon"
-                                    );
-                                }}
-                            >
-                                <EyeIcon className="w-4 h-4" />
-                                View Students
-                            </Button>
-                        )}
-
-                        {/* Clear Students Button */}
-                        {studentCount &&
-                            studentCount > 0 &&
-                            canModifyStudents && (
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={handleClearStudents}
-                                    disabled={isClearing}
-                                    className="w-full flex items-center justify-center gap-2 text-red-600 hover:text-red-700 border-red-200 hover:border-red-300 hover:bg-red-50"
-                                >
-                                    {isClearing ? (
-                                        <Loader size="sm" />
-                                    ) : (
-                                        <TrashIcon className="w-4 h-4" />
-                                    )}
-                                    {isClearing ? "Clearing..." : "Clear All"}
-                                </Button>
-                            )}
-                    </div>
-
-                    {/* Status Messages */}
                     {!canModifyStudents && (
                         <div className="mt-4 p-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
-                            <p className="text-xs text-yellow-800 dark:text-yellow-300">
-                                <ExclamationTriangleIcon className="w-4 h-4 inline mr-1" />
-                                Override students can only be modified when the
+                            <p className="text-md text-yellow-800 dark:text-yellow-300">
+                                <ExclamationTriangleIcon className="w-6 h-6 inline mr-1" />
+                                Students can only be modified when the
                                 form is in DRAFT status.
                             </p>
                         </div>
                     )}
                 </div>
             </Card>
+
+            {/* Students List - Same as main page */}
+            <OverrideStudentsList
+                formTitle={formTitle}
+                formId={formId}
+                isExpanded={showStudentsList}
+                pageSize={10}
+            />
 
             {/* Override Students Modal */}
             <OverrideStudentsModal
@@ -206,6 +182,6 @@ export default function OverrideStudentsCard({
                 formId={formId}
                 onUploadSuccess={handleUploadSuccess}
             />
-        </>
+        </div>
     );
 }
