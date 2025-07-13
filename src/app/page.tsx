@@ -13,27 +13,27 @@ import { TechStack } from "@/components/landing/TechStack";
 
 // Main content for the home page
 function HomePageContent() {
-    return (
-        <div className="min-h-screen bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text flex flex-col">
-            {/* Header section */}
-            <Header />
-            <div className="mx-auto px-16 py-6 md:py-20">
-                <HeroSection />
-                <Features />
-            </div>
-            <TechStack />
-            {/* Footer section */}
+  return (
+    <div className="min-h-screen bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text flex flex-col">
+      {/* Header section */}
+      <Header />
+      <div className="mx-auto px-16 py-6 md:py-20">
+        <HeroSection />
+        <Features />
+      </div>
+      <TechStack />
+      {/* Footer section */}
 
-            <Footer />
-        </div>
-    );
+      <Footer />
+    </div>
+  );
 }
 
 // Home page wrapped with public route
 export default function HomePage() {
-    return (
-        <PublicRoute>
-            <HomePageContent />
-        </PublicRoute>
-    );
+  return (
+    <PublicRoute>
+      <HomePageContent />
+    </PublicRoute>
+  );
 }

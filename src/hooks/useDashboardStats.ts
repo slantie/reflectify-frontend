@@ -13,14 +13,14 @@ export const DASHBOARD_DELETE_ALL_DATA_MUTATION_KEY = ["deleteAllData"];
 
 // Fetch dashboard statistics
 export const useDashboardStats = () =>
-    useQuery<DashboardStats, Error>({
-        queryKey: DASHBOARD_STATS_QUERY_KEY,
-        queryFn: dashboardService.getDashboardStats,
-    });
+  useQuery<DashboardStats, Error>({
+    queryKey: DASHBOARD_STATS_QUERY_KEY,
+    queryFn: dashboardService.getDashboardStats,
+  });
 
 // Delete all dashboard data (destructive)
 export const useDeleteAllData = () =>
-    useMutation({
-        mutationKey: DASHBOARD_DELETE_ALL_DATA_MUTATION_KEY,
-        mutationFn: dashboardService.deleteAllData,
-    });
+  useMutation({
+    mutationKey: DASHBOARD_DELETE_ALL_DATA_MUTATION_KEY,
+    mutationFn: dashboardService.deleteAllData,
+  });

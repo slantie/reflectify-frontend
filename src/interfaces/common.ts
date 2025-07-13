@@ -8,13 +8,10 @@
  * T is the type of the 'data' field.
  */
 export interface ApiResponse<T> {
-    status: "success";
-    message?: string;
-    results?: number;
-    data: T;
+  status: "success";
+  message?: string;
+  results?: number;
+  data: T;
 }
 
-/**
- * Common structure for an ID parameter (UUID string).
- */
 export type IdType = string;

@@ -6,31 +6,31 @@
 import { Designation } from "@/constants/designations";
 
 export type Admin = {
-    id: string;
-    email: string;
-    name: string;
-    designation: Designation;
-    role: string;
-    isSuper: boolean;
+  id: string;
+  email: string;
+  name: string;
+  designation: Designation;
+  role: string;
+  isSuper: boolean;
 };
 
 // API response for login endpoint.
 export interface LoginResponse {
-    token: string;
-    data: {
-        admin: Admin;
-    };
+  token: string;
+  data: {
+    admin: Admin;
+  };
 }
 
 // API response for /me endpoint.
 export interface MeResponse {
-    data: {
-        admin: Admin;
-    };
+  data: {
+    admin: Admin;
+  };
 }
 
 // Login form input fields.
 export interface LoginFormInputs {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }

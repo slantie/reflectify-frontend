@@ -9,9 +9,9 @@ import { AuthLayout } from "@/components/auth/AuthLayout"; // Import the new lay
 import { LoginForm } from "@/components/auth/LoginForm"; // Import the new form component
 
 export default function LoginPage() {
-    return (
-        <AuthLayout>
-            <LoginForm />
-        </AuthLayout>
-    );
+  return (
+    <AuthLayout>
+      <LoginForm />
+    </AuthLayout>
+  );
 }

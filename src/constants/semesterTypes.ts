@@ -4,6 +4,6 @@
 */
 
 export enum SemesterTypeEnum {
-    ODD = "ODD",
-    EVEN = "EVEN",
+  ODD = "ODD",
+  EVEN = "EVEN",
 }

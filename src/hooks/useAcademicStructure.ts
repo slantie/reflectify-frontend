@@ -12,8 +12,8 @@ export const ACADEMIC_STRUCTURE_QUERY_KEY = ["academicStructure"];
 
 // Fetch the complete academic structure
 export const useAcademicStructure = () => {
-    return useQuery<AcademicStructureData, Error>({
-        queryKey: ACADEMIC_STRUCTURE_QUERY_KEY,
-        queryFn: () => academicStructureService.getAcademicStructure(),
-    });
+  return useQuery<AcademicStructureData, Error>({
+    queryKey: ACADEMIC_STRUCTURE_QUERY_KEY,
+    queryFn: () => academicStructureService.getAcademicStructure(),
+  });
 };

@@ -61,9 +61,6 @@ export interface ProcessedAnalyticsData {
     subjectRatings: ReturnType<
         typeof AnalyticsDataProcessor.processSubjectRatings
     >;
-    semesterTrends: ReturnType<
-        typeof AnalyticsDataProcessor.processSemesterTrends
-    >;
     divisionComparisons: ReturnType<
         typeof AnalyticsDataProcessor.processDivisionComparisons
     >;
@@ -144,8 +141,6 @@ export const useProcessedAnalytics = (filters: AnalyticsFilterParams = {}) => {
             overallStats: AnalyticsDataProcessor.processOverallStats(snapshots),
             subjectRatings:
                 AnalyticsDataProcessor.processSubjectRatings(snapshots),
-            semesterTrends:
-                AnalyticsDataProcessor.processSemesterTrends(snapshots),
             divisionComparisons:
                 AnalyticsDataProcessor.processDivisionComparisons(snapshots),
             facultyPerformance:

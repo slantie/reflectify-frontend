@@ -6,7 +6,7 @@
 // Environment and base URLs
 export const NODE_ENV = process.env.NODE_ENV || "production";
 export const BACKEND_DEV_URL = "http://192.168.29.136:4000";
-export const BACKEND_PROD_URL = "https://backend.reflectify.live";
+export const BACKEND_PROD_URL = "http://192.168.29.136:4000";
 export const BASE_URL =
     NODE_ENV === "development" ? BACKEND_DEV_URL : BACKEND_PROD_URL;
 export const API_V1_URL = `${BASE_URL}/api/v1`;

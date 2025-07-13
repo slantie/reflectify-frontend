@@ -21,14 +21,7 @@ import {
     CreateAcademicYearData,
     UpdateAcademicYearData,
 } from "@/interfaces/academicYear";
-import {
-    Calendar,
-    Plus,
-    Clock,
-    CheckCircle,
-    AlertCircle,
-    BookOpen,
-} from "lucide-react";
+import { Calendar, Plus, Clock, CheckCircle, AlertCircle } from "lucide-react";
 
 // Animation variants
 const containerVariants = {
@@ -167,13 +160,6 @@ export const AcademicYearManagement: React.FC = () => {
                             icon={Clock}
                             isLoading={statsLoading}
                             subtitle="Active now"
-                        />
-                        <StatCard
-                            title="Upcoming Year"
-                            value={stats.upcomingYear?.yearString || "None"}
-                            icon={BookOpen}
-                            isLoading={statsLoading}
-                            subtitle="Next period"
                         />
                     </div>
                 </motion.div>

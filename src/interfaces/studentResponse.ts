@@ -14,8 +14,8 @@ export type StudentResponseValue = string | number | boolean;
  * Represents a single student's response to a question.
  */
 export interface SubmitResponseItem {
-    feedbackQuestionId: IdType;
-    value: StudentResponseValue;
+  feedbackQuestionId: IdType;
+  value: StudentResponseValue;
 }
 
 /**
@@ -27,5 +27,5 @@ export type SubmitResponsesData = SubmitResponseItem[];
  * Data structure for the response from checking submission status.
  */
 export interface CheckSubmissionStatus {
-    isSubmitted: boolean;
+  isSubmitted: boolean;
 }

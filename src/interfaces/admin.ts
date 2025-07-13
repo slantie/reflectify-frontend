@@ -7,9 +7,9 @@
  * Represents an admin user (as returned by /auth/me and related endpoints).
  */
 export interface Admin {
-    id: string;
-    name: string;
-    email: string;
-    designation: string;
-    isSuper: boolean;
+  id: string;
+  name: string;
+  email: string;
+  designation: string;
+  isSuper: boolean;
 }
