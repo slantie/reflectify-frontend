@@ -39,6 +39,8 @@ export interface FeedbackSnapshot {
     createdAt: string;
 }
 
+// type IdType = string;
+
 // Dictionary for analytics filter dropdowns.
 export interface FilterDictionary {
     academicYears: Array<{
@@ -119,9 +121,26 @@ export interface AnalyticsFilterParams {
     academicYearId?: IdType;
     departmentId?: IdType;
     semesterId?: IdType;
+    semesterNumber?: number;
+    subject?: string; // This will be subjectName
+    subjectId?: string; // Added for detailed subject-faculty filtering
     divisionId?: IdType;
+    divisionName?: string;
     lectureType?: LectureLabType;
     includeDeleted?: boolean;
+}
+
+export interface SubjectFacultyDetailPerformance {
+    subjectName: string;
+    subjectAbbreviation: string;
+    overallSubjectAverage: number | null;
+    overallSubjectResponses: number; // Added for completeness
+    facultyData: {
+        facultyId: string;
+        facultyName: string;
+        averageRating: number;
+        responseCount: number;
+    }[];
 }
 
 // Overall semester rating summary.
@@ -187,6 +206,33 @@ export interface SemesterTrend {
     academicYear: string;
 }
 
+export interface AcademicYearDepartmentTrend {
+    academicYearString: string;
+    departmentData: {
+        departmentName: string;
+        averageRating: number;
+        responseCount: number;
+    }[];
+}
+
+export interface AcademicYearSemesterTrend {
+    semesterNumber: number;
+    academicYearData: {
+        academicYearString: string;
+        averageRating: number;
+        responseCount: number;
+    }[];
+}
+
+export interface AcademicYearDivisionTrend {
+    academicYearString: string;
+    divisionData: {
+        divisionName: string;
+        averageRating: number;
+        responseCount: number;
+    }[];
+}
+
 /**
  * Annual performance trend data.
  */
@@ -222,6 +268,19 @@ export interface LabLectureComparison {
     labOverallRating: number;
     totalLectureResponses: number;
     totalLabResponses: number;
+}
+
+export interface SubjectFacultyPerformance {
+    subjectName: string;
+    subjectAbbreviation: string;
+    overallSubjectAverage: number | null;
+    overallSubjectResponses: number;
+    facultyData: {
+        facultyId: string;
+        facultyName: string;
+        averageRating: number;
+        responseCount: number;
+    }[];
 }
 
 /**

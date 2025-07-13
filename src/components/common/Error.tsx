@@ -55,7 +55,7 @@ function Error({
                 </div>
             )}
 
-            <div className="text-center space-y-8 max-w-2xl w-full">
+            <div className="text-center space-y-4 max-w-2xl w-full">
                 <div className="relative inline-block">
                     <div className="w-24 h-24 mx-auto bg-light-highlight dark:bg-dark-highlight dark:bg-primary-dark rounded-full flex items-center justify-center shadow-2xl">
                         <AlertTriangle className="w-12 h-12 text-white" />

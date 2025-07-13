@@ -26,7 +26,7 @@ export const FeedbackFormHeader = ({
             variants={itemVariants}
             className="bg-light-background dark:bg-dark-muted-background p-6 rounded-xl shadow-sm border border-light-secondary dark:border-dark-secondary"
         >
-            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 {/* Left Section: Title and Descriptions */}
                 <div>
                     {/* Responsive text sizing */}

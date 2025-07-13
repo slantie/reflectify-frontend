@@ -98,7 +98,7 @@ export default function UploadPage() {
     return (
         <div className="bg-light-muted-background dark:bg-dark-background">
             <div className="max-w-[1920px] mx-auto px-4 sm:px-6 py-6 md:py-8">
-                <div className="space-y-8">
+                <div className="space-y-4">
                     {/* Header Section */}
                     <div className="flex items-center gap-4">
                         <button

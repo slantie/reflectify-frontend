@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
-import { Card } from "@/components/ui/Card";
+// import { Card } from "@/components/ui/Card";
 
 export default function ThankYouPage() {
     return (
@@ -11,13 +11,17 @@ export default function ThankYouPage() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
-                className="max-w-2xl w-full mx-4"
+                className=""
             >
-                <Card className="p-12 text-center">
+                <div className="p-12 text-center">
                     <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                        transition={{
+                            delay: 0.2,
+                            type: "spring",
+                            stiffness: 200,
+                        }}
                         className="mb-8"
                     >
                         <CheckCircleIcon className="mx-auto h-24 w-24 text-green-600" />
@@ -38,7 +42,8 @@ export default function ThankYouPage() {
                         transition={{ delay: 0.4 }}
                         className="text-xl text-light-muted-text dark:text-dark-muted-text mb-8"
                     >
-                        Your responses have been successfully recorded and will help us improve our services.
+                        Your responses have been successfully recorded and will
+                        help us improve our services.
                     </motion.p>
 
                     <motion.div
@@ -52,7 +57,7 @@ export default function ThankYouPage() {
                                 ✓ Your feedback has been submitted successfully
                             </p>
                         </div>
-                        
+
                         <div className="text-light-muted-text dark:text-dark-muted-text">
                             <p className="text-sm">
                                 You can now close this window or tab.
@@ -67,10 +72,11 @@ export default function ThankYouPage() {
                         className="mt-8 pt-6 border-t border-light-secondary dark:border-dark-secondary"
                     >
                         <p className="text-sm text-light-muted-text dark:text-dark-muted-text">
-                            Thank you for taking the time to provide your valuable feedback.
+                            Thank you for taking the time to provide your
+                            valuable feedback.
                         </p>
                     </motion.div>
-                </Card>
+                </div>
             </motion.div>
         </div>
     );

@@ -101,7 +101,7 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
 
     return (
         <div className="w-full">
-            <div className="p-6">
+            <div className="p-2">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-light-secondary dark:bg-dark-secondary">
@@ -126,7 +126,7 @@ export const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({
                             hover:bg-dark-highlight/10 focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
                             transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <X className="h-5 w-5 mr-2" />
+                            <X className="h-5 w-5" />
                             Clear All
                         </button>
                     </div>

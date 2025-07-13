@@ -396,7 +396,7 @@ export default function EditFeedbackFormPage({
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="space-y-8"
+                    className="space-y-4"
                 >
                     {/* Header */}
                     <div className="flex items-center justify-between">
@@ -1468,7 +1468,7 @@ export default function EditFeedbackFormPage({
                         </div>
                     </Tabs>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6"></div>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4"></div>
                 </motion.div>
             </div>
         </div>

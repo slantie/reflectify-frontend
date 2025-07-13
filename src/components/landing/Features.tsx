@@ -18,7 +18,7 @@ const animations = {
 export function Features() {
     return (
         <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10 md:mt-20 bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-10 md:mt-20 bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text"
             {...animations.fadeInUp}
         >
             {[

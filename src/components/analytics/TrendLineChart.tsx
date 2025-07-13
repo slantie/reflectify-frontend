@@ -42,6 +42,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                 </p>
                 <div className="flex items-center justify-between gap-4 mb-2">
                     <div className="flex items-center gap-2">
+                        {/* Consistent color for the tooltip dot */}
                         <div className="w-2 h-2 rounded-full bg-[#f97316]" />
                         <span className="text-sm text-light-muted-text dark:text-dark-muted-text">
                             Average Rating:
@@ -53,7 +54,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                             : "N/A"}
                     </span>
                 </div>
-                {dataPoint.responseCount && (
+                {dataPoint.responseCount !== undefined && ( // Check for undefined/null rather than just truthiness for 0 responses
                     <div className="mt-3 pt-2 border-t border-light-secondary dark:border-dark-secondary">
                         <span className="text-xs text-light-muted-text dark:text-dark-muted-text">
                             Total Responses:{" "}
@@ -106,11 +107,58 @@ export const TrendLineChart: React.FC<TrendLineChartProps> = ({
         };
     }, [data]);
 
+    // Export function (retained from SubjectRatingsChart for consistency)
+    const exportToCsv = () => {
+        if (!chartData || chartData.length === 0) {
+            alert("No data to export.");
+            return;
+        }
+
+        const headers = [
+            "Semester",
+            "Subject (if applicable)", // Clarify this header as 'subject' might not be unique per semester
+            "Average Rating",
+            "Response Count",
+        ];
+
+        const csvContent = [
+            headers.join(","),
+            ...chartData.map((row) =>
+                [
+                    row.semester,
+                    `"${row.subject || "N/A"}"`, // Handle cases where subject might not be relevant/present for a combined trend
+                    row.averageRating !== null
+                        ? row.averageRating.toFixed(2)
+                        : "N/A",
+                    row.responseCount,
+                ].join(",")
+            ),
+        ].join("\n");
+
+        const blob = new Blob([csvContent], {
+            type: "text/csv;charset=utf-8;",
+        });
+        const link = document.createElement("a");
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "trend_data.csv");
+            link.style.visibility = "hidden";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            alert(
+                "Your browser does not support downloading files directly. Please copy the data manually."
+            );
+        }
+    };
+
     // --- Loading State ---
     if (isLoading) {
         return (
             <Card className="border rounded-2xl shadow-sm bg-light-background dark:bg-dark-muted-background">
-                <CardHeader className="pb-3">
+                <CardHeader>
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-light-secondary dark:bg-dark-secondary">
                             <TrendingUp className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
@@ -120,11 +168,12 @@ export const TrendLineChart: React.FC<TrendLineChartProps> = ({
                         </CardTitle>
                     </div>
                 </CardHeader>
-                <CardContent>
-                    <div
-                        style={{ height: height }}
-                        className="flex items-center justify-center"
-                    >
+                <CardContent style={{ height: height }}>
+                    {" "}
+                    {/* Apply height here */}
+                    <div className="h-full flex items-center justify-center">
+                        {" "}
+                        {/* Use h-full for inner div */}
                         <div className="text-center">
                             <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-main border-t-transparent mx-auto mb-4"></div>
                             <p className="text-light-muted-text dark:text-dark-muted-text">
@@ -141,21 +190,23 @@ export const TrendLineChart: React.FC<TrendLineChartProps> = ({
     if (!data.length) {
         return (
             <Card className="border border-light-secondary dark:border-dark-secondary rounded-2xl shadow-sm bg-light-background dark:bg-dark-muted-background">
-                <CardHeader className="pb-3">
+                <CardHeader>
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-light-secondary dark:bg-dark-secondary">
-                            <TrendingUp className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
+                            <TrendingUp className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />{" "}
+                            {/* Consistent highlight color for icon */}
                         </div>
                         <CardTitle className="text-light-text dark:text-dark-text">
                             {title}
                         </CardTitle>
                     </div>
                 </CardHeader>
-                <CardContent>
-                    <div
-                        style={{ height: height }}
-                        className="flex items-center justify-center"
-                    >
+                <CardContent style={{ height: height }}>
+                    {" "}
+                    {/* Apply height here */}
+                    <div className="h-full flex items-center justify-center">
+                        {" "}
+                        {/* Use h-full for inner div */}
                         <div className="text-center">
                             <TrendingUp className="h-12 w-12 mx-auto mb-4 text-light-muted-text dark:text-dark-muted-text opacity-50" />
                             <p className="text-light-text dark:text-dark-text font-medium mb-2">
@@ -183,14 +234,22 @@ export const TrendLineChart: React.FC<TrendLineChartProps> = ({
                             {title}
                         </CardTitle>
                     </div>
-                    {/* Placeholder for additional stats or filters on the right, similar to SubjectRatingsChart */}
+                    {/* Consistent header actions: Badge for stat + Export Button */}
                     <div className="flex items-center gap-4">
                         <Badge
                             variant="outline"
-                            className="text-sm text-light-text dark:text-dark-text"
+                            className="text-sm text-light-text dark:text-dark-text py-2 px-4" // Added py-2 px-4 for consistency
                         >
                             Avg Rating: {stats.overallAverageRating}
                         </Badge>
+                        <button
+                            onClick={exportToCsv}
+                            className="flex text-sm items-center gap-2 bg-transparent border border-primary-main text-light-highlight dark:text-dark-highlight py-2 px-4 rounded-xl
+                            hover:bg-dark-highlight/10 focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
+                            transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Export Chart
+                        </button>
                     </div>
                 </div>
                 <div className="text-md text-light-muted-text dark:text-dark-muted-text">
@@ -199,11 +258,11 @@ export const TrendLineChart: React.FC<TrendLineChartProps> = ({
                 </div>
             </CardHeader>
             <CardContent>
-                <ResponsiveContainer width="100%" height={height}>
+                <ResponsiveContainer width="100%" height={425}>
                     <LineChart
                         data={chartData}
                         margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
-                        className="fill-light-text dark:fill-dark-text"
+                        className="fill-light-text dark:fill-dark-text" // Apply fill to chart container for text elements
                     >
                         <CartesianGrid
                             strokeDasharray="4 4"
@@ -212,25 +271,21 @@ export const TrendLineChart: React.FC<TrendLineChartProps> = ({
                         />
                         <XAxis
                             dataKey="semester" // Use semester for chronological trend
-                            textAnchor="middle"
                             height={10}
                             interval={0}
-                            fontSize={12}
+                            fontSize={13}
                             stroke="#AAAAAA" // Color for axis line and tick text
                             padding={{ left: 10, right: 10 }}
                         />
                         <YAxis
                             domain={[0, 10]}
-                            fontSize={12}
-                            stroke="#AAAAAA" // Color for axis line and tick text
+                            stroke="#AAAAAA"
                             label={{
-                                value: "Rating (0-10)",
+                                value: "Average Rating (0-10)",
                                 angle: -90,
-                                position: "insideLeft",
-                                offset: -10,
                                 style: {
-                                    fontSize: 12,
-                                    fill: "#AAAAAA"
+                                    fontSize: 13,
+                                    fill: "#AAAAAA",
                                 },
                             }}
                         />
@@ -255,14 +310,20 @@ export const TrendLineChart: React.FC<TrendLineChartProps> = ({
                         <Line
                             type="monotone" // For smooth curve
                             dataKey="averageRating"
-                            stroke="#f97316" // Primary color for the line
+                            stroke="#f97316"
                             name="Average Rating"
-                            dot={true} // Show dots on data points
+                            dot={{
+                                stroke: "#f97316",
+                                strokeWidth: 2,
+                                r: 4,
+                                fill: "#f97316",
+                            }} // Styled dots to match line color and size
                             activeDot={{
                                 stroke: "#f97316",
                                 strokeWidth: 2,
                                 r: 8,
-                            }} // Larger dot on hover
+                                fill: "#f97316", // Ensure active dot fill is also consistent
+                            }}
                         />
                     </LineChart>
                 </ResponsiveContainer>
@@ -290,7 +351,7 @@ export const TrendLineChart: React.FC<TrendLineChartProps> = ({
                             {stats.overallAverageRating}
                         </div>
                         <div className="text-md text-light-muted-text dark:text-dark-muted-text">
-                            Overall Avg Rating
+                            Overall Average Rating
                         </div>
                     </div>
                 </div>

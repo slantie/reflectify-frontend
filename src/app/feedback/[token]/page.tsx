@@ -600,7 +600,7 @@ export default function StudentFeedbackPage({
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="space-y-6 md:space-y-8" // Adjusted vertical spacing for medium screens
+                    className="space-y-6 md:space-y-4" // Adjusted vertical spacing for medium screens
                 >
                     {/* Header */}
                     <Card className="p-6 text-center">
@@ -647,7 +647,7 @@ export default function StudentFeedbackPage({
                     {/* Feedback Form */}
                     <form
                         onSubmit={handleSubmit}
-                        className="space-y-6 md:space-y-8"
+                        className="space-y-6 md:space-y-4"
                     >
                         {" "}
                         {/* Adjusted vertical spacing for medium screens */}

@@ -290,7 +290,7 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
                 className={cn(
                     "space-y-3",
                     direction === "horizontal" &&
-                        "flex flex-wrap gap-6 space-y-0"
+                        "flex flex-wrap gap-4 space-y-0"
                 )}
                 role="radiogroup"
                 aria-labelledby={label ? `${name}-label` : undefined}

@@ -290,7 +290,7 @@ export default function FeedbackFormManagement() {
                 <motion.div
                     initial="hidden"
                     animate="visible"
-                    className="space-y-4"
+                    className="space-y-6"
                 >
                     {/* Header Section */}
                     <FeedbackFormHeader

@@ -25,10 +25,10 @@ export function HeroSection() {
 
     return (
         <motion.div
-            className="grid grid-cols-1 lg:grid-cols-2 gap-6 bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text"
             {...animations.fadeInScale}
         >
-            <div className="space-y-8 mt-10 md:mt-20">
+            <div className="space-y-4 mt-10 md:mt-20">
                 <h1 className="text-7xl md:text-7xl font-black text-light-highlight dark:text-dark-highlight tracking-tight">
                     Reflectify
                     <span className="block text-xl md:text-5xl text-light-text dark:text-dark-text mt-4">

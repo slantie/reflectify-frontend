@@ -5,12 +5,12 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui";
-import { BarChart3, Users, Eye, RefreshCw, Download, Book } from "lucide-react";
+import { Users, Eye, RefreshCw, Book } from "lucide-react";
 
 // Import our new components
 import {
@@ -21,10 +21,14 @@ import {
 import { AnalyticsFilters } from "@/components/analytics/AnalyticsFilters";
 import { AnalyticsOverview } from "@/components/analytics/AnalyticsOverview";
 import { SubjectRatingsChart } from "@/components/analytics/charts/SubjectRatingsChart";
-import { SemesterTrendsChart } from "@/components/analytics/charts/SemesterTrendsChart";
-import { DivisionComparisonChart } from "@/components/analytics/charts/DivisionComparisonChart";
 import { FacultyPerformanceChart } from "@/components/analytics/charts/FacultyPerformanceChart";
+import AcademicYearSemesterPerformanceChart from "@/components/analytics/charts/AcademicYearSemesterPerformanceChart";
+import AcademicYearDivisionPerformanceChart from "@/components/analytics/charts/AcademicYearDivisionPerformanceChart";
 import { AnalyticsFilterParams } from "@/interfaces/analytics";
+import { ArrowTrendingUpIcon } from "@heroicons/react/24/outline";
+import { BatchComparisonChart } from "@/components/analytics/charts/BatchComparisonChart";
+import AcademicYearDepartmentComparisonChart from "@/components/analytics/charts/AcademicYearDepartmentComparisonChart";
+import SubjectFacultyPerformanceChart from "@/components/analytics/charts/SubjectFacultyPerformanceComparisonChart";
 
 // Animation variants
 const containerVariants = {
@@ -41,8 +45,8 @@ const AnalyticsPage: React.FC = () => {
     // Filter state
     const [filters, setFilters] = useState<AnalyticsFilterParams>({});
     const [activeTab, setActiveTab] = useState<
-        "overview" | "subjects" | "trends" | "performance"
-    >("overview");
+        "subjects" | "trends" | "performance"
+    >("trends");
 
     // Data fetching
     const {
@@ -61,6 +65,26 @@ const AnalyticsPage: React.FC = () => {
 
     const { invalidateAll } = useAnalyticsActions();
 
+    const selectedDivisionId = filters.divisionId;
+    const isSingleDivisionSelected =
+        selectedDivisionId && typeof selectedDivisionId === "string";
+
+    // Derive the division name from the selected division ID
+    const selectedDivisionName = useMemo(() => {
+        if (isSingleDivisionSelected && rawData?.feedbackSnapshots) {
+            // Find the first snapshot that matches the selected divisionId
+            const foundSnapshot = rawData.feedbackSnapshots.find(
+                (s) => s.divisionId === selectedDivisionId
+            );
+            return foundSnapshot ? foundSnapshot.divisionName : null;
+        }
+        return null;
+    }, [
+        isSingleDivisionSelected,
+        selectedDivisionId,
+        rawData?.feedbackSnapshots,
+    ]);
+
     // Handle filter changes
     const handleFilterChange = (newFilters: Partial<AnalyticsFilterParams>) => {
         setFilters((prev) => ({ ...prev, ...newFilters }));
@@ -69,13 +93,6 @@ const AnalyticsPage: React.FC = () => {
     const handleRefresh = () => {
         refetchAnalyticsData();
         invalidateAll();
-    };
-
-    const handleExport = () => {
-        if (rawData) {
-            // Export functionality - to be implemented
-            console.log("Exporting data:", rawData);
-        }
     };
 
     // Loading state
@@ -149,48 +166,46 @@ const AnalyticsPage: React.FC = () => {
                     initial="hidden"
                     animate="visible"
                     variants={containerVariants}
-                    className="space-y-8"
+                    className="space-y-4"
                 >
                     {/* Header */}
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                        <div>
-                            <h1 className="text-3xl font-semibold text-light-text dark:text-dark-text">
-                                Analytics Dashboard
-                            </h1>
-                            <p className="text-light-muted-text dark:text-dark-muted-text mt-1">
-                                Comprehensive feedback analytics and insights
-                            </p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <button
-                                onClick={handleRefresh}
-                                disabled={analyticsDataLoading}
-                                className="flex items-center gap-2 bg-transparent border border-primary-main text-light-highlight dark:text-dark-highlight py-2 px-4 rounded-xl
-                            hover:bg-dark-highlight/10 focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
-                            transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                <RefreshCw
-                                    className={`h-4 w-4 ${
-                                        analyticsDataLoading
-                                            ? "animate-spin"
-                                            : ""
-                                    }`}
-                                />
-                                Refresh
-                            </button>
+                    <motion.div className="bg-light-background dark:bg-dark-muted-background p-6 rounded-xl shadow-sm border border-light-secondary dark:border-dark-secondary">
+                        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            {/* Left Section: Title and Descriptions */}
+                            <div>
+                                {/* Responsive text sizing */}
+                                <h1 className="text-3xl md:text-4xl font-extrabold text-light-text dark:text-dark-text flex items-center gap-3">
+                                    Analytics Dashboard
+                                </h1>
+                                <p className="text-base text-light-muted-text dark:text-dark-muted-text flex items-center gap-2 mt-2">
+                                    <ArrowTrendingUpIcon className="h-6 w-6 text-positive-main" />
+                                    Comprehensive feedback analytics and
+                                    insights
+                                </p>
+                            </div>
 
-                            <button
-                                onClick={handleExport}
-                                disabled={!rawData}
-                                className="flex items-center gap-2 bg-transparent border border-primary-main text-light-highlight dark:text-dark-highlight py-2 px-4 rounded-xl
+                            {/* Right Section: Response Count and Last Updated */}
+                            {/* Full width on small screens, auto width and right aligned on sm and up */}
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={handleRefresh}
+                                    disabled={analyticsDataLoading}
+                                    className="flex items-center gap-2 bg-transparent border border-primary-main text-light-highlight dark:text-dark-highlight py-2 px-4 rounded-xl
                             hover:bg-dark-highlight/10 focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
                             transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                <Download className="h-5 w-5" />
-                                Export
-                            </button>
+                                >
+                                    <RefreshCw
+                                        className={`h-4 w-4 ${
+                                            analyticsDataLoading
+                                                ? "animate-spin"
+                                                : ""
+                                        }`}
+                                    />
+                                    Refresh
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Filters */}
                     <Card className="bg-light-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary rounded-2xl shadow-sm">
@@ -217,61 +232,33 @@ const AnalyticsPage: React.FC = () => {
                                 setActiveTab(value as any)
                             }
                         >
-                            <div className="p-6 border-b border-light-secondary dark:border-dark-secondary">
-                                <TabsList className="grid w-full grid-cols-4 gap-4 rounded-xl p-1">
-                                    <TabsTrigger
-                                        value="overview"
-                                        className="flex items-center gap-2"
-                                    >
-                                        <BarChart3 className="w-4 h-4" />
-                                        Overview
-                                    </TabsTrigger>
+                            <div className="p-4 border-b border-light-secondary dark:border-dark-secondary">
+                                <TabsList className="grid w-full grid-cols-3 gap-4 rounded-xl p-1">
                                     <TabsTrigger
                                         value="trends"
                                         className="flex items-center gap-2"
                                     >
                                         <Eye className="w-4 h-4" />
-                                        Trends
+                                        Yearly Trends
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="subjects"
                                         className="flex items-center gap-2"
                                     >
                                         <Book className="w-4 h-4" />
-                                        Subjects
+                                        Subjects & Ratings
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="performance"
                                         className="flex items-center gap-2"
                                     >
                                         <Users className="w-4 h-4" />
-                                        Faculty
+                                        Faculty Performance
                                     </TabsTrigger>
                                 </TabsList>
                             </div>
 
                             <div className="p-6">
-                                <TabsContent
-                                    value="overview"
-                                    className="space-y-6 mt-0"
-                                >
-                                    <div className="grid grid-cols-1 gap-6">
-                                        <SubjectRatingsChart
-                                            data={
-                                                processedData?.subjectRatings ||
-                                                []
-                                            }
-                                            isLoading={analyticsDataLoading}
-                                        />
-                                        {/* <DivisionComparisonChart
-                                            data={
-                                                processedData?.divisionComparisons ||
-                                                []
-                                            }
-                                        /> */}
-                                    </div>
-                                </TabsContent>
-
                                 <TabsContent
                                     value="subjects"
                                     className="space-y-6 mt-0"
@@ -282,29 +269,50 @@ const AnalyticsPage: React.FC = () => {
                                         }
                                         isLoading={analyticsDataLoading}
                                     />
-                                </TabsContent>
-
-                                {/* <TabsContent
-                                    value="divisions"
-                                    className="space-y-6 mt-0"
-                                >
-                                    <DivisionComparisonChart
+                                    <SubjectFacultyPerformanceChart
                                         data={
-                                            processedData?.divisionComparisons ||
+                                            processedData?.subjectFacultyPerformance ||
                                             []
                                         }
                                         isLoading={analyticsDataLoading}
                                     />
-                                </TabsContent> */}
+                                </TabsContent>
 
                                 <TabsContent
                                     value="trends"
                                     className="space-y-6 mt-0"
                                 >
-                                    <SemesterTrendsChart
+                                    <AcademicYearDepartmentComparisonChart
                                         data={
-                                            processedData?.semesterTrends || []
+                                            processedData?.academicYearDepartmentTrends ||
+                                            []
                                         }
+                                        isLoading={analyticsDataLoading}
+                                    />
+                                    <AcademicYearSemesterPerformanceChart
+                                        data={
+                                            processedData?.academicYearSemesterTrends ||
+                                            []
+                                        }
+                                        isLoading={analyticsDataLoading}
+                                    />
+                                    <AcademicYearDivisionPerformanceChart
+                                        data={
+                                            processedData?.academicYearDivisionPerformance ||
+                                            []
+                                        }
+                                        isLoading={analyticsDataLoading}
+                                    />
+
+                                    <BatchComparisonChart
+                                        data={
+                                            processedData?.batchComparisons ||
+                                            []
+                                        }
+                                        selectedDivisionName={
+                                            selectedDivisionName
+                                        } // Pass the derived name here
+                                        isLoading={analyticsDataLoading}
                                     />
                                 </TabsContent>
 
@@ -312,20 +320,13 @@ const AnalyticsPage: React.FC = () => {
                                     value="performance"
                                     className="space-y-6 mt-0"
                                 >
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                        <FacultyPerformanceChart
-                                            data={
-                                                processedData?.facultyPerformance ||
-                                                []
-                                            }
-                                        />
-                                        <DivisionComparisonChart
-                                            data={
-                                                processedData?.divisionComparisons ||
-                                                []
-                                            }
-                                        />
-                                    </div>
+                                    <FacultyPerformanceChart
+                                        data={
+                                            processedData?.facultyPerformance ||
+                                            []
+                                        }
+                                        academicYearId={filters.academicYearId}
+                                    />
                                 </TabsContent>
                             </div>
                         </Tabs>

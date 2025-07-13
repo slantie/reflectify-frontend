@@ -477,7 +477,7 @@ export default function CreateFeedbackForm() {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="space-y-8"
+                    className="space-y-4"
                 >
                     <div className="flex items-center gap-4 mb-6">
                         {" "}

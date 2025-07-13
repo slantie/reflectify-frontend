@@ -51,10 +51,10 @@ export default function Dashboard() {
             {/* Max width and responsive padding for the main container */}
             <div className="max-w-[1920px] mx-auto px-4 sm:px-6 py-6 md:py-8">
                 {/* Responsive layout for main sections: column on smaller screens, row on large screens */}
-                <div className="flex flex-col lg:flex-row gap-8">
+                <div className="flex flex-col lg:flex-row gap-4">
                     {/* Main Content - Right Side */}
                     {/* Ensures this div takes full width on large screens */}
-                    <div className="lg:w-full space-y-8">
+                    <div className="lg:w-full space-y-6">
                         {/* Header Section */}
                         <div
                             className="relative bg-light-background dark:bg-dark-muted-background p-6 rounded-xl shadow-sm border border-light-secondary dark:border-dark-secondary overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer dark:hover:bg-dark-noisy-background"
@@ -66,7 +66,7 @@ export default function Dashboard() {
                             <div className="absolute bottom-0 right-0 w-32 h-32 bg-accent-light-main rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-blob animation-delay-2000 pointer-events-none"></div>
 
                             {/* Responsive flex container for header content */}
-                            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                 {/* Left Section: Title and Descriptions */}
                                 <div>
                                     {/* Responsive text sizing */}
@@ -141,7 +141,7 @@ export default function Dashboard() {
                             </div>
                             {/* Enhanced Grid for the 6 StatCards with better spacing and hover effects */}
                             {/* Responsive grid columns: 1 on mobile, 2 on sm, 3 on lg */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <StatCard
                                     title="Academic Years"
                                     value={stats?.academicYearCount || 0}

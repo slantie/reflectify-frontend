@@ -114,12 +114,12 @@ export const AcademicYearManagement: React.FC = () => {
     const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-4">
             <motion.div
                 initial="hidden"
                 animate="visible"
                 variants={containerVariants}
-                className="space-y-8"
+                className="space-y-4"
             >
                 {/* Header */}
                 <motion.div variants={itemVariants}>

@@ -324,7 +324,7 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
                 className={cn(
                     "space-y-3",
                     direction === "horizontal" &&
-                        "flex flex-wrap gap-6 space-y-0"
+                        "flex flex-wrap gap-4 space-y-0"
                 )}
             >
                 {options.map((option) => (

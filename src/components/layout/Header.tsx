@@ -137,7 +137,7 @@ export function Header() {
                                     priority
                                 />
                                 <span className="lg:text-3xl md:text-xl font-bold">
-                                    <span className="text-[#f98a17]">
+                                    <span className="text-light-highlight dark:text-dark-highlight">
                                         Reflectify
                                     </span>
                                 </span>
@@ -146,7 +146,7 @@ export function Header() {
                     </motion.div>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center gap-4 lg:gap-6">
+                    <div className="hidden md:flex items-center gap-4 lg:gap-4">
                         {!user && (
                             <>
                                 <Link
@@ -303,7 +303,10 @@ export function Header() {
                     {user ? (
                         <>
                             <span className="block text-light-text dark:text-dark-text py-2 font-medium text-base">
-                                Hello, <span className="text-light-highlight dark:text-dark-highlight font-semibold">{user.name}</span>
+                                Hello,{" "}
+                                <span className="text-light-highlight dark:text-dark-highlight font-semibold">
+                                    {user.name}
+                                </span>
                             </span>
                             <Link
                                 href="/dashboard"

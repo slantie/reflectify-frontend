@@ -175,7 +175,7 @@ export default function AboutPage() {
                                                         }
                                                     </p>
 
-                                                    <div className="flex gap-6 pt-6 border-t border-gray-100 dark:border-dark-secondary">
+                                                    <div className="flex gap-4 pt-6 border-t border-gray-100 dark:border-dark-secondary">
                                                         <a
                                                             href={`mailto:${teamMembers[currentIndex].email}`}
                                                             className="flex items-center gap-2 text-gray-500 dark:text-dark-tertiary hover:text-orange-500 dark:hover:text-orange-400 transition-colors group"

@@ -96,7 +96,7 @@ export default function AboutPage() {
                     </Card>
 
                     {/* Features Section */}
-                    <div className="space-y-8">
+                    <div className="space-y-4">
                         <div className="text-center">
                             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                                 What We Offer
@@ -107,7 +107,7 @@ export default function AboutPage() {
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {features.map((feature, index) => (
                                 <Card
                                     key={index}
@@ -132,7 +132,7 @@ export default function AboutPage() {
                     </div>
 
                     {/* Team Section */}
-                    <div className="space-y-8">
+                    <div className="space-y-4">
                         <div className="text-center">
                             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                                 Meet Our Team
@@ -143,7 +143,7 @@ export default function AboutPage() {
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {teamMembers.map((member, index) => (
                                 <Card
                                     key={index}
@@ -207,7 +207,7 @@ export default function AboutPage() {
                     </Card>
 
                     {/* Technology Stack */}
-                    <div className="space-y-8">
+                    <div className="space-y-4">
                         <div className="text-center">
                             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                                 Built with Modern Technology
@@ -219,7 +219,7 @@ export default function AboutPage() {
                         </div>
 
                         <Card className="p-8">
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                                 <div className="space-y-2">
                                     <div className="text-2xl font-bold text-blue-600">
                                         React

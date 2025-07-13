@@ -41,7 +41,7 @@ export function Footer() {
             className="bg-white dark:bg-dark-background border-t border-secondary-lighter dark:border-dark-secondary"
         >
             <div className="mx-auto max-w-[1920px] px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 py-12 sm:py-16">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-12 py-12 sm:py-16">
                     {/* Brand Section */}
                     <div className="space-y-6 sm:col-span-2 lg:col-span-1">
                         <motion.div

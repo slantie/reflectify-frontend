@@ -30,7 +30,9 @@ export default function MainGroupLayout({
     return (
         <ProtectedRoute requireAuth={true}>
             <>
-                <Header />
+                <div className="sticky top-0 z-50 bg-white dark:bg-dark-background border-b border-secondary-lighter dark:border-dark-secondary">
+                    <Header />
+                </div>
                 <main>{children}</main> <Footer />
             </>
         </ProtectedRoute>

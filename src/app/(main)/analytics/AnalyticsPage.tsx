@@ -88,7 +88,7 @@ const AnalyticsPage: React.FC = () => {
                     />
 
                     {hasData && (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                             <SubjectRatingsChart
                                 data={processedData.subjectRatings.slice(0, 8)}
                                 isLoading={isLoading}
@@ -114,13 +114,13 @@ const AnalyticsPage: React.FC = () => {
                     {processedData?.lectureLabComparison && (
                         <Card>
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
+                                <CardTitle className="flex items-center gap-4">
                                     <BarChart3 className="h-5 w-5" />
                                     Lecture vs Lab Performance
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div className="text-center">
                                         <div className="text-3xl font-bold text-blue-600">
                                             {
@@ -394,28 +394,28 @@ const AnalyticsPage: React.FC = () => {
                 <TabsList className="grid w-full grid-cols-4">
                     <TabsTrigger
                         value="overview"
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-4"
                     >
                         <Eye className="h-4 w-4" />
                         Overview
                     </TabsTrigger>
                     <TabsTrigger
                         value="subjects"
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-4"
                     >
                         <BarChart3 className="h-4 w-4" />
                         Subjects
                     </TabsTrigger>
                     <TabsTrigger
                         value="trends"
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-4"
                     >
                         <TrendingUp className="h-4 w-4" />
                         Trends
                     </TabsTrigger>
                     <TabsTrigger
                         value="performance"
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-4"
                     >
                         <Users className="h-4 w-4" />
                         Performance

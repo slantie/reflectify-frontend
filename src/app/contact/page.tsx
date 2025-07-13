@@ -200,7 +200,7 @@ export default function ContactPage() {
                                     className="space-y-6"
                                 >
                                     {/* Name and Email Row */}
-                                    <div className="grid sm:grid-cols-2 gap-6">
+                                    <div className="grid sm:grid-cols-2 gap-4">
                                         <div>
                                             <label
                                                 htmlFor="name"
@@ -392,7 +392,7 @@ export default function ContactPage() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.6, delay: 0.4 }}
-                            className="space-y-8"
+                            className="space-y-4"
                         >
                             <div className="bg-light-muted dark:bg-dark-muted p-6 sm:p-8 rounded-3xl shadow-xl border border-light-secondary dark:border-dark-secondary">
                                 <h2 className="text-2xl font-bold text-light-highlight dark:text-dark-highlight mb-6">

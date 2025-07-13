@@ -34,10 +34,10 @@ function HomePageContent() {
                 className="max-w-[1920px] mx-auto px-16 py-4 md:py-20"
             >
                 <motion.div
-                    className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+                    className="grid grid-cols-1 lg:grid-cols-2 gap-4"
                     {...animations.fadeInScale}
                 >
-                    <div className="space-y-8 mt-10 md:mt-20">
+                    <div className="space-y-4 mt-10 md:mt-20">
                         <h1 className="text-7xl md:text-7xl font-black text-primary-dark tracking-tight">
                             Reflectify
                             <span className="block text-xl md:text-5xl text-secondary-dark dark:text-secondary-lighter mt-4">
@@ -81,7 +81,7 @@ function HomePageContent() {
                 </motion.div>
 
                 <motion.div
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10 md:mt-20"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-10 md:mt-20"
                     {...animations.fadeInUp}
                 >
                     {[

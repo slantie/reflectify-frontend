@@ -16,7 +16,7 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { BookOpen, Monitor, Laptop } from "lucide-react";
+import { BookOpen, Monitor, Laptop, Download } from "lucide-react";
 import { SubjectLectureLabRating } from "@/interfaces/analytics";
 
 interface SubjectRatingsChartProps {
@@ -344,8 +344,8 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
 
     if (isLoading) {
         return (
-            <Card className=" border rounded-2xl shadow-sm">
-                <CardHeader className="pb-3">
+            <Card className="border rounded-2xl shadow-sm">
+                <CardHeader>
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-light-secondary dark:bg-dark-secondary">
                             <BookOpen className="h-5 w-5 text-light-highlight dark:text-dark-highlight" />
@@ -372,7 +372,7 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
     if (!data.length) {
         return (
             <Card className=" border border-light-secondary dark:border-dark-secondary rounded-2xl shadow-sm">
-                <CardHeader className="pb-3">
+                <CardHeader>
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-xl bg-light-secondary dark:bg-dark-secondary">
                             <BookOpen className="h-5 w-5" />
@@ -418,7 +418,7 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                                 variant="outline"
                                 className="text-sm text-light-text dark:text-dark-text py-2 px-4"
                             >
-                                Lecture: {stats.avgLectureRating}
+                                Lecture Average: {stats.avgLectureRating}
                             </Badge>
                         </div>
                         <div className="flex items-center gap-2">
@@ -427,23 +427,16 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                                 variant="outline"
                                 className="text-sm text-light-text dark:text-dark-text py-2 px-4"
                             >
-                                Lab: {stats.avgLabRating}
+                                Lab Average: {stats.avgLabRating}
                             </Badge>
                         </div>
-                        {/* <Button
-                            className="text-sm text-light-text dark:text-dark-text"
-                            type="button"
-                            onClick={exportToCsv}
-                        >
-                            Export Data
-                        </Button> */}
                         <button
                             onClick={exportToCsv}
                             className="flex text-sm items-center gap-2 bg-transparent border border-primary-main text-light-highlight dark:text-dark-highlight py-2 px-4 rounded-xl
                             hover:bg-dark-highlight/10 focus:outline-none focus:ring-2 focus:ring-primary-main focus:ring-offset-2
                             transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {/* <X className="h-5 w-5 mr-2" /> */}
+                            <Download className="h-5 w-5" />
                             Export Chart
                         </button>
                     </div>
@@ -467,23 +460,20 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                         />
                         <XAxis
                             dataKey="subject"
-                            textAnchor="middle"
                             height={10}
                             interval={0}
-                            fontSize={12}
+                            fontSize={13}
                             stroke="#AAAAAA"
                             padding={{ left: 10, right: 10 }}
                         />
                         <YAxis
                             domain={[0, 10]}
-                            fontSize={12}
                             stroke="#AAAAAA"
                             label={{
                                 value: "Average Rating (0-10)",
                                 angle: -90,
-                                offset: -10,
                                 style: {
-                                    fontSize: 14,
+                                    fontSize: 13,
                                     fill: "#AAAAAA",
                                 },
                             }}
@@ -511,12 +501,14 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                             fill="#f97316"
                             name="Lecture Rating"
                             radius={[4, 4, 0, 0]}
+                            barSize={20}
                         />
                         <Bar
                             dataKey="labAverageRating"
-                            fill="#9ca3af"
+                            fill="#3b82f6"
                             name="Lab Rating"
                             radius={[4, 4, 0, 0]}
+                            barSize={20}
                         />
                     </BarChart>
                 </ResponsiveContainer>
@@ -544,15 +536,15 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                             {stats.avgLectureRating}
                         </div>
                         <div className="text-md text-light-muted-text dark:text-dark-muted-text">
-                            Avg Lecture Rating
+                            Average Lecture Rating
                         </div>
                     </div>
                     <div className="text-center">
-                        <div className="text-2xl font-bold text-[#9ca3af]">
+                        <div className="text-2xl font-bold text-[#3b82f6]">
                             {stats.avgLabRating}
                         </div>
                         <div className="text-md text-light-muted-text dark:text-dark-muted-text">
-                            Avg Lab Rating
+                            Average Lab Rating
                         </div>
                     </div>
                 </div>

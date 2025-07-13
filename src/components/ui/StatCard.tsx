@@ -57,7 +57,7 @@ export const StatCard = ({
                 <div className="absolute top-0 left-0 w-2 h-full bg-primary-main transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
             )}
 
-            <div className="p-5 flex justify-between items-start gap-4">
+            <div className="p-3 flex justify-between items-start gap-4">
                 {" "}
                 {/* Increased padding slightly */}
                 <div className="flex-grow">

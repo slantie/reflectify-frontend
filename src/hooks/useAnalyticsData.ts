@@ -11,6 +11,8 @@ import {
     AnalyticsFilterParams,
     FilterDictionary,
     CompleteAnalyticsData,
+    FeedbackSnapshot,
+    SubjectFacultyDetailPerformance,
 } from "@/interfaces/analytics";
 
 // Query keys for analytics data
@@ -52,6 +54,47 @@ export const useTotalResponses = () => {
     });
 };
 
+export interface ProcessedAnalyticsData {
+    overallStats: ReturnType<
+        typeof AnalyticsDataProcessor.processOverallStats
+    > | null;
+    subjectRatings: ReturnType<
+        typeof AnalyticsDataProcessor.processSubjectRatings
+    >;
+    semesterTrends: ReturnType<
+        typeof AnalyticsDataProcessor.processSemesterTrends
+    >;
+    divisionComparisons: ReturnType<
+        typeof AnalyticsDataProcessor.processDivisionComparisons
+    >;
+    facultyPerformance: ReturnType<
+        typeof AnalyticsDataProcessor.processFacultyPerformance
+    >;
+    lectureLabComparison: ReturnType<
+        typeof AnalyticsDataProcessor.processLectureLabComparison
+    > | null;
+    filteringOptions: ReturnType<
+        typeof AnalyticsDataProcessor.getFilteringOptions
+    > | null;
+    rawSnapshots: FeedbackSnapshot[];
+    academicYearDepartmentTrends: ReturnType<
+        typeof AnalyticsDataProcessor.processAcademicYearDepartmentTrends
+    >;
+    academicYearSemesterTrends: ReturnType<
+        typeof AnalyticsDataProcessor.processAcademicYearSemesterTrends
+    >;
+    academicYearDivisionPerformance: ReturnType<
+        typeof AnalyticsDataProcessor.processAcademicYearDivisionTrends
+    >;
+    batchComparisons: ReturnType<
+        typeof AnalyticsDataProcessor.processDivisionComparisons
+    >;
+    subjectFacultyPerformance: ReturnType<
+        typeof AnalyticsDataProcessor.processSubjectFacultyPerformance
+    >;
+    subjectFacultyDetailPerformance: SubjectFacultyDetailPerformance | null;
+}
+
 // Processed analytics data hook
 export const useProcessedAnalytics = (filters: AnalyticsFilterParams = {}) => {
     const {
@@ -59,9 +102,10 @@ export const useProcessedAnalytics = (filters: AnalyticsFilterParams = {}) => {
         isLoading,
         error,
         refetch,
-    } = useCompleteAnalyticsData(filters);
+    } = useCompleteAnalyticsData(filters); // Assuming this hook fetches the full BackendData
+
     // Memoize processed analytics data
-    const processedData = useMemo(() => {
+    const processedData = useMemo<ProcessedAnalyticsData | null>(() => {
         if (!rawData || !rawData.feedbackSnapshots) {
             return {
                 overallStats: null,
@@ -72,10 +116,31 @@ export const useProcessedAnalytics = (filters: AnalyticsFilterParams = {}) => {
                 lectureLabComparison: null,
                 filteringOptions: null,
                 rawSnapshots: [],
+                academicYearDepartmentTrends: [],
+                academicYearSemesterTrends: [],
+                academicYearDivisionPerformance: [],
+                batchComparisons: [], // Initialize the new property
+                subjectFacultyPerformance: [],
+                subjectFacultyDetailPerformance: null,
             };
         }
+
         const snapshots = rawData.feedbackSnapshots;
-        const processedResult = {
+
+        // Determine if a single division is selected by its ID
+        const isSingleDivisionIdSelected =
+            filters.divisionId && typeof filters.divisionId === "string";
+
+        // Filter snapshots for a specific division if one is selected for batch comparison
+        const filteredSnapshotsForBatchComparison = isSingleDivisionIdSelected
+            ? snapshots.filter((s) => s.divisionId === filters.divisionId)
+            : [];
+
+        // Determine if a single subject is selected by its ID
+        const isSingleSubjectIdSelected =
+            filters.subjectId && typeof filters.subjectId === "string";
+
+        const processedResult: ProcessedAnalyticsData = {
             overallStats: AnalyticsDataProcessor.processOverallStats(snapshots),
             subjectRatings:
                 AnalyticsDataProcessor.processSubjectRatings(snapshots),
@@ -90,10 +155,36 @@ export const useProcessedAnalytics = (filters: AnalyticsFilterParams = {}) => {
             filteringOptions:
                 AnalyticsDataProcessor.getFilteringOptions(snapshots),
             rawSnapshots: snapshots,
+            academicYearDepartmentTrends:
+                AnalyticsDataProcessor.processAcademicYearDepartmentTrends(
+                    snapshots
+                ),
+            academicYearSemesterTrends:
+                AnalyticsDataProcessor.processAcademicYearSemesterTrends(
+                    snapshots
+                ),
+            academicYearDivisionPerformance:
+                AnalyticsDataProcessor.processAcademicYearDivisionTrends(
+                    snapshots
+                ),
+            batchComparisons: AnalyticsDataProcessor.processDivisionComparisons(
+                filteredSnapshotsForBatchComparison
+            ),
+            subjectFacultyPerformance:
+                AnalyticsDataProcessor.processSubjectFacultyPerformance(
+                    snapshots
+                ),
+            subjectFacultyDetailPerformance: isSingleSubjectIdSelected
+                ? AnalyticsDataProcessor.processSubjectFacultyDetailPerformance(
+                      snapshots,
+                      filters.subjectId as string
+                  )
+                : null,
         };
 
         return processedResult;
-    }, [rawData]);
+    }, [rawData, filters.divisionId, filters.subjectId]);
+
     return { data: processedData, rawData, isLoading, error, refetch };
 };
 
