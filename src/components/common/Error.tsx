@@ -57,7 +57,7 @@ function Error({
 
             <div className="text-center space-y-4 max-w-2xl w-full">
                 <div className="relative inline-block">
-                    <div className="w-24 h-24 mx-auto bg-light-highlight dark:bg-dark-highlight dark:bg-primary-dark rounded-full flex items-center justify-center shadow-2xl">
+                    <div className="w-24 h-24 mx-auto bg-light-highlight dark:bg-dark-highlight rounded-full flex items-center justify-center shadow-2xl">
                         <AlertTriangle className="w-12 h-12 text-white" />
                     </div>
                 </div>
@@ -87,7 +87,7 @@ function Error({
                         onClick={handleRefresh}
                         className={`${baseButtonClasses} bg-light-muted-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary hover:border-primary-main dark:hover:border-primary-light text-light-text dark:text-dark-text`}
                     >
-                        <RefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500 text-light-highlight dark:text-dark-highlight dark:text-primary-light" />
+                        <RefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500 text-light-highlight dark:text-dark-highlight" />
                         <span>Refresh</span>
                     </button>
 
@@ -95,7 +95,7 @@ function Error({
                         onClick={goBack}
                         className={`${baseButtonClasses} bg-light-muted-background dark:bg-dark-muted-background border border-light-secondary dark:border-dark-secondary hover:border-primary-main dark:hover:border-primary-light text-light-text dark:text-dark-text`}
                     >
-                        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300 text-light-highlight dark:text-dark-highlight dark:text-primary-light" />
+                        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300 text-light-highlight dark:text-dark-highlight" />
                         <span>Go Back</span>
                     </button>
                 </div>

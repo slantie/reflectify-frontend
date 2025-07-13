@@ -30,13 +30,10 @@ export const REFERENCE_FILE_URLS = {
 // Authentication endpoints
 export const AUTH_ENDPOINTS = {
     LOGIN: `${API_V1_URL}/auth/login`,
-    LOGOUT: `${API_V1_URL}/auth/logout`,
-    VERIFY_TOKEN: `${API_V1_URL}/auth/verify-token`,
-    CHANGE_PASSWORD: `${API_V1_URL}/auth/change-password`,
+    REGISTER: `${API_V1_URL}/auth/register`,
+    SUPER_REGISTER: `${API_V1_URL}/auth/super-register`,
     ME: `${API_V1_URL}/auth/me`,
-    UPDATE_PROFILE: `${API_V1_URL}/auth/update-profile`,
-    FORGOT_PASSWORD: `${API_V1_URL}/auth/forgot-password`,
-    RESET_PASSWORD: `${API_V1_URL}/auth/reset-password/`,
+    UPDATE_PASSWORD: `${API_V1_URL}/auth/update-password`,
 };
 
 // Dashboard endpoints

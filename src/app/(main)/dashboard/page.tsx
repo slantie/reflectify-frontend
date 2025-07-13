@@ -16,7 +16,7 @@ import {
 } from "@heroicons/react/24/outline";
 import CountUp from "react-countup";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
-import Loader from "@/components/common/Loader";
+import { PageLoader } from "@/components/ui/LoadingSpinner";
 import ErrorDisplay from "@/components/common/Error";
 
 export default function Dashboard() {
@@ -25,14 +25,7 @@ export default function Dashboard() {
     const { data: stats, isLoading, isError, error } = useDashboardStats();
 
     if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-light-muted-background dark:bg-dark-background">
-                <Loader /> {/* Use the Loader component */}
-                <p className="text-light-text dark:text-dark-text ml-2">
-                    Loading dashboard data...
-                </p>
-            </div>
-        );
+        return <PageLoader text="Loading dashboard data..." />;
     }
 
     if (isError) {
@@ -49,7 +42,7 @@ export default function Dashboard() {
     return (
         <div className="min-h-screen bg-light-muted-background dark:bg-dark-background">
             {/* Max width and responsive padding for the main container */}
-            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 py-6 md:py-8">
+            <div className="max-w-[1920px] mx-auto px-6 py-6">
                 {/* Responsive layout for main sections: column on smaller screens, row on large screens */}
                 <div className="flex flex-col lg:flex-row gap-4">
                     {/* Main Content - Right Side */}

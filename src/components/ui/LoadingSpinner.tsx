@@ -100,7 +100,7 @@ const PulseSpinner: React.FC<{ size: SpinnerSize; color: string }> = ({
         className={`
       ${sizeConfig[size].spinner}
       ${color}
-      bg-current rounded-full animate-pulse
+      bg-light-background dark:bg-dark-background rounded-full animate-pulse
     `}
     />
 );
@@ -198,7 +198,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     variant = "default",
     size = "md",
     color = "primary",
-    className = "",
+    className = "bg-light-background dark:bg-dark-background",
     text,
     textPosition = "right",
     fullScreen = false,
@@ -251,7 +251,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     // Full screen loader
     if (fullScreen) {
         return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-light-background/80 dark:bg-dark-background/80 backdrop-blur-sm">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-light-background dark:bg-dark-background">
                 {spinnerContent}
             </div>
         );
@@ -273,17 +273,19 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 // Preset spinner components for common use cases
 export const PageLoader: React.FC<Omit<LoadingSpinnerProps, "fullScreen">> = (
     props
-) => <LoadingSpinner fullScreen text="Loading..." {...props} />;
+) => <LoadingSpinner fullScreen text="Loading..." variant="dots" {...props} />;
 
 export const ButtonLoader: React.FC<
     Omit<LoadingSpinnerProps, "size" | "color">
 > = (props) => (
-    <LoadingSpinner size="sm" color="current" variant="default" {...props} />
+    <LoadingSpinner size="sm" color="current" variant="dots" {...props} />
 );
 
 export const TableLoader: React.FC<Omit<LoadingSpinnerProps, "overlay">> = (
     props
-) => <LoadingSpinner overlay text="Loading data..." {...props} />;
+) => (
+    <LoadingSpinner overlay text="Loading data..." variant="dots" {...props} />
+);
 
 export const InlineLoader: React.FC<
     Omit<LoadingSpinnerProps, "fullScreen" | "overlay">

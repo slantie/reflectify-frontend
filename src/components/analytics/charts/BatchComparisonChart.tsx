@@ -16,6 +16,7 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Download, GitBranch } from "lucide-react"; // GitBranch for batches
 
 import { DivisionBatchComparison } from "@/interfaces/analytics";
@@ -171,12 +172,12 @@ export const BatchComparisonChart: React.FC<BatchComparisonChartProps> = ({
                 </CardHeader>
                 <CardContent>
                     <div className="h-96 flex items-center justify-center">
-                        <div className="text-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-main border-t-transparent mx-auto mb-4"></div>
-                            <p className="text-light-muted-text dark:text-dark-muted-text">
-                                Loading batch comparison data...
-                            </p>
-                        </div>
+                        <LoadingSpinner
+                            variant="dots"
+                            size="lg"
+                            color="primary"
+                            text="Loading batch comparison data..."
+                        />
                     </div>
                 </CardContent>
             </Card>

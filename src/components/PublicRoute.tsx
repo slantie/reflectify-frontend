@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { PageLoader } from "@/components/ui/LoadingSpinner";
 
 interface PublicRouteProps {
     children: React.ReactNode;
@@ -28,13 +29,7 @@ export function PublicRoute({
     // Show loading state while checking authentication OR if a redirect has been initiated
     // This prevents content from briefly rendering before a redirect, or flickering
     if (loading || (user && !redirectAttempted.current)) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                <p className="text-sm text-muted-foreground">Loading...</p>{" "}
-                {/* Added for consistency */}
-            </div>
-        );
+        return <PageLoader text="Loading..." />;
     }
 
     // If a redirect was attempted, don't render children

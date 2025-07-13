@@ -18,11 +18,12 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { GraduationCap, Download, Users } from "lucide-react";
 import { FacultyOverallPerformanceSummary } from "@/interfaces/analytics";
 import { DataTable, DataTableColumn } from "@/components/ui/DataTable";
 import { exportFacultyPerformanceData } from "@/utils/facultyPerformanceExport";
-import toast from "react-hot-toast";
+import showToast from "@/lib/toast";
 
 interface FacultyPerformanceChartProps {
     data: FacultyOverallPerformanceSummary[];
@@ -104,18 +105,18 @@ export const FacultyPerformanceChart: React.FC<
     const handleExport = async () => {
         try {
             setIsExporting(true);
-            toast.loading(`Exporting data...`, {
+            showToast.loading(`Exporting data...`, {
                 id: "export-loading",
             });
 
             await exportFacultyPerformanceData(academicYearId);
 
-            toast.success(`Faculty performance Data Exported!`, {
+            showToast.success(`Faculty performance Data Exported!`, {
                 id: "export-loading",
             });
         } catch (error) {
             console.error("Export failed:", error);
-            toast.error("Export Failed. Please try again.", {
+            showToast.error("Export Failed. Please try again.", {
                 id: "export-loading",
             });
         } finally {
@@ -343,12 +344,12 @@ export const FacultyPerformanceChart: React.FC<
                 </CardHeader>
                 <CardContent>
                     <div className="h-96 flex items-center justify-center">
-                        <div className="text-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-main border-t-transparent mx-auto mb-4"></div>
-                            <p className="text-light-muted-text dark:text-dark-muted-text">
-                                Loading faculty data...
-                            </p>
-                        </div>
+                        <LoadingSpinner
+                            variant="dots"
+                            size="lg"
+                            color="primary"
+                            text="Loading faculty data..."
+                        />
                     </div>
                 </CardContent>
             </Card>

@@ -13,7 +13,7 @@ import feedbackFormService from "@/services/feedbackFormService";
 
 // Import UI components
 import { Button } from "@/components/ui/Button";
-import { Loader } from "@/components/common/Loader";
+import { PageLoader } from "@/components/ui/LoadingSpinner";
 
 // Import modular components
 import {
@@ -249,14 +249,7 @@ export default function FeedbackFormManagement() {
 
     // Loading state
     if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-light-muted-background dark:bg-dark-background">
-                <Loader />
-                <p className="text-light-text dark:text-dark-text ml-2">
-                    Loading feedback forms...
-                </p>
-            </div>
-        );
+        return <PageLoader text="Loading feedback forms..." />;
     }
 
     // Error state
@@ -286,7 +279,7 @@ export default function FeedbackFormManagement() {
 
     return (
         <div className="min-h-screen bg-light-muted-background dark:bg-dark-background">
-            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 py-6 md:py-6">
+            <div className="max-w-[1920px] mx-auto px-6 py-6">
                 <motion.div
                     initial="hidden"
                     animate="visible"

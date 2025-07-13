@@ -91,10 +91,9 @@ export function EditFacultyModal({
     React.useEffect(() => {
         if (isOpen && faculty) {
             reset({
-                firstName: faculty.firstName,
-                lastName: faculty.lastName,
+                firstName: faculty.name,
                 email: faculty.email,
-                facultyAbbreviation: faculty.facultyAbbreviation,
+                facultyAbbreviation: faculty.abbreviation,
                 designation: faculty.designation,
                 departmentId: String(faculty.departmentId),
                 seatingLocation: faculty.seatingLocation,

@@ -29,7 +29,7 @@ interface LoaderProps {
 export default function Loader({
     size = "md",
     color = "text-primary-dark",
-    className = "",
+    className = "bg-light-background dark:bg-dark-background",
 }: LoaderProps) {
     // Map size prop to Tailwind CSS classes
     const sizeClasses: { [key: string]: string } = {
@@ -46,7 +46,7 @@ export default function Loader({
         <div
             role="status" // Good for accessibility, indicates a status update
             aria-label="Loading" // Provides a label for screen readers
-            className={`flex items-center justify-center ${className}`}
+            className={`w-screen h-screen flex items-center justify-center ${className} bg-light-background dark:bg-dark-background`}
         >
             <div
                 className={`animate-spin rounded-full border-solid border-current border-r-transparent ${finalSizeClass} ${color}`}

@@ -16,6 +16,7 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { BookOpen, Monitor, Laptop, Download } from "lucide-react";
 import { SubjectLectureLabRating } from "@/interfaces/analytics";
 
@@ -357,12 +358,12 @@ export const SubjectRatingsChart: React.FC<SubjectRatingsChartProps> = ({
                 </CardHeader>
                 <CardContent>
                     <div className="h-96 flex items-center justify-center">
-                        <div className="text-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-main border-t-transparent mx-auto mb-4"></div>
-                            <p className="text-light-muted-text dark:text-dark-muted-text">
-                                Loading chart data...
-                            </p>
-                        </div>
+                        <LoadingSpinner
+                            variant="dots"
+                            size="lg"
+                            color="primary"
+                            text="Loading chart data..."
+                        />
                     </div>
                 </CardContent>
             </Card>

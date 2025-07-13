@@ -16,6 +16,7 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Building, Download } from "lucide-react"; // Using Building for department focus
 
 import { AcademicYearDepartmentTrend } from "@/interfaces/analytics";
@@ -271,7 +272,11 @@ export const AcademicYearDepartmentComparisonChart: React.FC<
                 <CardContent>
                     <div className="h-96 flex items-center justify-center">
                         <div className="text-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-main border-t-transparent mx-auto mb-4"></div>
+                            <LoadingSpinner
+                                variant="dots"
+                                size="lg"
+                                className="mb-4"
+                            />
                             <p className="text-light-muted-text dark:text-dark-muted-text">
                                 Loading department trends...
                             </p>

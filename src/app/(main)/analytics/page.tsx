@@ -161,7 +161,7 @@ const AnalyticsPage: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-light-muted-background dark:bg-dark-background">
-            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 py-6 md:py-8">
+            <div className="max-w-[1920px] mx-auto px-6 py-6">
                 <motion.div
                     initial="hidden"
                     animate="visible"
@@ -236,23 +236,23 @@ const AnalyticsPage: React.FC = () => {
                                 <TabsList className="grid w-full grid-cols-3 gap-4 rounded-xl p-1">
                                     <TabsTrigger
                                         value="trends"
-                                        className="flex items-center gap-2"
+                                        className="flex items-center gap-2 text-md"
                                     >
-                                        <Eye className="w-4 h-4" />
+                                        <Eye className="w-6 h-6" />
                                         Yearly Trends
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="subjects"
-                                        className="flex items-center gap-2"
+                                        className="flex items-center gap-2 text-md"
                                     >
-                                        <Book className="w-4 h-4" />
+                                        <Book className="w-6 h-6" />
                                         Subjects & Ratings
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="performance"
-                                        className="flex items-center gap-2"
+                                        className="flex items-center gap-2 text-md"
                                     >
-                                        <Users className="w-4 h-4" />
+                                        <Users className="w-6 h-6" />
                                         Faculty Performance
                                     </TabsTrigger>
                                 </TabsList>

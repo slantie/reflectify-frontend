@@ -6,6 +6,11 @@ import apiClient from "@/lib/axiosInstance";
 import { AUTH_ENDPOINTS } from "@/constants/apiEndpoints";
 import { LoginResponse, MeResponse } from "@/interfaces/auth";
 
+interface UpdatePasswordResponse {
+    status: string;
+    message: string;
+}
+
 const authService = {
     // Sends login credentials to the backend and returns the token and user data
     login: async (email: string, password: string): Promise<LoginResponse> => {
@@ -22,7 +27,17 @@ const authService = {
         return response.data;
     },
 
-    // You can add other auth-related API calls here, e.g., register, forgot password
+    // Updates the current user's password
+    updatePassword: async (
+        currentPassword: string,
+        newPassword: string
+    ): Promise<UpdatePasswordResponse> => {
+        const response = await apiClient.patch<UpdatePasswordResponse>(
+            AUTH_ENDPOINTS.UPDATE_PASSWORD,
+            { currentPassword, newPassword }
+        );
+        return response.data;
+    },
 };
 
 export default authService;

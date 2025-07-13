@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { showToast } from "@/lib/toast";
+import { PageLoader } from "@/components/ui/LoadingSpinner";
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -101,14 +102,7 @@ export function ProtectedRoute({
                     ))) &&
             !redirectAttempted.current)
     ) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="flex flex-col items-center space-y-4">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                    <p className="text-sm text-muted-foreground">Loading...</p>
-                </div>
-            </div>
-        );
+        return <PageLoader text="Loading..." />;
     }
 
     // If a redirect was attempted, don't render children

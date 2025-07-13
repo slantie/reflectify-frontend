@@ -3,7 +3,16 @@
  * @description Interfaces for authentication API responses and forms
  */
 
-import { Admin } from "./admin";
+import { Designation } from "@/constants/designations";
+
+export type Admin = {
+    id: string;
+    email: string;
+    name: string;
+    designation: Designation;
+    role: string;
+    isSuper: boolean;
+};
 
 // API response for login endpoint.
 export interface LoginResponse {
