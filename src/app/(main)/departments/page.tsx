@@ -222,7 +222,7 @@ export default function DepartmentManagement() {
 
         try {
             await createDepartmentMutation.mutateAsync(departmentData);
-            showToast.success("Department created successfully");
+            showToast.success("Department created!");
             setShowAddDepartmentCard(false); // Close the add card
             // Reset newDepartment state
             setNewDepartment({
@@ -259,7 +259,7 @@ export default function DepartmentManagement() {
                     abbreviation: currentEditDepartment.abbreviation,
                 },
             });
-            showToast.success("Department updated successfully");
+            showToast.success("Department updated!");
             setEditingDepartment(null); // Close the edit card
             setCurrentEditDepartment(null); // Clear current edit state
         } catch (err: any) {
@@ -276,7 +276,7 @@ export default function DepartmentManagement() {
             await softDeleteDepartmentMutation.mutateAsync(
                 deletingDepartment.id
             );
-            showToast.success("Department deleted successfully");
+            showToast.success("Department deleted!");
             setDeletingDepartment(null); // Close the delete card
         } catch (err: any) {
             showToast.error(err.message || "Failed to delete department");
@@ -292,7 +292,7 @@ export default function DepartmentManagement() {
         setIsRefreshing(true);
         try {
             await refetchDepartments();
-            showToast.success("Department data refreshed successfully!");
+            showToast.success("Department data refreshed!");
         } catch (err: any) {
             console.error("Refresh failed:", err);
             showToast.error(

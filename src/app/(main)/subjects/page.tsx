@@ -275,7 +275,7 @@ export default function SubjectManagement() {
 
         try {
             await createSubjectMutation.mutateAsync(subjectData);
-            showToast.success("Subject created successfully");
+            showToast.success("Subject created!");
             setShowAddSubjectCard(false); // Close the add card
             // Reset newSubject state
             setNewSubject({
@@ -321,7 +321,7 @@ export default function SubjectManagement() {
                     type: currentEditSubject.type ? "MANDATORY" : "ELECTIVE",
                 },
             });
-            showToast.success("Subject updated successfully");
+            showToast.success("Subject updated!");
             setEditingSubject(null); // Close the edit card
             setCurrentEditSubject(null); // Clear current edit state
         } catch (err: any) {
@@ -336,7 +336,7 @@ export default function SubjectManagement() {
         }
         try {
             await softDeleteSubjectMutation.mutateAsync(deletingSubject.id);
-            showToast.success("Subject deleted successfully");
+            showToast.success("Subject deleted!");
             setDeletingSubject(null); // Close the delete card
         } catch (err: any) {
             showToast.error(err.message || "Failed to delete subject");
@@ -348,7 +348,7 @@ export default function SubjectManagement() {
         setIsRefreshing(true);
         try {
             await refetchSubjects();
-            showToast.success("Subject data refreshed successfully!");
+            showToast.success("Subject data refreshed!");
         } catch (err: any) {
             console.error("Refresh failed:", err);
             showToast.error(err.message || "Failed to refresh subject data.");
