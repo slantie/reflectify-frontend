@@ -30,6 +30,7 @@ import { BatchComparisonChart } from "@/components/analytics/charts/BatchCompari
 import AcademicYearDepartmentComparisonChart from "@/components/analytics/charts/AcademicYearDepartmentComparisonChart";
 import SubjectFacultyPerformanceChart from "@/components/analytics/charts/SubjectFacultyPerformanceComparisonChart";
 import showToast from "@/lib/toast";
+import { PageLoader } from "@/components/ui/LoadingSpinner";
 
 // Animation variants
 const containerVariants = {
@@ -94,27 +95,16 @@ const AnalyticsPage: React.FC = () => {
     const handleRefresh = () => {
         refetchAnalyticsData();
         invalidateAll();
-        showToast.success("Analytics Data Refreshed!");
+        showToast.success("Analytics data refreshed!");
     };
 
     // Loading state
     if (filterDictionaryLoading || analyticsDataLoading) {
         return (
-            <div className="min-h-screen bg-light-muted-background dark:bg-dark-background">
-                <div className="max-w-[1920px] mx-auto px-4 sm:px-6 py-6 md:py-8">
-                    <div className="flex items-center justify-center h-64">
-                        <div className="text-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-main border-t-transparent mx-auto mb-4"></div>
-                            <p className="text-light-text dark:text-dark-text text-lg font-medium">
-                                Loading analytics data...
-                            </p>
-                            <p className="text-light-muted-text dark:text-dark-muted-text text-sm mt-1">
-                                Please wait while we fetch your analytics
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <PageLoader
+                className="bg-light-background dark:bg-dark-background"
+                text="Loading Analytics"
+            />
         );
     }
 

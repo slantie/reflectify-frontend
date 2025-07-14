@@ -47,6 +47,7 @@ import {
 } from "@/components/ui";
 import DateRangePicker from "@/components/feedback/DateRangePicker";
 import { X } from "lucide-react";
+import { PageLoader } from "@/components/ui/LoadingSpinner";
 interface EditFeedbackFormPageProps {
     params: Promise<{ formId: string }>;
 }
@@ -360,16 +361,7 @@ export default function EditFeedbackFormPage({
     const canModifyQuestions = form?.status === FeedbackFormStatus.DRAFT;
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-light-muted-background dark:bg-dark-background">
-                <div className="text-center">
-                    <Loader />
-                    <p className="text-light-text dark:text-dark-text ml-2 mt-2">
-                        Loading feedback form...
-                    </p>
-                </div>
-            </div>
-        );
+        return <PageLoader text="Loading Feedback Form" />;
     }
 
     if (!editedForm) {

@@ -16,15 +16,40 @@ import CountUp from "react-countup";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 import { PageLoader } from "@/components/ui/LoadingSpinner";
 import ErrorDisplay from "@/components/common/Error";
-import { BookIcon, LayoutGrid } from "lucide-react";
+import { BookIcon, LayoutGrid, RefreshCw } from "lucide-react"; // Import RefreshCw
+
+import { useState, useCallback } from "react"; // Import useState and useCallback
+import { showToast } from "@/lib/toast"; // Import showToast
 
 export default function Dashboard() {
     const router = useRouter();
-    // Destructure data, isLoading, and isError from the TanStack Query hook
-    const { data: stats, isLoading, isError, error } = useDashboardStats();
+    // Destructure data, isLoading, isError, error, and refetch from the TanStack Query hook
+    const {
+        data: stats,
+        isLoading,
+        isError,
+        error,
+        refetch,
+    } = useDashboardStats();
+
+    // State for refresh button loading
+    const [isRefreshing, setIsRefreshing] = useState(false); // Using isRefreshing for clarity
+
+    const handleRefresh = useCallback(async () => {
+        setIsRefreshing(true);
+        try {
+            await refetch(); // Call refetch from useDashboardStats
+            showToast.success("Dashboard data refreshed!");
+        } catch (refreshError) {
+            console.error("Failed to refresh dashboard data:", refreshError);
+            showToast.error("Failed to refresh dashboard data.");
+        } finally {
+            setIsRefreshing(false);
+        }
+    }, [refetch]);
 
     if (isLoading) {
-        return <PageLoader text="Loading dashboard data..." />;
+        return <PageLoader text="Loading Dashboard" />;
     }
 
     if (isError) {
@@ -121,15 +146,37 @@ export default function Dashboard() {
                                 <h2 className="text-xl font-semibold text-light-text dark:text-dark-text flex items-center gap-2">
                                     Core System Metrics
                                 </h2>
-                                <Button
-                                    onClick={() => router.push("/analytics")}
-                                    className="bg-primary-main hover:bg-primary-dark text-white"
-                                >
-                                    <span className="flex items-center gap-2">
-                                        {/* <PresentationChartLineIcon className="h-5 w-5" /> */}
-                                        View Analytics
-                                    </span>
-                                </Button>
+                                {/* Refresh Button added here */}
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={handleRefresh}
+                                        disabled={isRefreshing} // Use the new state variable
+                                        className="flex items-center gap-1.5 py-2 px-4 text-light-text dark:text-dark-text bg-light-secondary dark:bg-dark-secondary rounded-xl hover:bg-light-hover hover:dark:bg-dark-hover transition-colors"
+                                        title="Refresh Dashboard Data" // Updated title
+                                    >
+                                        <RefreshCw
+                                            className={`w-5 h-5 ${
+                                                isRefreshing
+                                                    ? "animate-spin"
+                                                    : ""
+                                            }`}
+                                        />
+                                        {isRefreshing
+                                            ? "Refreshing ..."
+                                            : "Refresh Data"}
+                                    </button>
+                                    <Button
+                                        onClick={() =>
+                                            router.push("/analytics")
+                                        }
+                                        className="bg-primary-main hover:bg-primary-dark text-white"
+                                    >
+                                        <span className="flex items-center gap-2">
+                                            {/* <PresentationChartLineIcon className="h-5 w-5" /> */}
+                                            View Analytics
+                                        </span>
+                                    </Button>
+                                </div>
                             </div>
                             {/* Enhanced Grid for the 6 StatCards with better spacing and hover effects */}
                             {/* Responsive grid columns: 1 on mobile, 2 on sm, 3 on lg */}

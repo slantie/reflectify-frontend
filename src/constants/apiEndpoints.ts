@@ -4,11 +4,19 @@
 */
 
 // Environment and base URLs
-export const NODE_ENV = process.env.NODE_ENV || "production";
-export const BACKEND_DEV_URL = process.env.BACKEND_DEV_URL;
-export const BACKEND_PROD_URL = process.env.BACKEND_PROD_URL;
+export const API_ENV = process.env.NEXT_PUBLIC_API_ENV || "production";
+
+export const NEXT_PUBLIC_BACKEND_DEV_URL =
+    process.env.NEXT_PUBLIC_BACKEND_DEV_URL || "http://localhost:4000";
+
+export const NEXT_PUBLIC_BACKEND_PROD_URL =
+    process.env.NEXT_PUBLIC_BACKEND_PROD_URL || "https://reflectify.live";
+
 export const BASE_URL =
-    NODE_ENV === "development" ? BACKEND_DEV_URL : BACKEND_PROD_URL;
+    API_ENV === "development"
+        ? NEXT_PUBLIC_BACKEND_DEV_URL
+        : NEXT_PUBLIC_BACKEND_PROD_URL;
+
 export const API_V1_URL = `${BASE_URL}/api/v1`;
 
 // Reference file URLs for uploads

@@ -31,6 +31,7 @@ import { useAllAcademicYears } from "@/hooks/useAcademicYears";
 import { GenerateFormsData } from "@/interfaces/feedbackForm";
 import { DepartmentWithAcademicStructure } from "@/interfaces/academicStructure";
 import { Select } from "@/components/ui";
+import { PageLoader } from "@/components/ui/LoadingSpinner";
 
 interface Selection {
   departmentId: string;
@@ -438,16 +439,7 @@ export default function CreateFeedbackForm() {
   );
 
   if (isLoadingStructure) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-light-muted-background dark:bg-dark-background">
-        <div className="text-center">
-          <Loader />
-          <p className="text-light-text dark:text-dark-text ml-2 mt-2">
-            Loading academic structure...
-          </p>
-        </div>
-      </div>
-    );
+    return <PageLoader text="Loading Academic Structure" />;
   }
 
   return (

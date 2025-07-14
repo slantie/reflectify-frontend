@@ -4,7 +4,6 @@
 import React from "react";
 import { XMarkIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { Card } from "@/components/ui/Card";
-import { Loader } from "@/components/common/Loader";
 import { FileUploadRoute } from "@/interfaces/upload";
 import { Button } from "../ui";
 
@@ -124,7 +123,6 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
-                <Loader className="h-4 w-4 border-white" />
                 Processing
               </span>
             ) : (

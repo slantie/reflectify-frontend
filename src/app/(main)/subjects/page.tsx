@@ -39,6 +39,7 @@ import {
     UpdateSubjectData,
 } from "@/interfaces/subject";
 import { IdType } from "@/interfaces/common";
+import { PageLoader } from "@/components/ui/LoadingSpinner";
 
 // Animation variants
 const containerVariants = {
@@ -486,19 +487,7 @@ export default function SubjectManagement() {
     );
 
     if (isLoading || isLoadingDepartments || isLoadingSemesters) {
-        return (
-            <div className="min-h-screen bg-light-muted-background dark:bg-dark-background flex items-center justify-center">
-                <div className="text-center p-6">
-                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-main border-t-transparent mx-auto mb-4"></div>
-                    <p className="text-light-text dark:text-dark-text text-lg font-medium">
-                        Loading subject data...
-                    </p>
-                    <p className="text-light-muted-text dark:text-dark-muted-text text-sm mt-1">
-                        Please wait while we fetch subject information
-                    </p>
-                </div>
-            </div>
-        );
+        return <PageLoader text="Loading Subjects" />;
     }
 
     // Display error if data fetch failed and there's no data to show

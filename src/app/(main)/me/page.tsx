@@ -111,7 +111,7 @@ const ProfilePage = () => {
   };
 
   if (!user) {
-    return <PageLoader text="Loading profile..." />;
+    return <PageLoader text="Loading Profile" />;
   }
 
   return (
