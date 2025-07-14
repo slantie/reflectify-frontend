@@ -4,66 +4,46 @@
  */
 
 import { IdType } from "./common";
+import { Department } from "./department";
 
 /**
  * Represents a college entity.
  */
 export interface College {
-  id: IdType;
-  name: string;
-  code: string; // e.g., "LDRP-ITR"
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
-  contactEmail: string;
-  contactPhone?: string;
-  website?: string;
-  establishedYear?: number;
-  createdAt: string;
-  updatedAt: string;
-  isActive: boolean;
+    id: IdType;
+    name: string;
+    websiteUrl: string;
+    address: string;
+    contactNumber: string;
+    isDeleted: boolean;
+    createdAt: string;
+    updatedAt: string;
+    departments?: Department[];
 }
 
 /**
- * Data required to create or upsert a college.
+ * Data required to create a new college.
  */
 export interface CreateCollegeData {
-  name: string;
-  code: string;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
-  contactEmail: string;
-  contactPhone?: string;
-  website?: string;
-  establishedYear?: number;
+    name: string;
+    websiteUrl: string;
+    address: string;
+    contactNumber: string;
 }
 
 /**
  * Data for updating an existing college (all fields optional).
  */
 export interface UpdateCollegeData {
-  name?: string;
-  code?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  zipCode?: string;
-  country?: string;
-  contactEmail?: string;
-  contactPhone?: string;
-  website?: string;
-  establishedYear?: number;
-  isActive?: boolean;
+    name?: string;
+    websiteUrl?: string;
+    address?: string;
+    contactNumber?: string;
 }
 
 /**
- * Data structure for batch update of the primary college.
+ * Data structure for batch updating college.
  */
 export interface BatchUpdateCollegeInput {
-  updates: UpdateCollegeData;
+    updates: UpdateCollegeData;
 }

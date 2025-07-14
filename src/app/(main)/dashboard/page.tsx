@@ -6,18 +6,17 @@ import { Button } from "@/components/ui";
 import { StatCard } from "@/components/ui/StatCard";
 import {
     ArrowTrendingUpIcon,
-    BookOpenIcon,
     BuildingOfficeIcon,
     ChartBarIcon,
     ClipboardDocumentListIcon,
     AcademicCapIcon,
-    ViewColumnsIcon,
     CalendarIcon,
 } from "@heroicons/react/24/outline";
 import CountUp from "react-countup";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 import { PageLoader } from "@/components/ui/LoadingSpinner";
 import ErrorDisplay from "@/components/common/Error";
+import { BookIcon, LayoutGrid } from "lucide-react";
 
 export default function Dashboard() {
     const router = useRouter();
@@ -139,9 +138,7 @@ export default function Dashboard() {
                                     title="Academic Years"
                                     value={stats?.academicYearCount || 0}
                                     icon={CalendarIcon}
-                                    onClick={() =>
-                                        router.push("/academic-year")
-                                    }
+                                    onClick={() => router.push("/years")}
                                     subtitle="Total academic periods"
                                     className="hover:scale-105 transition-transform duration-300"
                                 />
@@ -149,7 +146,7 @@ export default function Dashboard() {
                                     title="Departments"
                                     value={stats?.departmentCount || 0}
                                     icon={BuildingOfficeIcon}
-                                    onClick={() => router.push("/department")}
+                                    onClick={() => router.push("/departments")}
                                     subtitle="Organizational units"
                                     className="hover:scale-105 transition-transform duration-300"
                                 />
@@ -157,7 +154,7 @@ export default function Dashboard() {
                                     title="Faculty"
                                     value={stats?.facultyCount || 0}
                                     icon={AcademicCapIcon}
-                                    onClick={() => router.push("/faculty")}
+                                    onClick={() => router.push("/faculties")}
                                     subtitle="Registered faculty members"
                                     className="hover:scale-105 transition-transform duration-300"
                                 />
@@ -165,23 +162,23 @@ export default function Dashboard() {
                                     title="Semesters"
                                     value={stats?.semesterCount || 0}
                                     icon={ClipboardDocumentListIcon}
-                                    onClick={() => router.push("/semester")}
+                                    onClick={() => router.push("/semesters")}
                                     subtitle="Defined academic terms"
                                     className="hover:scale-105 transition-transform duration-300"
                                 />
                                 <StatCard
                                     title="Divisions"
                                     value={stats?.divisionCount || 0}
-                                    icon={ViewColumnsIcon}
-                                    onClick={() => router.push("/division")}
+                                    icon={LayoutGrid}
+                                    onClick={() => router.push("/divisions")}
                                     subtitle="Sub-units within departments"
                                     className="hover:scale-105 transition-transform duration-300"
                                 />
                                 <StatCard
                                     title="Subjects"
                                     value={stats?.subjectCount || 0}
-                                    icon={BookOpenIcon}
-                                    onClick={() => router.push("/subject")}
+                                    icon={BookIcon}
+                                    onClick={() => router.push("/subjects")}
                                     subtitle="Available course subjects"
                                     className="hover:scale-105 transition-transform duration-300"
                                 />

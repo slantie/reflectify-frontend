@@ -13,7 +13,7 @@ const buttonVariants = cva(
         default:
           "bg-light-highlight dark:bg-dark-highlight text-light-text dark:text-dark-text hover:bg-primary-dark",
         destructive:
-          "bg-negative-main text-white hover:bg-negative-dark focus:ring-negative-main/50",
+          "bg-negative-main text-white hover:bg-negative-dark focus:ring-negative-main/50 text-md",
         outline:
           "border border-primary-main text-light-highlight dark:text-dark-highlight bg-transparent hover:bg-light-highlight dark:bg-dark-highlight hover:text-white focus:ring-primary-main/50",
         secondary:

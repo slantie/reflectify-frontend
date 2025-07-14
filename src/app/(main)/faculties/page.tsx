@@ -84,7 +84,7 @@ export default function FacultyManagement() {
         if (show) {
             _setEditingFaculty(null);
             _setDeletingFaculty(null);
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            window.scrollTo({ top: 300, behavior: "smooth" });
         }
     }, []);
 
@@ -93,7 +93,7 @@ export default function FacultyManagement() {
         if (faculty) {
             _setShowAddFacultyCard(false);
             _setDeletingFaculty(null);
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            window.scrollTo({ top: 300, behavior: "smooth" });
         }
     }, []);
 
@@ -102,7 +102,7 @@ export default function FacultyManagement() {
         if (faculty) {
             _setShowAddFacultyCard(false);
             _setEditingFaculty(null);
-            window.scrollTo({ top: 400, behavior: "smooth" });
+            window.scrollTo({ top: 300, behavior: "smooth" });
         }
     }, []);
 
@@ -207,7 +207,7 @@ export default function FacultyManagement() {
 
         try {
             await createFacultyMutation.mutateAsync(facultyData);
-            showToast.success("Faculty created successfully");
+            showToast.success("Faculty created!");
             setShowAddFacultyCard(false); // Close the add card
             // Reset newFaculty state
             setNewFaculty({
@@ -256,7 +256,7 @@ export default function FacultyManagement() {
                     departmentId: currentEditFaculty.departmentId,
                 },
             });
-            showToast.success("Faculty updated successfully");
+            showToast.success("Faculty updated!");
             setEditingFaculty(null); // Close the edit card
             setCurrentEditFaculty(null); // Clear current edit state
         } catch (err: any) {
@@ -271,7 +271,7 @@ export default function FacultyManagement() {
         }
         try {
             await softDeleteFacultyMutation.mutateAsync(deletingFaculty.id);
-            showToast.success("Faculty deleted successfully");
+            showToast.success("Faculty deleted!");
             setDeletingFaculty(null); // Close the delete card
         } catch (err: any) {
             showToast.error(err.message || "Failed to delete faculty");
@@ -283,7 +283,7 @@ export default function FacultyManagement() {
         setIsRefreshing(true);
         try {
             await refetchFaculty();
-            showToast.success("Faculty data refreshed successfully!");
+            showToast.success("Faculty data refreshed!");
         } catch (err: any) {
             console.error("Refresh failed:", err);
             showToast.error(err.message || "Failed to refresh faculty data.");
@@ -522,7 +522,7 @@ export default function FacultyManagement() {
                             title="Total Faculty"
                             value={faculty.length}
                             icon={User}
-                            onClick={() => router.push("/faculty")}
+                            onClick={() => router.push("/faculties")}
                         />
                         {departmentStats.map((stat) => (
                             <StatCard
@@ -530,7 +530,7 @@ export default function FacultyManagement() {
                                 title={stat.departmentName}
                                 value={stat.count}
                                 icon={BuildingOfficeIcon}
-                                onClick={() => router.push("/department")}
+                                onClick={() => router.push("/departments")}
                             />
                         ))}
                     </motion.div>
