@@ -277,7 +277,7 @@ export default function FeedbackFormManagement() {
   return (
     <div className="min-h-screen bg-light-muted-background dark:bg-dark-background">
       <div className="max-w-[1920px] mx-auto px-6 py-6">
-        <motion.div initial="hidden" animate="visible" className="space-y-6">
+        <motion.div initial="hidden" animate="visible" className="space-y-4">
           {/* Header Section */}
           <FeedbackFormHeader
             isRefreshing={isRefreshing}

@@ -51,7 +51,7 @@ const DateRangePickerComponent: React.FC<DateRangePickerProps> = ({
       {/* DayPicker component */}
       <DayPicker
         animate
-        mode="range" // Enables range selection
+        mode={"range"} // Enables range selection
         selected={range} // Binds the selected range to the component's state
         onSelect={handleSelect} // Handles date selection
         navLayout="around" // Places navigation buttons around the caption

@@ -4,26 +4,26 @@
 */
 
 // Designation literal type
-export type Designation = "HoD" | "Asst_Prof" | "Lab_Asst";
+export type Designation = "HOD" | "AsstProf" | "LabAsst";
 
 // Display map for designations
 export const designationDisplayMap: Record<Designation, string> = {
-  HoD: "Head of Department",
-  Asst_Prof: "Assistant Professor",
-  Lab_Asst: "Lab Assistant",
+    HOD: "Head of Department",
+    AsstProf: "Assistant Professor",
+    LabAsst: "Lab Assistant",
 };
 
 // Enum-like object for Zod validation
 export const DesignationEnumForZod = {
-  HoD: "HoD",
-  Asst_Prof: "Asst_Prof",
-  Lab_Asst: "Lab_Asst",
+    HOD: "HOD",
+    AsstProf: "AsstProf",
+    LabAsst: "LabAsst",
 } as const;
 
 // Dropdown options for designations
 export const designationOptions = Object.entries(designationDisplayMap).map(
-  ([value, label]) => ({
-    value: value as Designation,
-    label,
-  }),
+    ([value, label]) => ({
+        value: value as Designation,
+        label,
+    })
 );
