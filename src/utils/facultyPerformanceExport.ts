@@ -68,7 +68,8 @@ export async function fetchFacultyPerformanceForExport(
             )
         );
 
-        return response.data.data;
+        return (response.data as { data: AllFacultyPerformanceApiResponse })
+            .data;
     } catch (error) {
         console.error(
             "Error fetching faculty performance data for export:",
