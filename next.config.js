@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+const nextConfig = {
     // allowedDevOrigins: ["http://localhost:3000"],
     reactStrictMode: true,
 };
