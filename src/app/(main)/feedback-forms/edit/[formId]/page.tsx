@@ -49,14 +49,14 @@ import DateRangePicker from "@/components/feedback/DateRangePicker";
 import { X } from "lucide-react";
 import { PageLoader } from "@/components/ui/LoadingSpinner";
 interface EditFeedbackFormPageProps {
-    params: Promise<{ formId: string }>;
+    params: { formId: string };
 }
 
 export default function EditFeedbackFormPage({
     params,
 }: EditFeedbackFormPageProps) {
     const router = useRouter();
-    const { formId } = React.use(params);
+    const { formId } = params;
     const [form, setForm] = useState<FeedbackForm | null>(null);
     const [editedForm, setEditedForm] = useState<FeedbackForm | null>(null);
     const [loading, setLoading] = useState(true);
@@ -1225,6 +1225,7 @@ export default function EditFeedbackFormPage({
                                                                                     {
                                                                                         faculty.abbreviation
                                                                                     }
+
                                                                                     )
                                                                                 </option>
                                                                             )

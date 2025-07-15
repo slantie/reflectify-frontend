@@ -24,14 +24,14 @@ import feedbackFormService from "@/services/feedbackFormService";
 import { FeedbackForm } from "@/interfaces/feedbackForm";
 
 interface FeedbackFormDetailsPageProps {
-    params: Promise<{ formId: string }>;
+    params: { formId: string };
 }
 
 export default function FeedbackFormDetailsPage({
     params,
 }: FeedbackFormDetailsPageProps) {
     const router = useRouter();
-    const { formId } = React.use(params);
+    const { formId } = params;
     const [form, setForm] = useState<FeedbackForm | null>(null);
     const [loading, setLoading] = useState(true);
     const [deleting, setDeleting] = useState(false);
