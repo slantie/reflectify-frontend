@@ -3,8 +3,9 @@
 import React, { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { showToast } from "@/lib/toast";
+// import { showToast } from "@/lib/toast";
 import { PageLoader } from "@/components/ui/LoadingSpinner";
+import { showToast } from "@/lib/toast";
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -43,7 +44,7 @@ export function ProtectedRoute({
         // 1. Check if authentication is required
         if (requireAuth && !user) {
             shouldRedirect = true;
-            errorMessage = "You need to be logged in to access this page";
+            // errorMessage = "You need to be logged in to access this page";
             redirectTo = fallbackPath;
         }
         // 2. If user is authenticated, perform additional checks
@@ -72,7 +73,7 @@ export function ProtectedRoute({
         }
 
         if (shouldRedirect) {
-            showToast.error(errorMessage);
+            showToast.error(errorMessage || "Access denied");
             router.replace(redirectTo);
             redirectAttempted.current = true;
         }
@@ -88,7 +89,6 @@ export function ProtectedRoute({
         router,
     ]);
 
-    // Show loading state or nothing while the check is happening or redirect is pending
     if (
         loading ||
         (!user && requireAuth && !redirectAttempted.current) ||

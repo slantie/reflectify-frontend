@@ -58,7 +58,7 @@ interface FeedbackForm {
 }
 
 interface StudentFeedbackPageProps {
-  params: Promise<{ token: string }>;
+  params: { token: string };
 }
 
 type ResponseValue = number | string;
@@ -67,7 +67,7 @@ export default function StudentFeedbackPage({
   params,
 }: StudentFeedbackPageProps) {
   const router = useRouter();
-  const { token } = React.use(params);
+  const { token } = params;
   const [form, setForm] = useState<FeedbackForm | null>(null);
   const [responses, setResponses] = useState<Record<string, ResponseValue>>({});
   const [loading, setLoading] = useState(true);
