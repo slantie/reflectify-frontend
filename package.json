@@ -31,6 +31,7 @@
         "@types/nodemailer": "^6.4.17",
         "@types/react-datepicker": "^6.2.0",
         "antd": "^5.23.1",
+        "axios": "^1.6.0",
         "apexcharts": "^4.4.0",
         "bcryptjs": "^2.4.3",
         "class-variance-authority": "^0.7.1",
