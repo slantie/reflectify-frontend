@@ -3,6 +3,8 @@
  * @description Flexible textarea component with resize options, character count, and validation
  */
 
+"use client";
+
 import React, { forwardRef, useState, useEffect } from "react";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";

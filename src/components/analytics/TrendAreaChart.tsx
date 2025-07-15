@@ -1,5 +1,7 @@
 // src/components/analytics/TrendAreaChart.tsx
 
+"use client";
+
 import React from "react";
 import { BaseChart } from "./BaseChart";
 import {

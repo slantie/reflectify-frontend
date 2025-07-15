@@ -1,5 +1,7 @@
 // src/components/analytics/BaseChart.tsx
 
+"use client";
+
 import React from "react";
 import dynamic from "next/dynamic";
 import { Loader } from "@/components/common/Loader";

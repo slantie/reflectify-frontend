@@ -1,4 +1,4 @@
-// src/app/(main)/feedback/[formId]/page.tsx
+// src/app/(main)/feedback-forms/[formId]/page.tsx
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";

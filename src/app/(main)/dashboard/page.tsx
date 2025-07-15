@@ -15,7 +15,6 @@ import {
 import CountUp from "react-countup";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 import { PageLoader } from "@/components/ui/LoadingSpinner";
-import ErrorDisplay from "@/components/common/Error";
 import { BookIcon, LayoutGrid, RefreshCw } from "lucide-react"; // Import RefreshCw
 
 import { useState, useCallback } from "react"; // Import useState and useCallback
@@ -28,7 +27,6 @@ export default function Dashboard() {
         data: stats,
         isLoading,
         isError,
-        error,
         refetch,
     } = useDashboardStats();
 
@@ -55,10 +53,9 @@ export default function Dashboard() {
     if (isError) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-light-muted-background dark:bg-dark-background">
-                <ErrorDisplay
-                    message={error?.message || "Failed to load dashboard data."}
-                />{" "}
-                {/* Use ErrorDisplay */}
+                <p className="text-lg text-light-text dark:text-dark-text">
+                    Failed to load dashboard data.
+                </p>
             </div>
         );
     }

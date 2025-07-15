@@ -1,4 +1,7 @@
 // src/components/upload/FacultyMatrixUploadInputs.tsx
+
+"use client";
+
 import React from "react";
 import { Select } from "@/components/ui/Select";
 import { SemesterTypeEnum } from "@/constants/semesterTypes";

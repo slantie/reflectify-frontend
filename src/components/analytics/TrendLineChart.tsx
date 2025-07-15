@@ -1,5 +1,7 @@
 // src/components/analytics/TrendLineChart.tsx
 
+"use client";
+
 import React, { useMemo } from "react";
 import {
     LineChart,

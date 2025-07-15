@@ -3,6 +3,8 @@
  * @description Visualizes performance comparison between batches within a selected division.
  */
 
+"use client";
+
 import React from "react";
 import {
     BarChart,

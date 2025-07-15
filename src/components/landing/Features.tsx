@@ -3,6 +3,8 @@
 @description Features section for the Reflectify landing page.
 */
 
+"use client";
+
 import { motion } from "framer-motion";
 
 // Animation variants for framer-motion

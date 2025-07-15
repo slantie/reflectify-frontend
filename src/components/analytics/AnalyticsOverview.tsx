@@ -3,6 +3,8 @@
  * @description Overview statistics cards for analytics dashboard
  */
 
+"use client";
+
 import React from "react";
 import { StatCard } from "@/components/ui/StatCard";
 import { Users, Star, MessageSquare, BarChart3, Target } from "lucide-react";

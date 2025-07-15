@@ -29,11 +29,7 @@ export function PublicRoute({
     // Show loading state while checking authentication OR if a redirect has been initiated
     // This prevents content from briefly rendering before a redirect, or flickering
     if (loading || (user && !redirectAttempted.current)) {
-        return (
-            <PageLoader
-                text="Loading"
-            />
-        );
+        return <PageLoader text="Loading" />;
     }
 
     // If a redirect was attempted, don't render children

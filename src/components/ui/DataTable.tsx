@@ -3,6 +3,8 @@
  * @description Advanced, flexible data table component with sorting, filtering, pagination, responsive design, and file preview support
  */
 
+"use client";
+
 import React, { useState, useMemo } from "react";
 import {
     ChevronUpIcon,

@@ -3,6 +3,8 @@
  * @description Subject ratings visualization with lecture/lab breakdown
  */
 
+"use client";
+
 import React, { useMemo } from "react";
 import {
     BarChart,

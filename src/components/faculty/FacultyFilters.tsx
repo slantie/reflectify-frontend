@@ -1,4 +1,7 @@
 // src/components/faculty/FacultyFilters.tsx
+
+"use client";
+
 import {
   UserGroupIcon,
   ArrowUpIcon,

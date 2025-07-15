@@ -1,4 +1,6 @@
 // src/components/ui/AcademicYearCard.tsx
+"use client";
+
 import React from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";

@@ -3,6 +3,8 @@
  * @description Clean and intuitive filtering component for analytics
  */
 
+"use client";
+
 import React, { useMemo } from "react";
 import { Select } from "@/components/ui/Select";
 import { Badge } from "@/components/ui/Badge";

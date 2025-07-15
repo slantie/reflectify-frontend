@@ -3,6 +3,8 @@
  * @description Faculty performance visualization with rankings, including an overall average as a dotted reference line, with standardized styling.
  */
 
+"use client";
+
 import React, { useMemo, useState, useRef } from "react";
 import {
     BarChart,

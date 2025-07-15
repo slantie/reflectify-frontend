@@ -3,6 +3,8 @@
  * @description Visualizes semester performance trends across different academic years using a grouped bar chart.
  */
 
+"use client";
+
 import React, { useMemo } from "react";
 import {
     BarChart,

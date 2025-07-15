@@ -3,6 +3,8 @@
  * @description Visualizes faculty performance comparison within a selected subject, including an overall subject average as a dotted reference line.
  */
 
+"use client";
+
 import React, { useMemo, useState, useEffect } from "react";
 import {
     ComposedChart,

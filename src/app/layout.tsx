@@ -8,46 +8,43 @@ import "./globals.css";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/providers/ThemeProvider";
-import { DM_Sans } from "next/font/google";
-import { ToastProvider } from "@/components/providers/ToastProvider";
+import { ToastProvider } from "@/providers/ToastProvider";
 
-// Metadata for the application
+import { DM_Sans } from "next/font/google";
+
 export const metadata: Metadata = {
-  title: "Reflectify - Feedback System",
-  description: "A comprehensive student feedback management system",
-  keywords: ["feedback", "student", "management", "system"],
-  authors: [
-    { name: "Kandarp Gajjar", url: "https://github.com/slantie" },
-    { name: "Harsh Dodiya", url: "https://github.com/harshDodiya1" },
-  ],
-  icons: {
-    icon: "/favicon.ico",
-  },
+    title: "Reflectify - Feedback System",
+    description: "A comprehensive student feedback management system",
+    keywords: ["feedback", "student", "management", "system"],
+    authors: [
+        { name: "Kandarp Gajjar", url: "https://github.com/slantie" },
+        { name: "Harsh Dodiya", url: "https://github.com/harshDodiya1" },
+    ],
+    icons: {
+        icon: "/favicon.ico",
+    },
 };
 
-// Google font setup
 const dmsans = DM_Sans({
-  subsets: ["latin"],
+    subsets: ["latin"],
 });
 
-// Root layout component
 export default function RootLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={dmsans.className}>
-        {/* Theme and global providers */}
-        <ThemeProvider>
-          <ReactQueryProvider>
-            <AuthProvider>
-              <ToastProvider>{children}</ToastProvider>
-            </AuthProvider>
-          </ReactQueryProvider>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en" suppressHydrationWarning>
+            <body className={dmsans.className}>
+                <ThemeProvider>
+                    <ReactQueryProvider>
+                        <AuthProvider>
+                            <ToastProvider>{children}</ToastProvider>
+                        </AuthProvider>
+                    </ReactQueryProvider>
+                </ThemeProvider>
+            </body>
+        </html>
+    );
 }
