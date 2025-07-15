@@ -9,6 +9,9 @@
         "start": "next start",
         "lint": "next lint"
     },
+    "engines": {
+        "node": ">=18.17.0"
+    },
     "dependencies": {
         "@ant-design/icons": "^5.5.2",
         "@auth/prisma-adapter": "^2.7.4",
