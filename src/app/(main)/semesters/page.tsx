@@ -353,7 +353,6 @@ export default function SemesterManagement() {
             setDeletingSemester(null); // Close the delete card
         } catch (err: any) {
             showToast.error(err.message || "Failed to delete semester");
-            console.error("Delete failed:", err);
         }
     }, [deletingSemester, softDeleteSemesterMutation, setDeletingSemester]);
 
@@ -363,7 +362,6 @@ export default function SemesterManagement() {
             await refetchSemesters();
             showToast.success("Semester data refreshed!");
         } catch (err: any) {
-            console.error("Refresh failed:", err);
             showToast.error(err.message || "Failed to refresh semester data.");
         } finally {
             setIsRefreshing(false);

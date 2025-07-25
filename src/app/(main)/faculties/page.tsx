@@ -276,7 +276,6 @@ export default function FacultyManagement() {
             setDeletingFaculty(null); // Close the delete card
         } catch (err: any) {
             showToast.error(err.message || "Failed to delete faculty");
-            console.error("Delete failed:", err);
         }
     }, [deletingFaculty, softDeleteFacultyMutation, setDeletingFaculty]);
 
@@ -286,7 +285,6 @@ export default function FacultyManagement() {
             await refetchFaculty();
             showToast.success("Faculty data refreshed!");
         } catch (err: any) {
-            console.error("Refresh failed:", err);
             showToast.error(err.message || "Failed to refresh faculty data.");
         } finally {
             setIsRefreshing(false);

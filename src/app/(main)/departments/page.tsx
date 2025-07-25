@@ -280,7 +280,7 @@ export default function DepartmentManagement() {
             setDeletingDepartment(null); // Close the delete card
         } catch (err: any) {
             showToast.error(err.message || "Failed to delete department");
-            console.error("Delete failed:", err);
+            showToast.error("Delete failed: " + err);
         }
     }, [
         deletingDepartment,
@@ -294,7 +294,7 @@ export default function DepartmentManagement() {
             await refetchDepartments();
             showToast.success("Department data refreshed!");
         } catch (err: any) {
-            console.error("Refresh failed:", err);
+            showToast.error("Refresh failed: " + err);
             showToast.error(
                 err.message || "Failed to refresh department data."
             );

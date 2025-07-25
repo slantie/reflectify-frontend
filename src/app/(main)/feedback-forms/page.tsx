@@ -168,8 +168,7 @@ export default function FeedbackFormManagement() {
                     refetch();
                     showToast.success("Feedback form deleted successfully");
                 } catch (error) {
-                    console.error("Failed to delete form:", error);
-                    showToast.error("Failed to delete feedback form");
+                    showToast.error("Failed to delete feedback form: " + error);
                 }
             } else {
                 // First click, ask for confirmation

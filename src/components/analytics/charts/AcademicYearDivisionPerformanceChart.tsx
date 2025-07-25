@@ -22,6 +22,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Users, Download } from "lucide-react"; // Using Users for division focus
 
 import { AcademicYearDivisionTrend } from "@/interfaces/analytics";
+import showToast from "@/lib/toast";
 
 interface AcademicYearDivisionPerformanceChartProps {
     data: AcademicYearDivisionTrend[];
@@ -113,11 +114,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export const AcademicYearDivisionPerformanceChart: React.FC<
     AcademicYearDivisionPerformanceChartProps
 > = ({ data, isLoading = false }) => {
-    console.log(
-        "AcademicYearDivisionPerformanceChart: Raw data received:",
-        data
-    );
-
     // Process data for the chart: pivot data to have divisions on X-axis and academic years as bars
     const { chartData, uniqueAcademicYears, overallStats } = useMemo(() => {
         const allAcademicYears = new Set<string>();
@@ -173,19 +169,6 @@ export const AcademicYearDivisionPerformanceChart: React.FC<
                   )
                 : "N/A";
 
-        console.log(
-            "AcademicYearDivisionPerformanceChart: Processed chartData:",
-            processedChartData
-        );
-        console.log(
-            "AcademicYearDivisionPerformanceChart: Unique Academic Years (for bars):",
-            sortedUniqueAcademicYears
-        );
-        console.log(
-            "AcademicYearDivisionPerformanceChart: Unique Divisions (for X-axis):",
-            sortedUniqueDivisions
-        );
-
         return {
             chartData: processedChartData,
             uniqueAcademicYears: sortedUniqueAcademicYears, // These are now the dataKeys for bars
@@ -202,7 +185,7 @@ export const AcademicYearDivisionPerformanceChart: React.FC<
     // Export function
     const exportToCsv = () => {
         if (!chartData || chartData.length === 0) {
-            console.warn("No data to export.");
+            showToast.error("No data to export.");
             return;
         }
 
@@ -250,7 +233,7 @@ export const AcademicYearDivisionPerformanceChart: React.FC<
             link.click();
             document.body.removeChild(link);
         } else {
-            console.warn(
+            showToast.warning(
                 "Your browser does not support downloading files directly. Please copy the data manually."
             );
         }

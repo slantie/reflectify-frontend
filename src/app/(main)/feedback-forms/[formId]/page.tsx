@@ -47,8 +47,7 @@ export default function FeedbackFormDetailsPage({
             const formData = await feedbackFormService.getFormById(formId);
             setForm(formData);
         } catch (error) {
-            console.error("Failed to fetch form:", error);
-            showToast.error("Failed to load feedback form");
+            showToast.error("Failed to load feedback form: " + error);
             router.push("/feedback-forms");
         } finally {
             setLoading(false);
@@ -73,8 +72,7 @@ export default function FeedbackFormDetailsPage({
                 showToast.success("Feedback form deleted successfully");
                 router.push("/feedback-forms");
             } catch (error) {
-                console.error("Failed to delete form:", error);
-                showToast.error("Failed to delete feedback form");
+                showToast.error("Failed to delete feedback form: " + error);
             } finally {
                 setDeleting(false);
             }

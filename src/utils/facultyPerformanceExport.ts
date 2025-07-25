@@ -6,6 +6,7 @@
 import { academicYearService } from "@/services/academicYear.service";
 import { ANALYTICS_ENDPOINTS } from "@/constants/apiEndpoints";
 import apiClient from "@/lib/axiosInstance";
+import showToast from "@/lib/toast";
 
 interface FacultyPerformanceExportData {
     "Sr. No.": number;
@@ -71,9 +72,8 @@ export async function fetchFacultyPerformanceForExport(
         return (response.data as { data: AllFacultyPerformanceApiResponse })
             .data;
     } catch (error) {
-        console.error(
-            "Error fetching faculty performance data for export:",
-            error
+        showToast.error(
+            "Error fetching faculty performance data for export: " + error
         );
         throw error;
     }
@@ -217,7 +217,7 @@ export function downloadFile(content: string, filename: string): void {
             setTimeout(() => URL.revokeObjectURL(url), 1000);
         }
     } catch (error) {
-        console.error("Download failed:", error);
+        showToast.error("Failed to download file: " + error);
 
         // Final fallback - create data URL
         try {
@@ -230,7 +230,7 @@ export function downloadFile(content: string, filename: string): void {
             link.click();
             document.body.removeChild(link);
         } catch (fallbackError) {
-            console.error("Fallback download also failed:", fallbackError);
+            showToast.error("Failed to download file: " + fallbackError);
             throw new Error(
                 "Unable to download file. Please try again or check your browser settings."
             );
@@ -252,7 +252,6 @@ export function testDownload(): void {
     const testData = "Test,CSV,Data\n1,Hello,World\n2,Test,Download";
     const filename = `test_download_${Date.now()}.csv`;
 
-    console.log("Testing download with:", { testData, filename });
     downloadCSV(testData, filename);
 }
 
@@ -264,7 +263,6 @@ export async function exportFacultyPerformanceData(
 ): Promise<void> {
     try {
         // Show loading state (you might want to implement this in the component)
-        console.log("Fetching faculty performance data for export...");
 
         // Fetch data
         const apiData = await fetchFacultyPerformanceForExport(academicYearId);
@@ -273,37 +271,21 @@ export async function exportFacultyPerformanceData(
             throw new Error("No faculty performance data available for export");
         }
 
-        console.log(`Found ${apiData.faculties.length} faculties for export`);
-
         // Transform data
         const exportData = transformDataForExport(apiData);
-        console.log("Data transformed successfully", exportData.slice(0, 2)); // Log first 2 rows
 
         // Generate filename
         const timestamp = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
         const filename = `faculty_performance_${apiData.academic_year.replace(
             /[^a-zA-Z0-9]/g,
             "_"
-        )}_${timestamp}.csv`; // Hardcoded .csv extension
-
-        console.log(`Generating CSV with filename: ${filename}`);
+        )}_${timestamp}.csv`;
 
         const csvContent = convertToCSV(exportData);
-        console.log(
-            `CSV content generated, length: ${csvContent.length} characters`
-        );
-
-        // Log first few lines of CSV for debugging
-        const csvLines = csvContent.split("\n");
-        console.log("CSV Preview:", csvLines.slice(0, 3));
 
         downloadCSV(csvContent, filename);
-
-        console.log(
-            `Successfully exported ${exportData.length} faculty records`
-        );
     } catch (error) {
-        console.error("Error exporting faculty performance data:", error);
+        showToast.error("Error exporting faculty performance data: " + error);
         throw error;
     }
 }

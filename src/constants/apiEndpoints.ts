@@ -236,3 +236,7 @@ export const UPLOAD_ENDPOINTS = {
     UPLOAD_SUBJECT_DATA: `${API_V1_URL}/upload/subject-data`,
     UPLOAD_FACULTY_MATRIX: `${API_V1_URL}/upload/faculty-matrix`,
 };
+
+export const CONTACT_ENDPOINTS = {
+    BASE: `${API_V1_URL}/contact`,
+};

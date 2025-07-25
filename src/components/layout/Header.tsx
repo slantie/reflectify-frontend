@@ -10,6 +10,7 @@ import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import logo from "../../../public/Logo.svg";
 import { useRouter } from "next/navigation";
+import showToast from "@/lib/toast";
 
 const HeaderRoute = (route: string, label: string) => {
     return (
@@ -36,7 +37,7 @@ export function Header() {
             await logout();
             setIsMobileMenuOpen(false);
         } catch (error) {
-            console.error("Logout failed in Header:", error);
+            showToast.error("Logout failed in Header: " + error);
         }
     };
 

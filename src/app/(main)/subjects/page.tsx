@@ -340,7 +340,6 @@ export default function SubjectManagement() {
             setDeletingSubject(null); // Close the delete card
         } catch (err: any) {
             showToast.error(err.message || "Failed to delete subject");
-            console.error("Delete failed:", err);
         }
     }, [deletingSubject, softDeleteSubjectMutation, setDeletingSubject]);
 
@@ -350,7 +349,6 @@ export default function SubjectManagement() {
             await refetchSubjects();
             showToast.success("Subject data refreshed!");
         } catch (err: any) {
-            console.error("Refresh failed:", err);
             showToast.error(err.message || "Failed to refresh subject data.");
         } finally {
             setIsRefreshing(false);

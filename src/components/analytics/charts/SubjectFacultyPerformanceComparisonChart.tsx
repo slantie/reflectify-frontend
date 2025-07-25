@@ -26,6 +26,7 @@ import { BookOpen, Download } from "lucide-react";
 
 import { SubjectFacultyPerformance } from "@/interfaces/analytics";
 import { Select } from "@/components/ui";
+import { showToast } from "@/lib/toast";
 
 interface SubjectFacultyPerformanceChartProps {
     data: SubjectFacultyPerformance[];
@@ -99,8 +100,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export const SubjectFacultyPerformanceChart: React.FC<
     SubjectFacultyPerformanceChartProps
 > = ({ data, isLoading = false }) => {
-    console.log("SubjectFacultyPerformanceChart: Raw data received:", data);
-
     // State for internal subject selection. It will always hold a subject name or undefined.
     const [selectedSubjectName, setSelectedSubjectName] = useState<
         string | undefined
@@ -188,18 +187,10 @@ export const SubjectFacultyPerformanceChart: React.FC<
         };
     }, [filteredData]); // Dependency on filteredData
 
-    // Add console logs for debugging
-    useEffect(() => {
-        console.log(
-            "SubjectFacultyPerformanceChart: Chart Data (Single Subject View):",
-            chartData
-        );
-    }, [chartData]);
-
     // Export function
     const exportToCsv = () => {
         if (!filteredData || chartData.length === 0) {
-            console.warn("No data to export.");
+            showToast.error("No data to export.");
             return;
         }
 
@@ -261,7 +252,7 @@ export const SubjectFacultyPerformanceChart: React.FC<
             link.click();
             document.body.removeChild(link);
         } else {
-            console.warn(
+            showToast.warning(
                 "Your browser does not support downloading files directly. Please copy the data manually."
             );
         }

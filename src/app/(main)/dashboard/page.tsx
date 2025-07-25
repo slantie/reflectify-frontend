@@ -23,12 +23,7 @@ import { showToast } from "@/lib/toast"; // Import showToast
 export default function Dashboard() {
     const router = useRouter();
     // Destructure data, isLoading, isError, error, and refetch from the TanStack Query hook
-    const {
-        data: stats,
-        isLoading,
-        isError,
-        refetch,
-    } = useDashboardStats();
+    const { data: stats, isLoading, isError, refetch } = useDashboardStats();
 
     // State for refresh button loading
     const [isRefreshing, setIsRefreshing] = useState(false); // Using isRefreshing for clarity
@@ -39,8 +34,9 @@ export default function Dashboard() {
             await refetch(); // Call refetch from useDashboardStats
             showToast.success("Dashboard data refreshed!");
         } catch (refreshError) {
-            console.error("Failed to refresh dashboard data:", refreshError);
-            showToast.error("Failed to refresh dashboard data.");
+            showToast.error(
+                "Failed to refresh dashboard data: " + refreshError
+            );
         } finally {
             setIsRefreshing(false);
         }

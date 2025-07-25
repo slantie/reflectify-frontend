@@ -247,8 +247,7 @@ export default function AcademicYearManagement() {
             );
             setDeletingAcademicYear(null); // Close the delete card
         } catch (err: any) {
-            showToast.error(err.message || "Failed to delete academic year");
-            console.error("Delete failed:", err);
+            showToast.error("Failed to delete academic year: " + err.message);
         }
     }, [
         deletingAcademicYear,
@@ -262,7 +261,7 @@ export default function AcademicYearManagement() {
             await refetchAcademicYears();
             showToast.success("Academic year data refreshed!");
         } catch (err: any) {
-            console.error("Refresh failed:", err);
+            showToast.error("Refresh failed: " + err);
             showToast.error(
                 err.message || "Failed to refresh academic year data."
             );

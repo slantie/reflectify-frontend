@@ -91,8 +91,7 @@ export default function EditFeedbackFormPage({
             setForm(formData);
             setEditedForm(JSON.parse(JSON.stringify(formData)));
         } catch (error) {
-            console.error("Failed to fetch form:", error);
-            showToast.error("Failed to load feedback form");
+            showToast.error("Failed to load feedback form: " + error);
             router.push("/feedback-forms");
         } finally {
             setLoading(false);
@@ -108,16 +107,13 @@ export default function EditFeedbackFormPage({
                     feedbackQuestionService.getAllQuestionCategories(),
                 ]);
 
-            console.log("CategoriesData from API:", categoriesData);
-
             setFaculties(facultiesData);
             setSubjects(subjectsData);
             setCategories(categoriesData);
 
             // Don't log categories state here - it won't be updated yet due to async nature of setState
         } catch (error) {
-            console.error("Failed to fetch dropdown data:", error);
-            showToast.error("Failed to load dropdown data");
+            showToast.error("Failed to load dropdown data: " + error);
         } finally {
             setLoadingDropdowns(false);
         }
@@ -128,14 +124,8 @@ export default function EditFeedbackFormPage({
         fetchDropdownData();
     }, [fetchForm, fetchDropdownData]);
 
-    // Add this useEffect to log categories when they actually update
-    useEffect(() => {
-        console.log("Categories state updated:", categories);
-    }, [categories]);
-
     const handleFormUpdate = (field: keyof FeedbackForm, value: any) => {
         if (!editedForm) return;
-        console.log(`Updating ${field} to ${value}`);
         setEditedForm({
             ...editedForm,
             [field]: value,
@@ -164,8 +154,7 @@ export default function EditFeedbackFormPage({
             setHasChanges(false);
             showToast.success("Form status updated successfully");
         } catch (error) {
-            console.error("Failed to update form status:", error);
-            showToast.error("Failed to update form status");
+            showToast.error("Failed to update form status: " + error);
         } finally {
             setSaving(false);
         }
@@ -229,10 +218,6 @@ export default function EditFeedbackFormPage({
                 displayOrder: editedForm.questions.length + 1,
             };
 
-            console.log("About to send question data:", questionData);
-            console.log("Category ID being sent:", questionData.categoryId);
-            console.log("Available categories:", categories);
-
             const updatedForm = await feedbackFormService.addQuestionToForm(
                 formId,
                 questionData
@@ -251,14 +236,11 @@ export default function EditFeedbackFormPage({
             setShowAddQuestion(false);
             showToast.success("Question added successfully");
         } catch (error) {
-            console.error("Failed to add question:", error);
-            showToast.error("Failed to add question");
+            showToast.error("Failed to add question: " + error);
         } finally {
             setSaving(false);
         }
     };
-
-    console.log(form);
 
     const handleQuestionUpdate = async (
         questionId: string,
@@ -283,8 +265,7 @@ export default function EditFeedbackFormPage({
             setEditedForm(updatedForm);
             setHasChanges(true);
         } catch (error) {
-            console.error("Failed to update question:", error);
-            showToast.error("Failed to update question");
+            showToast.error("Failed to update question: " + error);
         }
     };
 
@@ -309,8 +290,7 @@ export default function EditFeedbackFormPage({
             setHasChanges(true);
             showToast.success("Question deleted successfully");
         } catch (error) {
-            console.error("Failed to delete question:", error);
-            showToast.error("Failed to delete question");
+            showToast.error("Failed to delete question: " + error);
         }
     };
 

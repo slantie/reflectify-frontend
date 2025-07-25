@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUser(response.data.admin);
         } catch (error) {
             // Handle errors during authentication check (e.g., token expired/invalid)
-            console.error("Authentication check failed:", error);
+            showToast.error("Authentication check failed: " + error);
             Cookies.remove("authToken"); // Clear invalid token
             setUser(null); // Ensure user is null on failure
         } finally {
@@ -86,8 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             showToast.success("Logged in successfully!");
             router.replace("/dashboard");
         } catch (error) {
-            console.error("Login failed:", error);
-            showToast.error("Login failed. Please check your credentials.");
+            showToast.error("Login failed: " + error);
             throw new Error("Login failed"); // Re-throw for component to catch if needed
         }
     };
@@ -100,8 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             showToast.success("Logged out successfully!");
             router.replace("/");
         } catch (error) {
-            console.error("Logout failed:", error);
-            showToast.error("Failed to log out. Please try again.");
+            showToast.error("Failed to log out: " + error);
             // Ensure user is null even if toast fails
             Cookies.remove("authToken");
             setUser(null);

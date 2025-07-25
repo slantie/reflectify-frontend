@@ -22,6 +22,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Building, Download } from "lucide-react"; // Using Building for department focus
 
 import { AcademicYearDepartmentTrend } from "@/interfaces/analytics";
+import showToast from "@/lib/toast";
 
 interface AcademicYearDepartmentComparisonChartProps {
     data: AcademicYearDepartmentTrend[];
@@ -111,11 +112,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export const AcademicYearDepartmentComparisonChart: React.FC<
     AcademicYearDepartmentComparisonChartProps
 > = ({ data, isLoading = false }) => {
-    console.log(
-        "AcademicYearDepartmentComparisonChart: Raw data received:",
-        data
-    );
-
     // Process data for the chart: pivot data to have departments on X-axis and academic years as bars
     const { chartData, uniqueAcademicYears, overallStats } = useMemo(() => {
         const allAcademicYears = new Set<string>();
@@ -174,19 +170,6 @@ export const AcademicYearDepartmentComparisonChart: React.FC<
                   )
                 : "N/A";
 
-        console.log(
-            "AcademicYearDepartmentComparisonChart: Processed chartData:",
-            processedChartData
-        );
-        console.log(
-            "AcademicYearDepartmentComparisonChart: Unique Academic Years (for bars):",
-            sortedUniqueAcademicYears
-        );
-        console.log(
-            "AcademicYearDepartmentComparisonChart: Unique Departments (for X-axis):",
-            sortedUniqueDepartments
-        );
-
         return {
             chartData: processedChartData,
             uniqueAcademicYears: sortedUniqueAcademicYears, // These are now the dataKeys for bars
@@ -203,7 +186,7 @@ export const AcademicYearDepartmentComparisonChart: React.FC<
     // Export function
     const exportToCsv = () => {
         if (!chartData || chartData.length === 0) {
-            console.warn("No data to export.");
+            showToast.error("No data to export.");
             return;
         }
 
@@ -251,7 +234,7 @@ export const AcademicYearDepartmentComparisonChart: React.FC<
             link.click();
             document.body.removeChild(link);
         } else {
-            console.warn(
+            showToast.warning(
                 "Your browser does not support downloading files directly. Please copy the data manually."
             );
         }

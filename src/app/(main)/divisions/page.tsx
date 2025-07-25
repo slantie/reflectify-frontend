@@ -304,7 +304,6 @@ export default function DivisionManagement() {
             setDeletingDivision(null); // Close the delete card
         } catch (err: any) {
             showToast.error(err.message || "Failed to delete division");
-            console.error("Delete failed:", err);
         }
     }, [deletingDivision, softDeleteDivisionMutation, setDeletingDivision]);
 
@@ -314,7 +313,6 @@ export default function DivisionManagement() {
             await refetchDivisions();
             showToast.success("Division data refreshed!");
         } catch (err: any) {
-            console.error("Refresh failed:", err);
             showToast.error(err.message || "Failed to refresh division data.");
         } finally {
             setIsRefreshing(false);

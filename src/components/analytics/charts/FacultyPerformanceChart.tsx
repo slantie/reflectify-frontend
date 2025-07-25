@@ -102,8 +102,6 @@ export const FacultyPerformanceChart: React.FC<
     const [isExporting, setIsExporting] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    console.log("Recieved Data: ", data, "Academic Year ID: ", academicYearId);
-
     const handleExport = async () => {
         try {
             setIsExporting(true);
@@ -117,8 +115,7 @@ export const FacultyPerformanceChart: React.FC<
                 id: "export-loading",
             });
         } catch (error) {
-            console.error("Export failed:", error);
-            showToast.error("Export Failed. Please try again.", {
+            showToast.error("Export Failed. Please try again: " + error, {
                 id: "export-loading",
             });
         } finally {

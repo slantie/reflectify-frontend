@@ -22,6 +22,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Download, GitBranch } from "lucide-react"; // GitBranch for batches
 
 import { DivisionBatchComparison } from "@/interfaces/analytics";
+import showToast from "@/lib/toast";
 
 interface BatchComparisonChartProps {
     data: DivisionBatchComparison[];
@@ -111,7 +112,7 @@ export const BatchComparisonChart: React.FC<BatchComparisonChartProps> = ({
     // Export function
     const exportToCsv = () => {
         if (!data || data.length === 0) {
-            console.warn("No data to export.");
+            showToast.error("No data to export.");
             return;
         }
 
@@ -152,7 +153,7 @@ export const BatchComparisonChart: React.FC<BatchComparisonChartProps> = ({
             link.click();
             document.body.removeChild(link);
         } else {
-            console.warn(
+            showToast.warning(
                 "Your browser does not support downloading files directly. Please copy the data manually."
             );
         }

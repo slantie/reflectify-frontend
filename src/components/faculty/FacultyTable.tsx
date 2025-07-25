@@ -30,8 +30,7 @@ export const FacultyTable = ({
                 showToast.success(`${email} copied to clipboard`);
             })
             .catch((err) => {
-                console.error("Failed to copy email:", err);
-                showToast.error("Failed to copy email.");
+                showToast.error("Failed to copy email: " + err);
             });
     };
 

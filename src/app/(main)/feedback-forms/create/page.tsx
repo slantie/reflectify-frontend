@@ -261,8 +261,7 @@ export default function CreateFeedbackForm() {
 
                 setAcademicStructure(sortedStructure);
             } catch (error) {
-                console.error("Failed to fetch academic structure:", error);
-                showToast.error("Failed to load academic structure.");
+                showToast.error("Failed to load academic structure: " + error);
             } finally {
                 setIsLoadingStructure(false);
             }
@@ -457,8 +456,7 @@ export default function CreateFeedbackForm() {
 
             router.push("/feedback-forms"); // Redirect to the main feedback forms page
         } catch (error) {
-            console.error("Failed to generate forms:", error);
-            showToast.error("Failed to generate forms. Please try again.");
+            showToast.error("Failed to generate forms: " + error);
         } finally {
             setLoading(false);
         }

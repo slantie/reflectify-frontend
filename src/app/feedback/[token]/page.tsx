@@ -107,13 +107,9 @@ export default function StudentFeedbackPage({
 
   const fetchForm = useCallback(async () => {
     try {
-      console.log("Fetching form with token:", token);
       const response = await fetch(
         FEEDBACK_FORM_ENDPOINTS.ACCESS_BY_TOKEN(token),
       );
-
-      console.log("Response status:", response.status);
-      console.log("Response ok:", response.ok);
 
       if (!response.ok) {
         // Check if the error is due to form expiration (403 status)
@@ -127,14 +123,9 @@ export default function StudentFeedbackPage({
       }
 
       const data = await response.json();
-      console.log("Response data:", data);
-      console.log("data.status:", data.status);
-      console.log("data.data:", data.data);
-      console.log("data.data.form:", data.data?.form);
 
       if (data.status === "success") {
         const formData = data.data?.form || data.data;
-        console.log("Form data:", formData);
 
         if (formData) {
           // Try to check submission status, but don't fail if this fails
@@ -145,7 +136,6 @@ export default function StudentFeedbackPage({
 
             if (submissionCheck.ok) {
               const submissionData = await submissionCheck.json();
-              console.log("Submission check data:", submissionData);
 
               if (
                 submissionData.status === "success" &&
@@ -156,22 +146,18 @@ export default function StudentFeedbackPage({
               }
             }
           } catch (submissionError) {
-            console.warn("Failed to check submission status:", submissionError);
-            // Continue to show the form even if submission check fails
+            showToast.error("Submission Status Check Failed: " + submissionError);
           }
 
           setForm(formData);
         } else {
-          console.error("No form data found in response");
-          showToast.error("No form data received");
+          showToast.error("No form data received: " + data.message);
         }
       } else {
-        console.error("API returned error or no data:", data);
-        showToast.error(data.message || "Failed to load feedback form");
+        showToast.error("API returned error or no data: " + data.message);
       }
     } catch (error) {
-      console.error("Error fetching form:", error);
-      showToast.error("Error loading feedback form");
+      showToast.error("Error fetching form: " + error);
     } finally {
       setLoading(false);
     }
@@ -180,14 +166,6 @@ export default function StudentFeedbackPage({
   useEffect(() => {
     fetchForm();
   }, [fetchForm]);
-
-  // Log available batches for debugging
-  useEffect(() => {
-    if (form) {
-      const uniqueBatches = [...new Set(form.questions.map((q) => q.batch))];
-      console.log("Available batches in form:", uniqueBatches);
-    }
-  }, [form]);
 
   const handleResponseChange = (questionId: string, value: ResponseValue) => {
     setResponses((prev) => ({
@@ -260,7 +238,7 @@ export default function StudentFeedbackPage({
         showToast.error(data.message || "Failed to submit feedback");
       }
     } catch (error) {
-      console.error("Submission error:", error);
+      showToast.error("Submission error: " + error);
       showToast.error("Error submitting feedback. Please try again.");
     } finally {
       setSubmitting(false);
