@@ -21,5 +21,5 @@ export default function AuthGroupLayout({
 }: {
     children: React.ReactNode;
 }) {
-    return <div>{children} </div>;
+    return <div>{children}</div>;
 }

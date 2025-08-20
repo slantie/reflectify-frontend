@@ -61,9 +61,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     }, []);
 
-    // Run checkAuth on mount (client-side only)
-    // This useEffect will not run during server-side rendering,
-    // so `loading` will remain `true` on the server, which is expected.
     useEffect(() => {
         checkAuth();
     }, [checkAuth]);

@@ -12,8 +12,6 @@ import { useState } from "react";
 import {
     EnvelopeIcon,
     MapPinIcon,
-    CheckCircleIcon,
-    ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import Textarea from "@/components/ui/Textarea";
 import { Input } from "@/components/ui";

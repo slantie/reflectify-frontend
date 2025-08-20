@@ -46,7 +46,6 @@ export function Header() {
     };
 
     const headerVariants = {
-        initial: { opacity: 0, y: -20 },
         animate: { opacity: 1, y: 0, transition: { duration: 0.5 } },
     };
 
@@ -70,7 +69,7 @@ export function Header() {
                 className="p-4 bg-white shadow-md dark:bg-gray-800 dark:text-gray-200 text-center border-b border-secondary-lighter dark:border-dark-secondary z-50 relative"
             >
                 <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 flex justify-between items-center">
-                    <span className="text-xl font-bold text-primary-dark dark:text-primary-light">
+                    <span className="text-xl font-bold text-light-highlight dark:text-dark-highlight">
                         Reflectify
                     </span>
                     <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -124,6 +123,12 @@ export function Header() {
                                     className="text-secondary-dark dark:text-dark-tertiary hover:text-primary-dark dark:hover:text-primary-light transition-colors duration-200 font-medium text-sm lg:text-base"
                                 >
                                     About Us
+                                </Link>
+                                <Link
+                                    href="/docs"
+                                    className="text-secondary-dark dark:text-dark-tertiary hover:text-primary-dark dark:hover:text-primary-light transition-colors duration-200 font-medium text-sm lg:text-base"
+                                >
+                                    Documentation
                                 </Link>
                                 <Link
                                     href="/contact"
